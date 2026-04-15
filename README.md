@@ -10,6 +10,23 @@
 
 ---
 
+## 🔁 Featured: denser-compress compresses itself
+
+denser ships with a Claude Code skill called `denser-compress`. As the first public demo, we compressed that skill's own `SKILL.md` using the denser methodology.
+
+| | Tokens | Density | Sweet spot |
+|---|---:|---:|---:|
+| Original `SKILL.md` | **1249** | 1.00 | — |
+| Compressed `SKILL.compressed.md` | **526** | **0.42** | 0.30 – 0.45 ✓ |
+
+**58% token savings, landing inside the skill task-type sweet spot, with every Preserve-list category intact.**
+
+Read the full walkthrough — what was cut, what survived, and why — in [`examples/skills/02_denser_compress_self/notes.md`](examples/skills/02_denser_compress_self/notes.md). The methodology applied is documented in [`docs/METHODOLOGY.md`](docs/METHODOLOGY.md).
+
+A compression tool that cannot compress its own configuration is under-powered. denser can.
+
+---
+
 ## The Problem
 
 In the agent era, the same text gets loaded into an LLM **every turn**:

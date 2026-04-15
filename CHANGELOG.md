@@ -13,6 +13,16 @@ All notable changes to this project are documented here. The format follows [Kee
 - CI sync test ensures the skill's reference file stays in lockstep with the
   Python taxonomy.
 
+- **`docs/METHODOLOGY.md`** — 4-layer compression methodology extracted from
+  real compression sessions. Framing questions → macro moves → micro tactics →
+  stopping rules, grounded in Shannon, Grice, RLHF reliability, and attention
+  mechanics. Gives contributors and practitioners a reusable mental model
+  rather than ad-hoc rules.
+- **Self-compression case study** — `examples/skills/02_denser_compress_self/`
+  shows denser's own Claude Code skill compressing itself using the methodology:
+  1249 → 526 tokens (-58%, density 0.42, inside the `skill` sweet spot). Full
+  section-by-section walkthrough in `notes.md`, featured on the README landing.
+
 ### Planned for v0.2 (remaining)
 - Pre-commit hook
 - Web playground
