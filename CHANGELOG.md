@@ -41,10 +41,23 @@ All notable changes to this project are documented here. The format follows [Kee
 - **README**: backend-choice guidance and "why not reasoning models" rationale
   derived from the cross-model data.
 
+- **Pre-commit hook** (`integrations/pre-commit-hook.sh` + `.ps1`) — blocks
+  commits of LLM-input files that exceed their task type's sweet-spot token
+  ceiling by ≥10%. Fast (local estimator, no API call), bypassable
+  (`SKIP_DENSER=1`). Infers task type from path. See `integrations/README.md`.
+- **`denser.precommit` module** — the hook's Python implementation, also
+  invokable directly: `python -m denser.precommit <files...>`.
+- **Second case study** — `examples/skills/03_luming_glm46/` — a real
+  Chinese-language Claude Code skill (`~/.claude/skills/luming/SKILL.md`,
+  1432 tokens) compressed with GLM-4.6 via SiliconFlow to 627 tokens
+  (density 0.438, inside sweet spot, 56% savings). Validates the v0.1
+  backend recommendation on a real-world non-self-authored skill, and
+  surfaces one unexpected behavior (GLM translates Chinese instructions
+  to English during compression) worth a v0.3 `preserve_language` flag.
+
 ### Planned for v0.2 (remaining)
-- Pre-commit hook
 - Web playground
-- Language-specific compression tuning (Chinese, beyond English)
+- Language-specific compression tuning (preserve_language flag)
 - Cross-model transfer benchmarks
 
 ## [0.1.0] — 2026-04-15

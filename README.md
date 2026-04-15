@@ -265,11 +265,34 @@ v0.3 will add per-model prompt tuning so more backends land in the sweet spot re
 
 ---
 
+## Integrations
+
+### Pre-commit hook
+
+Block commits of overly-verbose LLM-input files (skills, `CLAUDE.md`, system prompts, memory entries) with a single copy:
+
+```bash
+cp integrations/pre-commit-hook.sh .git/hooks/pre-commit
+chmod +x .git/hooks/pre-commit
+```
+
+Fast (local token estimation, no API call), bypassable (`SKIP_DENSER=1`), and narrow (only files whose path pattern matches LLM-input-shaped paths). See [`integrations/README.md`](integrations/README.md).
+
+### Claude Code skill
+
+```bash
+bash denser/skills/install.sh
+```
+
+The `denser-compress` skill runs inside Claude Code's authenticated session — no separate API key. See [`denser/skills/README.md`](denser/skills/README.md).
+
+---
+
 ## Roadmap
 
-- **v0.1** — Core API + CLI + Claude backend + skill / system_prompt / tool_description / memory_entry / claude_md / one_shot_doc (this release)
-- **v0.2** — Web playground, Claude Code skill integration, pre-commit hook
-- **v0.3** — OpenAI / Gemini backends, cross-model transfer benchmarks
+- **v0.1** — Core API + CLI + Claude backend + skill / system_prompt / tool_description / memory_entry / claude_md / one_shot_doc (done)
+- **v0.2** — Claude Code skill (done), OpenAI-compatible backend with SiliconFlow preset (done), pre-commit hook (done), web playground (next)
+- **v0.3** — Per-model prompt tuning (land DeepSeek/Qwen/Kimi in sweet spot), cross-model transfer study, OpenAI direct backend
 - **v0.4** — Local model backends (Ollama), multi-stage compression pipelines
 - **v1.0** — Stable API, publication-ready benchmarks, plugin ecosystem
 

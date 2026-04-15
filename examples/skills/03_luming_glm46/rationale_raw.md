@@ -1,0 +1,7 @@
+- Removed motivational preambles like "What this skill does" and the purpose of simulating Lu Ming.
+- Condensed detailed explanations of the five core frameworks into concise, imperative bullet points.
+- Stripped down the extensive "voice" guide to its essential two-mode structure and prohibitions.
+- Compressed the 13-point empirical research checklist into a representative list of key items.
+- Removed the "Controversies" section details, integrating its core instruction into the trigger condition.
+- Eliminated the reference materials section and other meta-commentary.
+- Shortened the "Core Viewpoints" table to a summary paragraph to save space while retaining key stances.
