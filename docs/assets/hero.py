@@ -45,7 +45,9 @@ def main() -> None:
         },
     ]
 
-    fig, ax = plt.subplots(figsize=(10, 5.5))
+    # 12.8 x 6.4 inches @ 100 dpi → 1280 x 640 pixels exactly,
+    # which is GitHub's recommended Social preview size (2:1 aspect).
+    fig, ax = plt.subplots(figsize=(12.8, 6.4))
 
     for c in curves:
         y = _curve(x, c["peak"], c["height"], c["width"])
@@ -100,7 +102,9 @@ def main() -> None:
     )
 
     fig.tight_layout()
-    fig.savefig(OUT_PATH, dpi=150, bbox_inches="tight")
+    # Exactly 100 dpi + 12.8×6.4 figsize → 1280×640 pixels, GitHub social preview spec.
+    # Do NOT use bbox_inches="tight" here; that would crop and change dimensions.
+    fig.savefig(OUT_PATH, dpi=100)
     print(f"Wrote {OUT_PATH}")
 
 
