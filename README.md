@@ -217,13 +217,35 @@ print(f"Sweet spot: density={c.peak_density:.2f}")
 
 ## Supported backends
 
-| Backend | Status | Notes |
+denser ships three backends in v0.1:
+
+```python
+from denser.backends import ClaudeBackend, SiliconFlowBackend, OpenAICompatibleBackend
+
+# Default — highest-quality, Anthropic-native with prompt caching
+ClaudeBackend(model="claude-opus-4-6")
+
+# Open-source models via SiliconFlow (中国友好, GLM-4.6 is free-tier)
+SiliconFlowBackend(model="zai-org/GLM-4.6")
+
+# Any OpenAI-compatible endpoint — OpenAI, OpenRouter, Groq, Together, vLLM, etc.
+OpenAICompatibleBackend(base_url="https://api.openai.com/v1", model="gpt-4o")
+```
+
+### Which backend to use
+
+Based on our 12-model cross-compression benchmark (see [`docs/CROSS_MODEL_NOTES.md`](docs/CROSS_MODEL_NOTES.md)):
+
+| Use case | Recommended | Why |
 |---|---|---|
-| Claude Opus 4.6 | ✅ default | Highest compression quality, prompt caching enabled |
-| Claude Sonnet 4.6 | ✅ | Faster, 80% of Opus quality |
-| Claude Haiku 4.5 | ✅ | Fastest, best for bulk compression |
-| OpenAI (GPT-4o) | 🚧 roadmap | v0.3 |
-| Local (Ollama) | 🚧 roadmap | v0.4 |
+| **Production, best quality** | `ClaudeBackend("claude-opus-4-6")` | Only model that lands in the sweet-spot center; prompt caching amortizes cost |
+| **Open-source, free, good quality** | `SiliconFlowBackend("zai-org/GLM-4.6")` | The only open-source model naturally inside the sweet spot |
+| **Fast + cheap, accept overshoot** | `SiliconFlowBackend("deepseek-ai/DeepSeek-V3.2")` | 30s latency, slight over-compression (often acceptable) |
+| **Avoid for compression** | DeepSeek-V3 / V2.5 / Qwen 2.5 / any reasoning model | Over-compresses or too slow |
+
+**Why not reasoning models?** We tested Kimi-K2-Thinking, DeepSeek-R1, and Qwen3.5-397B. All take 5+ minutes per compression and produce density within 1% of non-reasoning models. No measurable benefit, significant cost.
+
+v0.3 will add per-model prompt tuning so more backends land in the sweet spot reliably.
 
 ---
 

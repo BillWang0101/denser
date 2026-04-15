@@ -65,3 +65,8 @@ benchmarks/**/bench_compressed.md
 eval_cache/
 curve.png
 curve.json
+
+# Ad-hoc experiment scripts + their outputs (prefix _)
+_*.py
+_*.json
+

@@ -20,12 +20,44 @@ from rich.panel import Panel
 from rich.table import Table
 
 from denser import __version__
-from denser.backends import BackendError, ClaudeBackend
+from denser.backends import (
+    Backend,
+    BackendError,
+    ClaudeBackend,
+    OpenAICompatibleBackend,
+    SiliconFlowBackend,
+)
 from denser.compress import compress
 from denser.curve import curve as curve_fn
 from denser.eval import compare as compare_fn
 from denser.eval import evaluate as evaluate_fn
 from denser.taxonomy import SPECS, TaskType
+
+BACKEND_CHOICES = ["claude", "siliconflow", "openai-compat"]
+
+
+def _build_backend(
+    kind: str,
+    *,
+    model: str | None,
+    base_url: str | None,
+    temperature: float = 0.3,
+) -> Backend:
+    """Construct a backend from CLI arguments."""
+    if kind == "claude":
+        return ClaudeBackend(model=model or "claude-opus-4-6", temperature=temperature)
+    if kind == "siliconflow":
+        return SiliconFlowBackend(model=model or "deepseek-ai/DeepSeek-V3", temperature=temperature)
+    if kind == "openai-compat":
+        if not base_url:
+            raise BackendError(
+                "--base-url is required for openai-compat backend (e.g. https://api.openai.com/v1)"
+            )
+        if not model:
+            raise BackendError("--model is required for openai-compat backend")
+        return OpenAICompatibleBackend(base_url=base_url, model=model, temperature=temperature)
+    raise BackendError(f"Unknown backend: {kind}")
+
 
 console = Console()
 
@@ -52,9 +84,25 @@ def main() -> None:
     help="Target density (compressed/original tokens). Default: taxonomy midpoint.",
 )
 @click.option(
+    "--backend",
+    type=click.Choice(BACKEND_CHOICES, case_sensitive=False),
+    default="claude",
+    show_default=True,
+    help="Compression backend. `siliconflow` uses DeepSeek-V3 by default; "
+    "`openai-compat` requires --base-url and --model.",
+)
+@click.option(
+    "--base-url",
+    default=None,
+    help="Base URL for openai-compat backend (e.g. https://api.openai.com/v1).",
+)
+@click.option(
     "--model",
-    default="claude-opus-4-6",
-    help="Claude model to use as the compressor.",
+    default=None,
+    help=(
+        "Model id. Default depends on backend: claude-opus-4-6 (claude), "
+        "deepseek-ai/DeepSeek-V3 (siliconflow). Required for openai-compat."
+    ),
 )
 @click.option(
     "--out",
@@ -71,7 +119,9 @@ def compress_cmd(
     input_file: Path,
     task_type: str,
     density: float | None,
-    model: str,
+    backend: str,
+    base_url: str | None,
+    model: str | None,
     out: Path | None,
     show_rationale: bool,
 ) -> None:
@@ -79,14 +129,17 @@ def compress_cmd(
     text = input_file.read_text(encoding="utf-8")
 
     try:
-        backend = ClaudeBackend(model=model)
+        backend_obj = _build_backend(backend, model=model, base_url=base_url)
     except BackendError as e:
         console.print(f"[red]Backend error:[/red] {e}", style="bold")
         sys.exit(2)
 
-    console.print(f"Compressing [bold]{input_file.name}[/bold] as [cyan]{task_type}[/cyan]...")
+    console.print(
+        f"Compressing [bold]{input_file.name}[/bold] as [cyan]{task_type}[/cyan] "
+        f"via [yellow]{backend_obj.name}[/yellow]..."
+    )
     try:
-        result = compress(text, task_type=task_type, target_density=density, backend=backend)
+        result = compress(text, task_type=task_type, target_density=density, backend=backend_obj)
     except (ValueError, BackendError) as e:
         console.print(f"[red]Error:[/red] {e}")
         sys.exit(1)

@@ -23,6 +23,24 @@ All notable changes to this project are documented here. The format follows [Kee
   1249 → 526 tokens (-58%, density 0.42, inside the `skill` sweet spot). Full
   section-by-section walkthrough in `notes.md`, featured on the README landing.
 
+- **`OpenAICompatibleBackend` + `SiliconFlowBackend`** — denser now supports any
+  OpenAI-compatible API: OpenAI, SiliconFlow, OpenRouter, Groq, Together, vLLM,
+  Ollama, and others. `SiliconFlowBackend` ships preconfigured for 中国友好
+  access to GLM, DeepSeek, Qwen, Kimi, and StepFun models.
+- **`python-dotenv` support** — denser now auto-loads `.env` from the cwd on
+  import, so `SILICONFLOW_API_KEY` etc. can be kept in a file instead of
+  shell environment (safer: `.env` is gitignored and never enters shell
+  history).
+- **CLI `--backend`** flag: choose `claude` (default), `siliconflow`, or
+  `openai-compat` (with `--base-url` + `--model`).
+- **`docs/CROSS_MODEL_NOTES.md`** — empirical benchmark of 12 models on the
+  self-compression task. Finding: only Claude Opus 4.6 and GLM-4.6 naturally
+  land in the `skill` sweet spot (0.30-0.45) with the default prompt;
+  newer/larger models trend conservative; older/smaller models over-compress;
+  reasoning models add latency without accuracy benefit.
+- **README**: backend-choice guidance and "why not reasoning models" rationale
+  derived from the cross-model data.
+
 ### Planned for v0.2 (remaining)
 - Pre-commit hook
 - Web playground

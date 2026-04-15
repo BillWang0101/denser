@@ -1,5 +1,16 @@
 """denser: Find the signal density sweet spot for your LLM prompts, skills, and agent configs."""
 
+# Load a `.env` file from the current working directory if python-dotenv is
+# installed. This is the recommended way to pass API keys to denser without
+# persisting them in shell history or Windows registry. Silent if dotenv is
+# missing — users who set env vars directly are unaffected.
+try:
+    from dotenv import load_dotenv as _load_dotenv
+
+    _load_dotenv()
+except ImportError:  # pragma: no cover
+    pass
+
 from denser.compress import CompressionResult, compress
 from denser.curve import DensityCurve, DensityPoint, curve
 from denser.eval import (
