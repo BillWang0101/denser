@@ -4,8 +4,16 @@ All notable changes to this project are documented here. The format follows [Kee
 
 ## [Unreleased]
 
-### Planned for v0.2
-- Claude Code skill integration (compress skills in place)
+### Added (v0.2 pre-release)
+- **Claude Code skill `denser-compress`** — runs inside Claude Code's authenticated
+  session, no API key needed. Installs to `~/.claude/skills/denser-compress/`
+  via `denser/skills/install.sh` (bash) or `install.ps1` (PowerShell). Ships
+  with `SKILL.md` (trigger rules + workflow) and `REFERENCE_taxonomy.md`
+  (auto-generated from `denser.taxonomy` via `scripts/sync_skill_reference.py`).
+- CI sync test ensures the skill's reference file stays in lockstep with the
+  Python taxonomy.
+
+### Planned for v0.2 (remaining)
 - Pre-commit hook
 - Web playground
 - Language-specific compression tuning (Chinese, beyond English)

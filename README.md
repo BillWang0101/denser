@@ -121,6 +121,24 @@ The LLM harness landscape changed in 2024-2026:
 
 ## Installation
 
+### Option 1 — As a Claude Code skill (no API key, no Python)
+
+If you use Claude Code, install the `denser-compress` skill:
+
+```bash
+git clone https://github.com/BillWang0101/denser.git
+bash denser/denser/skills/install.sh        # macOS / Linux
+# or: denser\denser\skills\install.ps1       # Windows PowerShell
+```
+
+Restart Claude Code. Then in any session:
+
+> "compress this skill at `~/.claude/skills/my-skill/SKILL.md`"
+
+The skill runs inside Claude Code's authenticated session — no separate API key needed. See [`denser/skills/README.md`](denser/skills/README.md).
+
+### Option 2 — As a Python library (for pipelines, benchmarks, plots)
+
 ```bash
 pip install denser
 export ANTHROPIC_API_KEY=sk-ant-...
