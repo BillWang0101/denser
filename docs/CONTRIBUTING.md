@@ -73,6 +73,8 @@ examples/<task_type>/<NN_slug>/
 - Itemized preserved / stripped categories
 - A "risk check" noting what could go wrong and whether eval confirms it didn't
 
+When writing `notes.md`, reference the 4-layer methodology in [`METHODOLOGY.md`](METHODOLOGY.md): describe which macro moves (Layer 2) applied, which sentence-level tactics (Layer 3) triggered, and why you stopped compressing where you did (Layer 4). The self-compression case study at [`examples/skills/02_denser_compress_self/notes.md`](../examples/skills/02_denser_compress_self/notes.md) is the canonical template.
+
 PRs with all three files and a cleanly-formatted `notes.md` merge quickly.
 
 ## Proposing a new task type
