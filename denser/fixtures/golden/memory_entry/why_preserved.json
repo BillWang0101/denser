@@ -1,0 +1,14 @@
+{
+  "task_type": "memory_entry",
+  "name": "why_preserved",
+  "description": "Does the memory entry preserve the 'why' — the reason or context that makes the fact load-bearing for edge-case judgment? Memory entries that strip the why become brittle when conditions shift.",
+  "task_prompt": "Below is a memory entry. Does it explain the reasoning, cause, or motivation behind the fact — not just the fact itself, but the 'why'?\n\nMemory entry:\n---\n{input}\n---\n\nAnswer exactly one word: yes or no.",
+  "test_cases": [
+    {
+      "name": "why_present",
+      "vars": {},
+      "expected": "yes"
+    }
+  ],
+  "pass_threshold": 0.85
+}

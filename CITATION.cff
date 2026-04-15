@@ -1,0 +1,17 @@
+cff-version: 1.2.0
+message: "If you use this software, please cite it as below."
+authors:
+  - family-names: Wang
+    given-names: Bill
+    alias: BillWang
+title: "denser: Finding the Signal Density Sweet Spot for LLM Inputs"
+version: 0.1.0
+date-released: 2026-04-14
+url: "https://github.com/BillWang0101/denser"
+license: Apache-2.0
+keywords:
+  - large-language-models
+  - prompt-engineering
+  - prompt-compression
+  - agents
+  - signal-density

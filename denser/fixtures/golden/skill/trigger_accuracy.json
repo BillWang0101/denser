@@ -1,0 +1,14 @@
+{
+  "task_type": "skill",
+  "name": "trigger_accuracy",
+  "description": "Does the skill preserve its activation condition? An LLM reading the skill should be able to tell when the skill should fire.",
+  "task_prompt": "Below is a Claude Code skill definition. Does the skill clearly describe when it should activate — i.e., what user requests or situations should trigger it?\n\nSkill:\n---\n{input}\n---\n\nAnswer exactly one word: yes or no.",
+  "test_cases": [
+    {
+      "name": "activation_clarity",
+      "vars": {},
+      "expected": "yes"
+    }
+  ],
+  "pass_threshold": 0.9
+}

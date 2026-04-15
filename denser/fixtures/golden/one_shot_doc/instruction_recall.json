@@ -1,0 +1,14 @@
+{
+  "task_type": "one_shot_doc",
+  "name": "actionability",
+  "description": "Does the one-shot doc preserve enough instruction that an LLM could execute it? Compression that strips actionable content fails this test.",
+  "task_prompt": "Below is a briefing document intended for an LLM to execute. Reading only this document, would an LLM know concretely what it needs to do?\n\nDocument:\n---\n{input}\n---\n\nAnswer exactly one word: yes or no.",
+  "test_cases": [
+    {
+      "name": "actionable",
+      "vars": {},
+      "expected": "yes"
+    }
+  ],
+  "pass_threshold": 0.9
+}

@@ -1,0 +1,14 @@
+{
+  "task_type": "one_shot_doc",
+  "name": "acceptance_criteria",
+  "description": "Does the one-shot doc preserve acceptance criteria — a way for the LLM to know when the task is done? Docs that strip this produce open-ended work.",
+  "task_prompt": "Below is a briefing document intended for an LLM to execute. Does it communicate how the LLM would know the task is complete — any acceptance criteria, success condition, or end state?\n\nDocument:\n---\n{input}\n---\n\nAnswer exactly one word: yes or no.",
+  "test_cases": [
+    {
+      "name": "criteria_present",
+      "vars": {},
+      "expected": "yes"
+    }
+  ],
+  "pass_threshold": 0.8
+}

@@ -1,0 +1,14 @@
+{
+  "task_type": "memory_entry",
+  "name": "fact_clarity",
+  "description": "Does the memory entry preserve a clear, specific fact that an LLM could later apply?",
+  "task_prompt": "Below is a memory entry. Does it state a specific, actionable fact or rule — something an LLM could retrieve later and apply to decisions?\n\nMemory entry:\n---\n{input}\n---\n\nAnswer exactly one word: yes or no.",
+  "test_cases": [
+    {
+      "name": "fact_actionable",
+      "vars": {},
+      "expected": "yes"
+    }
+  ],
+  "pass_threshold": 0.9
+}

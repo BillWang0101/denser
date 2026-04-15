@@ -1,0 +1,14 @@
+{
+  "task_type": "skill",
+  "name": "constraint_preservation",
+  "description": "Does the skill preserve explicit hard constraints (things the LLM must not do)? This tests whether compression stripped load-bearing NEVER/DO NOT rules.",
+  "task_prompt": "Below is a Claude Code skill definition. Does it include at least one explicit prohibition or hard constraint — something like a MUST NOT, NEVER, DO NOT, or similarly phrased rule?\n\nSkill:\n---\n{input}\n---\n\nAnswer exactly one word: yes or no.",
+  "test_cases": [
+    {
+      "name": "prohibition_present",
+      "vars": {},
+      "expected": "yes"
+    }
+  ],
+  "pass_threshold": 0.85
+}

@@ -1,0 +1,14 @@
+{
+  "task_type": "system_prompt",
+  "name": "boundary_preservation",
+  "description": "Does the system prompt preserve at least one explicit capability boundary — something the LLM is told it should or should not do?",
+  "task_prompt": "Below is a system prompt. Does it include at least one explicit constraint, boundary, or rule about what the LLM should or should not do?\n\nSystem prompt:\n---\n{input}\n---\n\nAnswer exactly one word: yes or no.",
+  "test_cases": [
+    {
+      "name": "boundary_present",
+      "vars": {},
+      "expected": "yes"
+    }
+  ],
+  "pass_threshold": 0.85
+}

@@ -1,0 +1,14 @@
+{
+  "task_type": "system_prompt",
+  "name": "role_definition",
+  "description": "Does the system prompt preserve a clear role definition? An LLM reading the prompt should be able to identify its persona/identity.",
+  "task_prompt": "Below is a system prompt. Does the prompt clearly establish who or what the LLM is supposed to be — its role, identity, or persona?\n\nSystem prompt:\n---\n{input}\n---\n\nAnswer exactly one word: yes or no.",
+  "test_cases": [
+    {
+      "name": "role_clear",
+      "vars": {},
+      "expected": "yes"
+    }
+  ],
+  "pass_threshold": 0.9
+}

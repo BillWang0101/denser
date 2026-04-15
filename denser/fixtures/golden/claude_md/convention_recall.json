@@ -1,0 +1,14 @@
+{
+  "task_type": "claude_md",
+  "name": "conventions_stated",
+  "description": "Does the CLAUDE.md preserve explicit project conventions — rules the LLM should follow that aren't inferable from the repo structure alone?",
+  "task_prompt": "Below is a project's CLAUDE.md file. Does it state at least one explicit convention, rule, or policy for how to work on this project?\n\nCLAUDE.md:\n---\n{input}\n---\n\nAnswer exactly one word: yes or no.",
+  "test_cases": [
+    {
+      "name": "convention_present",
+      "vars": {},
+      "expected": "yes"
+    }
+  ],
+  "pass_threshold": 0.9
+}

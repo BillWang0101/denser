@@ -1,0 +1,14 @@
+{
+  "task_type": "tool_description",
+  "name": "purpose_clarity",
+  "description": "Does the tool description preserve a clear statement of what the tool does and when to use it?",
+  "task_prompt": "Below is a tool description from an LLM tool-use schema. Reading only this description, would an LLM be able to tell what situation warrants calling this tool?\n\nTool description:\n---\n{input}\n---\n\nAnswer exactly one word: yes or no.",
+  "test_cases": [
+    {
+      "name": "purpose_clear",
+      "vars": {},
+      "expected": "yes"
+    }
+  ],
+  "pass_threshold": 0.9
+}

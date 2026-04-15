@@ -1,0 +1,14 @@
+{
+  "task_type": "skill",
+  "name": "procedure_preservation",
+  "description": "Does the skill preserve its actionable procedure? Tests whether after compression the reader can still identify concrete steps to take.",
+  "task_prompt": "Below is a Claude Code skill definition. Does it describe a concrete procedure — that is, specific actions, steps, or operations the LLM should perform when the skill is active?\n\nSkill:\n---\n{input}\n---\n\nAnswer exactly one word: yes or no.",
+  "test_cases": [
+    {
+      "name": "procedure_present",
+      "vars": {},
+      "expected": "yes"
+    }
+  ],
+  "pass_threshold": 0.9
+}
