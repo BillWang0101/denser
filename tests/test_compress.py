@@ -51,12 +51,7 @@ class TestParseResponse:
 
     def test_multiline_compressed(self) -> None:
         raw = (
-            "=== COMPRESSED ===\n"
-            "Line one\n"
-            "Line two\n"
-            "Line three\n"
-            "=== RATIONALE ===\n"
-            "- Explanation\n"
+            "=== COMPRESSED ===\nLine one\nLine two\nLine three\n=== RATIONALE ===\n- Explanation\n"
         )
         compressed, _ = _parse_response(raw)
         assert "Line one" in compressed
@@ -74,12 +69,7 @@ class TestParseResponse:
 
 class TestCompress:
     def test_basic_flow(self) -> None:
-        backend = _MockBackend(
-            "=== COMPRESSED ===\n"
-            "Short\n"
-            "=== RATIONALE ===\n"
-            "- Did stuff\n"
-        )
+        backend = _MockBackend("=== COMPRESSED ===\nShort\n=== RATIONALE ===\n- Did stuff\n")
         result = compress(
             "Some longer input text that we expect to be shortened.",
             task_type="skill",
@@ -106,26 +96,18 @@ class TestCompress:
             compress("x" * 100, task_type="skill", target_density=1.5, backend=backend)
 
     def test_default_target_density_matches_taxonomy(self) -> None:
-        backend = _MockBackend(
-            "=== COMPRESSED ===\nS\n=== RATIONALE ===\n- ok\n"
-        )
+        backend = _MockBackend("=== COMPRESSED ===\nS\n=== RATIONALE ===\n- ok\n")
         result = compress("some text", task_type="skill", backend=backend)
         # SKILL spec: density_range=(0.30, 0.45), default midpoint = 0.375
         assert result.target_density == pytest.approx(0.375, abs=0.01)
 
     def test_target_density_propagates(self) -> None:
-        backend = _MockBackend(
-            "=== COMPRESSED ===\nS\n=== RATIONALE ===\n- ok\n"
-        )
-        result = compress(
-            "some text", task_type="skill", target_density=0.25, backend=backend
-        )
+        backend = _MockBackend("=== COMPRESSED ===\nS\n=== RATIONALE ===\n- ok\n")
+        result = compress("some text", task_type="skill", target_density=0.25, backend=backend)
         assert result.target_density == 0.25
 
     def test_string_task_type(self) -> None:
-        backend = _MockBackend(
-            "=== COMPRESSED ===\nS\n=== RATIONALE ===\n- ok\n"
-        )
+        backend = _MockBackend("=== COMPRESSED ===\nS\n=== RATIONALE ===\n- ok\n")
         result = compress("text", task_type="memory", backend=backend)
         assert result.task_type == TaskType.MEMORY_ENTRY
 
@@ -138,12 +120,7 @@ class TestCompress:
         assert "did not match" in result.rationale.lower()
 
     def test_actual_density_computed(self) -> None:
-        backend = _MockBackend(
-            "=== COMPRESSED ===\n"
-            "short\n"
-            "=== RATIONALE ===\n"
-            "- compressed\n"
-        )
+        backend = _MockBackend("=== COMPRESSED ===\nshort\n=== RATIONALE ===\n- compressed\n")
         long_input = "This is a much longer input. " * 20
         result = compress(long_input, task_type="skill", backend=backend)
         assert result.original_tokens > result.compressed_tokens

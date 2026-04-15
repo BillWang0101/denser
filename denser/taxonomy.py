@@ -97,10 +97,10 @@ SPECS: dict[TaskType, TaskSpec] = {
             "Explicit safety policies or refusal boundaries",
         ),
         strip=(
-            "Motivational preamble (\"This skill helps...\", \"The purpose of...\")",
+            'Motivational preamble ("This skill helps...", "The purpose of...")',
             "Redundant examples illustrating the same pattern",
             "Rationale for why the skill exists (belongs in PR/commit messages)",
-            "Polite hedging (\"you might want to\", \"consider whether\")",
+            'Polite hedging ("you might want to", "consider whether")',
             "Instructions the LLM would follow from base training",
             "Restatement of constraints already implied",
         ),
@@ -133,9 +133,9 @@ SPECS: dict[TaskType, TaskSpec] = {
             "Explicit safety policy and refusal behavior",
         ),
         strip=(
-            "Effusive framing (\"You are the world's best...\")",
+            'Effusive framing ("You are the world\'s best...")',
             "Redundant do-and-don't pairs",
-            "Instructions embedded in base training (\"be honest\", \"be helpful\")",
+            'Instructions embedded in base training ("be honest", "be helpful")',
             "Repeated safety reminders when one suffices",
             "Backstory prose that doesn't change behavior",
         ),
@@ -166,7 +166,7 @@ SPECS: dict[TaskType, TaskSpec] = {
         strip=(
             "Parameter explanations that duplicate the schema's type info",
             "Examples of valid parameter values",
-            "Courtesy language (\"please provide\", \"thank you for\")",
+            'Courtesy language ("please provide", "thank you for")',
             "Restatement of the tool name",
         ),
         density_range=(0.45, 0.60),
@@ -185,22 +185,17 @@ SPECS: dict[TaskType, TaskSpec] = {
         ),
         preserve=(
             "The core fact (the assertion being remembered)",
-            "The \"why\" (reason or source making it load-bearing)",
-            "The \"when to apply\" (relevance conditions)",
+            'The "why" (reason or source making it load-bearing)',
+            'The "when to apply" (relevance conditions)',
         ),
         strip=(
-            "Example scenarios beyond the minimum needed for the \"when\" rule",
-            "Narrative framing (\"I remember that we decided...\")",
+            'Example scenarios beyond the minimum needed for the "when" rule',
+            'Narrative framing ("I remember that we decided...")',
             "Timestamps unless the fact is time-bounded",
             "Cross-references to other memories (belongs in index)",
         ),
         density_range=(0.58, 0.78),
-        canonical_form=(
-            "<the fact>\n"
-            "\n"
-            "Why: <reason>\n"
-            "When to apply: <conditions>"
-        ),
+        canonical_form=("<the fact>\n\nWhy: <reason>\nWhen to apply: <conditions>"),
     ),
     TaskType.CLAUDE_MD: TaskSpec(
         task_type=TaskType.CLAUDE_MD,
@@ -210,7 +205,7 @@ SPECS: dict[TaskType, TaskSpec] = {
         ),
         preserve=(
             "Non-obvious conventions (things the LLM would not infer from repo structure)",
-            "Hidden constraints (e.g., \"we cannot use library X\")",
+            'Hidden constraints (e.g., "we cannot use library X")',
             "Project-specific policies",
             "Decision boundaries (autonomous vs. confirm-first)",
         ),
@@ -218,7 +213,7 @@ SPECS: dict[TaskType, TaskSpec] = {
             "API documentation (available in code)",
             "File structure descriptions (available via `ls`)",
             "Build/run instructions already in README.md",
-            "Default LLM behaviors (\"be helpful\", \"write tests\")",
+            'Default LLM behaviors ("be helpful", "write tests")',
             "Duplicates of the same rule phrased differently",
         ),
         density_range=(0.35, 0.50),
@@ -251,7 +246,7 @@ SPECS: dict[TaskType, TaskSpec] = {
             "Motivational preamble about why the project matters",
             "Background context the LLM can infer from the codebase",
             "Summary sections that restate detailed content",
-            "Speculative \"future work\" unless it affects current decisions",
+            'Speculative "future work" unless it affects current decisions',
         ),
         density_range=(0.40, 0.60),
         canonical_form=(

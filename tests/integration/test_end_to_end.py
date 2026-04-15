@@ -49,9 +49,9 @@ def test_live_compress_skill() -> None:
 
 def test_live_compress_tool_description() -> None:
     """Compress the web_search example and verify core preservations."""
-    sample = (
-        _examples_root() / "tool_descriptions" / "01_web_search" / "verbose.md"
-    ).read_text(encoding="utf-8")
+    sample = (_examples_root() / "tool_descriptions" / "01_web_search" / "verbose.md").read_text(
+        encoding="utf-8"
+    )
     backend = ClaudeBackend(model="claude-opus-4-6")
     result = compress(sample, task_type=TaskType.TOOL_DESCRIPTION, backend=backend)
 

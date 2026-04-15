@@ -61,7 +61,15 @@ target-version = "py310"
 
 [tool.ruff.lint]
 select = ["E", "F", "I", "N", "W", "UP", "B", "SIM", "PL"]
-ignore = ["E501", "PLR0913"]
+ignore = [
+    "E501",    # line-length — handled by formatter
+    "PLR0913", # too many arguments — keyword-only APIs are intentional
+    "PLR2004", # magic-value-comparison — fine in tests and thresholded code
+    "PLC0415", # import-not-at-top — deferred imports for optional deps are deliberate
+]
+
+[tool.ruff.lint.per-file-ignores]
+"tests/**/*.py" = ["PLR", "SIM"]  # tests are allowed to be explicit
 
 [tool.pytest.ini_options]
 testpaths = ["tests"]

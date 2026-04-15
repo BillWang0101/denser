@@ -51,10 +51,7 @@ class TestCase:
         """Return True if the judge's normalized output matches an expected value."""
         normalized = _normalize_judge_output(judge_output)
         expected_list = [self.expected] if isinstance(self.expected, str) else list(self.expected)
-        for exp in expected_list:
-            if _normalize_judge_output(exp) == normalized:
-                return True
-        return False
+        return any(_normalize_judge_output(exp) == normalized for exp in expected_list)
 
 
 @dataclass(frozen=True)
@@ -299,9 +296,7 @@ def evaluate(
                         system=judge_system, user=user_prompt, max_tokens=128
                     )
                 except Exception as e:
-                    logger.warning(
-                        "Judge failed on %s/%s: %s", gt.name, case.name, e
-                    )
+                    logger.warning("Judge failed on %s/%s: %s", gt.name, case.name, e)
                     out = ""
                 outputs.append(out)
                 if case.matches(out):

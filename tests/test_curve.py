@@ -162,9 +162,7 @@ class TestCurve:
             task_prompt="Check {input}",
             test_cases=(TestCase(name="c", vars={}, expected="yes"),),
         )
-        comp_response = (
-            "=== COMPRESSED ===\nshort\n=== RATIONALE ===\n- compressed\n"
-        )
+        comp_response = "=== COMPRESSED ===\nshort\n=== RATIONALE ===\n- compressed\n"
         result = curve(
             "a longer original text that gets compressed",
             task_type="skill",

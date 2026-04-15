@@ -142,11 +142,7 @@ def compress(
     if not text or not text.strip():
         raise ValueError("Cannot compress empty text")
 
-    # Normalize task type
-    if isinstance(task_type, str):
-        tt = TaskType.parse(task_type)
-    else:
-        tt = task_type
+    tt = TaskType.parse(task_type) if isinstance(task_type, str) else task_type
     spec = get_spec(tt)
 
     # Default target density: midpoint of sweet-spot range

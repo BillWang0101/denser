@@ -201,7 +201,8 @@ def main() -> int:
 
     pairs = _discover_pairs(args.type)
     if not pairs:
-        print(f"No example pairs found" + (f" for type {args.type!r}" if args.type else ""))
+        msg = f" for type {args.type!r}" if args.type else ""
+        print(f"No example pairs found{msg}")
         return 1
 
     logger.info("Discovered %d pairs", len(pairs))

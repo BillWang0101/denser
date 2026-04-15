@@ -79,12 +79,24 @@ def main() -> None:
     ax.axvspan(0.0, 0.15, color="red", alpha=0.06, zorder=-1)
     ax.axvspan(0.9, 1.08, color="orange", alpha=0.06, zorder=-1)
     ax.text(
-        0.075, 0.08, "over-compressed\n(information loss)",
-        ha="center", va="center", fontsize=8.5, color="#c23030", alpha=0.8,
+        0.075,
+        0.08,
+        "over-compressed\n(information loss)",
+        ha="center",
+        va="center",
+        fontsize=8.5,
+        color="#c23030",
+        alpha=0.8,
     )
     ax.text(
-        0.99, 0.08, "uncompressed\n(attention dilution)",
-        ha="right", va="center", fontsize=8.5, color="#c2800b", alpha=0.8,
+        0.99,
+        0.08,
+        "uncompressed\n(attention dilution)",
+        ha="right",
+        va="center",
+        fontsize=8.5,
+        color="#c2800b",
+        alpha=0.8,
     )
 
     fig.tight_layout()

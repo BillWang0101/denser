@@ -86,9 +86,7 @@ def compress_cmd(
 
     console.print(f"Compressing [bold]{input_file.name}[/bold] as [cyan]{task_type}[/cyan]...")
     try:
-        result = compress(
-            text, task_type=task_type, target_density=density, backend=backend
-        )
+        result = compress(text, task_type=task_type, target_density=density, backend=backend)
     except (ValueError, BackendError) as e:
         console.print(f"[red]Error:[/red] {e}")
         sys.exit(1)
@@ -148,11 +146,8 @@ def info_cmd(task_type: str | None) -> None:
         f"[bold]Role:[/bold] {spec.role_summary}\n\n"
         f"[bold]Density sweet spot:[/bold] {low:.2f} – {high:.2f} "
         f"(default target: {spec.default_target_density:.2f})\n\n"
-        "[bold]Preserve:[/bold]\n"
-        + "\n".join(f"  - {item}" for item in spec.preserve)
-        + "\n\n"
-        "[bold]Strip:[/bold]\n"
-        + "\n".join(f"  - {item}" for item in spec.strip)
+        "[bold]Preserve:[/bold]\n" + "\n".join(f"  - {item}" for item in spec.preserve) + "\n\n"
+        "[bold]Strip:[/bold]\n" + "\n".join(f"  - {item}" for item in spec.strip)
     )
     console.print(Panel(body, title=f"[cyan]{tt.value}[/cyan]"))
 
@@ -336,9 +331,7 @@ def curve_cmd(
         console.print(f"[red]Backend error:[/red] {e}", style="bold")
         sys.exit(2)
 
-    with console.status(
-        f"Sweeping {len(rhos)} densities for [cyan]{input_file.name}[/cyan]..."
-    ):
+    with console.status(f"Sweeping {len(rhos)} densities for [cyan]{input_file.name}[/cyan]..."):
         c = curve_fn(
             text,
             task_type=task_type,
@@ -360,8 +353,7 @@ def curve_cmd(
         )
     console.print(table)
     console.print(
-        f"\n[bold]Peak:[/bold] ρ* = {c.peak_density:.2f} "
-        f"(pass rate {c.peak_pass_rate:.2%})"
+        f"\n[bold]Peak:[/bold] ρ* = {c.peak_density:.2f} (pass rate {c.peak_pass_rate:.2%})"
     )
 
     if json_out:

@@ -70,8 +70,7 @@ class TestSpecs:
     def test_role_summary_reasonable_length(self) -> None:
         for spec in SPECS.values():
             assert 40 <= len(spec.role_summary) <= 300, (
-                f"{spec.task_type}: role_summary length {len(spec.role_summary)} "
-                f"outside [40, 300]"
+                f"{spec.task_type}: role_summary length {len(spec.role_summary)} outside [40, 300]"
             )
 
 
