@@ -3,7 +3,7 @@
 **Original**: 372 words (~495 tokens)
 **Compressed**: 95 words (~125 tokens)
 **Density**: 0.25 (75% savings)
-**Task-type sweet spot for `system_prompt`**: 0.40 – 0.55
+**Exploratory generation range for `system_prompt`**: 0.40 – 0.55
 
 Aggressive compression because the original is heavy with motivational prose and restatements.
 

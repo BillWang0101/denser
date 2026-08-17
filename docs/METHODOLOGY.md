@@ -2,6 +2,10 @@
 
 > How denser actually decides what to cut.
 
+> **Alpha note:** this is rewrite guidance, not proof of behavior preservation.
+> A candidate is acceptable only when it passes the asset's real behavior
+> tests. The density ranges are exploratory defaults.
+
 The [taxonomy](TAXONOMY.md) tells you *what* to preserve and strip for each task type — categorical rules, static. This document tells you *how* to apply those rules in the middle of a real compression — the moment-to-moment judgment that turns a list of rules into a finished compressed text.
 
 The methodology has four layers. Every compression — by the CLI, by the Claude Code skill, by a human contributor writing a new example pair — walks them in order.
@@ -81,7 +85,9 @@ AFTER:
 - Input: any text, from any source
 ```
 
-LLMs reliably expand patterns. The reverse doesn't work (lists can't be reconstructed from pattern-less prose), so pattern is the compressed form.
+Pattern-based summaries can replace repeated examples when the source defines a
+clear pattern. Preserve exceptions and representative boundary cases, then test
+the rewritten instruction on the asset's workload.
 
 ### 4. Collapse explanation clauses into imperatives
 
@@ -113,15 +119,16 @@ After Layer 2 has trimmed sections, apply these mechanical substitutions to the 
 
 | Before | After | Why |
 |---|---|---|
-| "Please do X" / "You might want to X" / "It would be good to X" | "X" or "MUST X" | RLHF-trained models obey imperatives and MUST more reliably than polite phrasings |
-| "Don't do Y" / "Avoid Y" | "NEVER Y" / "DO NOT Y" | Negative imperatives in all-caps have lowest execution variance |
-| Multi-line YAML `description: \|\n  ...\n  ...` | single-line `description: ...` | YAML parse-equivalent; multi-line is only for human readability |
-| "A file path (for example `path/to/thing`), or inline text (which you paste in a code block), or a directory (in which case ask which file)" | "A file path, inline code block, or directory (ask which file)" | Parenthetical examples are usually inferable from the noun |
-| Bold/italic emphasis (`**important**`) | Plain text with structural placement | LLM tokenization doesn't benefit from visual markup |
-| "The user will provide one of the following options:" + numbered list | "Input:" + comma-separated list | Drop the rhetorical setup; go straight to the content |
-| "Count the tokens. The rough estimate is max(chars/4, words*1.3)." as separate step | Mention inline where token count is used | Separate procedural step wastes an entire scaffolded number |
+| "Please do X" when X is mandatory | "Do X" | Remove politeness without strengthening optional wording into a requirement |
+| "Don't do Y" when Y is prohibited | "Do not Y" | Keep the original modality; use `NEVER` only when the source is equally absolute |
+| Multi-line YAML `description: \|\n  ...\n  ...` | single-line description | Apply only when YAML scalar semantics and downstream formatting remain unchanged |
+| Long parenthetical examples | Retain only examples that distinguish a real boundary | Remove an example only after checking that it is not load-bearing evidence |
+| Repeated bold/italic emphasis | Prefer structural placement | Preserve markup when it is part of an output contract or meaning |
+| Rhetorical setup before a list | Direct label plus list | Preserve ordering and one-of/many-of semantics |
+| A separate measurement step | Mention the method where its result is used | Merge only when execution order is not part of the contract |
 
-These look small. Applied consistently across a document, they save 15–25% of surviving tokens.
+These edits can reduce length in some documents. Their combined effect and
+behavioral safety must be measured for the specific asset.
 
 ---
 
@@ -135,15 +142,16 @@ Compression has diminishing returns, and past a point, negative returns. Stop wh
 
 2. **Next cut would require the LLM to "guess back" load-bearing content.** Compression that the model has to reconstruct under uncertainty is worse than no compression.
 
-3. **Density has reached the task type's sweet-spot midpoint.** Further compression has low expected EV and rising risk. The sweet spot is the sweet spot; respect it.
+3. **The next cut is not justified by evidence.** A target density is a
+   generation hint, never a reason to remove a rule.
 
 4. **A MUST or NEVER is about to be modified.** Stop immediately. Safety and explicit hard constraints are never the compression target, even when they're verbose.
 
 ### Signals to continue
 
-1. Density is still above the sweet-spot *upper bound*.
-2. Remaining text still contains motivational preamble, duplicate rules, or happy-path examples.
-3. Remaining sentences still use "please" / "might" / "could consider" for what are actually hard rules.
+1. Remaining text contains demonstrably duplicate or stale guidance.
+2. Asset-specific tests cover the behavior affected by the proposed cut.
+3. Remaining sentences use hedging for rules that the source clearly defines as hard constraints.
 
 ### The meta-rule
 
@@ -161,11 +169,15 @@ Information is surprise — content that cannot be reconstructed from context. C
 ### 2. Grice's maxim of Quantity
 Say as much as needed; no more. Cooperative communication treats excess as dishonest (it implies the excess matters when it doesn't) and under-communication as obstructive.
 
-### 3. Transformer attention mechanics
-Attention is softmax-normalized across the context. Each additional token consumes a fraction of the attention mass available to the others. Decorative tokens don't just fail to contribute — they actively dilute load-bearing content's attention share.
+### 3. Long-context behavior
+Models can use long inputs unevenly across content, position, and workload.
+Redundant text may hurt, help, or have no measurable effect; the direction must
+be tested rather than inferred from length alone.
 
-### 4. RLHF reliability distributions
-LLMs trained with RLHF respond to imperative commands, all-caps emphasis, and negative constraints with lower response variance than they do to hedges, pleasantries, or preferential phrasings. Using MUST / NEVER / DO NOT is not stylistic; it's variance-reducing.
+### 4. Explicit instruction form
+Clear imperatives and explicit negative constraints are easier to inspect and
+test than ambiguous preferences. Whether emphasis reduces model variance is an
+empirical question for the execution model and workload.
 
 ### 5. Information-theoretic Occam's Razor
 Of two texts that produce the same behavior in the LLM, prefer the one with fewer tokens. The savings compound in high-frequency cases (skills loaded per turn, system prompts prefixed per call).
@@ -190,17 +202,21 @@ When hand-compressing your own skills and prompts, walk the four layers in order
 
 When reviewing someone else's compressed text, check in this order:
 1. Did they preserve everything in the task type's Preserve list?
-2. Did they drop below the sweet-spot lower bound? If so, did they document why?
+2. Is every material rewrite covered by a structural or behavior test?
 3. Did they strip load-bearing content for aesthetic compression? (Layer 1 question 1 failure)
 4. Did any MUST / NEVER rule get softened or removed?
 
-If any "yes" in 3–4, reject. If sweet-spot violation without documentation, ask for notes.
+If any "yes" in 3–4, reject. If item 2 is false, require evidence or retain the
+source text.
 
 ---
 
 ## Example: the self-compression case study
 
-We compressed denser's own Claude Code skill (`denser-compress/SKILL.md`) using this methodology. Result: **1249 → 526 tokens (-58%)**, density 0.42, inside the skill sweet spot (0.30 – 0.45), with all preserve-list categories intact.
+We compressed denser's own Claude Code skill (`denser-compress/SKILL.md`) using
+this methodology. The hand-reviewed candidate is **1249 → 526 estimated tokens
+(-58%)**, density 0.42, with all checklist categories intact. This is a worked
+example, not an asset-specific behavior result.
 
 See [`examples/skills/02_denser_compress_self/`](../examples/skills/02_denser_compress_self/) for the full before/after and a line-by-line methodology walkthrough.
 

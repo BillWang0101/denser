@@ -81,25 +81,25 @@ class TestCheckFile:
         assert verdict == "too_small"
 
     def test_ok(self, tmp_path) -> None:
-        # 400 words × 1.3 = 520 tokens, well below skill ceiling (800)
+        # 400 words × 1.3 = 520 tokens, below the skill review reference (800)
         p = self._make_skill(tmp_path, 400)
         verdict, info = check_file(p)
         assert verdict == "ok"
         assert info["task_type"] == "skill"
 
     def test_warn(self, tmp_path) -> None:
-        # 650 words × 1.3 = 845 tokens (in [800, 880) → WARN)
+        # 650 words × 1.3 = 845 tokens, above the advisory reference.
         p = self._make_skill(tmp_path, 650)
         verdict, info = check_file(p)
         assert verdict == "warn"
-        assert 800 <= info["tokens"] < 880
+        assert info["tokens"] >= info["reference_size"]
 
-    def test_block(self, tmp_path) -> None:
-        # 1500 words × 1.3 = 1950 tokens (well above 880 block threshold)
+    def test_large_file_is_still_advisory(self, tmp_path) -> None:
+        # Length alone must never become a quality gate.
         p = self._make_skill(tmp_path, 1500)
         verdict, info = check_file(p)
-        assert verdict == "block"
-        assert info["tokens"] >= 880
+        assert verdict == "warn"
+        assert info["tokens"] >= info["reference_size"]
 
     def test_empty(self, tmp_path) -> None:
         p = tmp_path / "skills" / "empty.md"
@@ -125,12 +125,15 @@ class TestMain:
         assert rc == 0
         assert "skipped" in capsys.readouterr().out.lower()
 
-    def test_block_returns_1(self, tmp_path) -> None:
+    def test_large_file_returns_0(self, tmp_path, capsys) -> None:
         p = tmp_path / "skills" / "huge.md"
         p.parent.mkdir(parents=True)
         p.write_text("word " * 1500, encoding="utf-8")  # ~1950 tokens
         rc = main([str(p)])
-        assert rc == 1
+        assert rc == 0
+        out = capsys.readouterr().out
+        assert "REVIEW:" in out
+        assert "commit allowed" in out
 
     def test_ok_returns_0(self, tmp_path) -> None:
         p = tmp_path / "skills" / "small.md"

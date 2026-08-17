@@ -1,16 +1,18 @@
-"""Evaluation harness.
+"""Structural-check and caller-supplied evaluation harness.
 
-The core of denser's eval-first methodology: run a text through a set of
-**golden tasks** for its task type, measure how often an LLM judge says the
-text does its job, report a pass-rate.
+The bundled fixtures check whether an instruction still exposes expected
+structural signals (for example, an explicit trigger or prohibition). They do
+not establish behavior preservation for an arbitrary asset. Callers can supply
+asset-specific tasks to exercise real behavior.
 
 Two entry points:
 
 - `evaluate(text, task_type, ...)` — score a single text
 - `compare(original, compressed, task_type, ...)` — side-by-side before/after
 
-Golden tasks live in `denser/fixtures/golden/<task_type>/*.json`. Users and
-contributors can also pass custom tasks directly.
+The historical `GoldenTask` name and `fixtures/golden` path are retained for
+compatibility. Built-in tasks at that path are structural checks. Users and
+contributors can pass custom behavior tasks directly.
 """
 
 from __future__ import annotations
@@ -21,6 +23,7 @@ import re
 import statistics
 from dataclasses import dataclass, field
 from pathlib import Path
+from typing import Any
 
 from denser.backends import Backend, ClaudeBackend
 from denser.taxonomy import TaskType
@@ -56,7 +59,7 @@ class TestCase:
 
 @dataclass(frozen=True)
 class GoldenTask:
-    """A golden task: a prompt template that tests whether a text does its job.
+    """A compatibility name for one structural or caller-supplied check.
 
     The `task_prompt` is a template containing `{input}` (substituted with the
     text being evaluated) plus any `vars` placeholders from individual test
@@ -70,9 +73,10 @@ class GoldenTask:
     task_prompt: str
     test_cases: tuple[TestCase, ...]
     pass_threshold: float = 0.9
+    covers: tuple[str, ...] = ()
 
     @classmethod
-    def from_dict(cls, data: dict) -> GoldenTask:
+    def from_dict(cls, data: dict[str, Any]) -> GoldenTask:
         """Construct a GoldenTask from a parsed JSON dict."""
         tt = TaskType.parse(data["task_type"])
         cases = tuple(
@@ -90,6 +94,7 @@ class GoldenTask:
             task_prompt=data["task_prompt"],
             test_cases=cases,
             pass_threshold=float(data.get("pass_threshold", 0.9)),
+            covers=tuple(str(item) for item in data.get("covers", [])),
         )
 
     def fill(self, text: str, case: TestCase) -> str:
@@ -112,17 +117,24 @@ class CaseResult:
     n_trials: int
     n_passed: int
     judge_outputs: list[str] = field(default_factory=list)
+    errors: list[str] = field(default_factory=list)
 
     @property
     def pass_rate(self) -> float:
+        """Return the fraction of completed trials that passed."""
         if self.n_trials == 0:
             return 0.0
         return self.n_passed / self.n_trials
 
+    @property
+    def n_errors(self) -> int:
+        """Return the number of recorded operational errors."""
+        return len(self.errors)
+
 
 @dataclass
 class TaskResult:
-    """Outcome of evaluating a single golden task across its test cases."""
+    """Outcome of evaluating one check across its test cases."""
 
     task_name: str
     case_results: list[CaseResult]
@@ -130,35 +142,50 @@ class TaskResult:
 
     @property
     def overall_pass_rate(self) -> float:
+        """Return the unweighted mean pass rate across this task's cases."""
         if not self.case_results:
             return 0.0
         return statistics.fmean(cr.pass_rate for cr in self.case_results)
 
     @property
     def passed(self) -> bool:
+        """Return whether the task meets its configured pass threshold."""
         return self.overall_pass_rate >= self.pass_threshold
+
+    @property
+    def n_errors(self) -> int:
+        """Return the total operational errors across this task's cases."""
+        return sum(result.n_errors for result in self.case_results)
 
 
 @dataclass
 class EvalReport:
-    """Aggregate report across all golden tasks for a single text."""
+    """Aggregate observed result across all supplied checks for a single text."""
 
     task_type: TaskType
     task_results: list[TaskResult]
 
     @property
     def overall_pass_rate(self) -> float:
+        """Return the unweighted mean pass rate across evaluated tasks."""
         if not self.task_results:
             return 0.0
         return statistics.fmean(tr.overall_pass_rate for tr in self.task_results)
 
     @property
     def n_tasks(self) -> int:
+        """Return the number of evaluated tasks."""
         return len(self.task_results)
 
     @property
     def n_cases(self) -> int:
+        """Return the total number of evaluated cases."""
         return sum(len(tr.case_results) for tr in self.task_results)
+
+    @property
+    def n_errors(self) -> int:
+        """Return the total operational errors across the report."""
+        return sum(result.n_errors for result in self.task_results)
 
 
 @dataclass
@@ -171,7 +198,7 @@ class ComparisonReport:
 
     @property
     def delta(self) -> float:
-        """Compressed pass rate minus original pass rate. Positive = improvement."""
+        """Return compressed minus original observed check pass rate."""
         return self.compressed.overall_pass_rate - self.original.overall_pass_rate
 
 
@@ -212,10 +239,10 @@ def _fixtures_dir() -> Path:
 
 
 def load_golden_tasks(task_type: TaskType | str) -> list[GoldenTask]:
-    """Load all built-in golden tasks for a task type from `denser/fixtures/golden/`.
+    """Load built-in structural checks from the legacy golden-fixture path.
 
     Each JSON file under `denser/fixtures/golden/<task_type>/` becomes one
-    GoldenTask. Returns an empty list if no fixtures exist for that type.
+    `GoldenTask` for compatibility. Returns an empty list if no fixtures exist.
     """
     tt = task_type if isinstance(task_type, TaskType) else TaskType.parse(task_type)
     dir_ = _fixtures_dir() / tt.value
@@ -242,7 +269,7 @@ def evaluate(
     judge_backend: Backend | None = None,
     n_trials: int = 1,
 ) -> EvalReport:
-    """Evaluate `text` for a given task type against a set of golden tasks.
+    """Evaluate `text` against built-in structural or caller-supplied checks.
 
     Parameters
     ----------
@@ -251,13 +278,14 @@ def evaluate(
     task_type : TaskType | str
         Which task type to evaluate as.
     golden_tasks : list[GoldenTask] | None
-        Tasks to run. If None, loads built-in fixtures for the task type.
+        Tasks to run. If None, loads built-in structural fixtures. Supply
+        asset-specific tasks to evaluate real behavior.
     judge_backend : Backend | None
         LLM backend used as the judge. If None, uses `ClaudeBackend` with
         Haiku 4.5 (cheap, sufficient for structured judgments).
     n_trials : int
-        How many times to run each test case (to average out judge noise).
-        Default 1 for speed; production benchmarks use 30.
+        How many times to run each test case. Repetition alone does not create
+        an equivalence test or confidence interval.
 
     Returns
     -------
@@ -289,6 +317,7 @@ def evaluate(
         for case in gt.test_cases:
             user_prompt = gt.fill(text, case)
             outputs: list[str] = []
+            errors: list[str] = []
             passes = 0
             for _ in range(n_trials):
                 try:
@@ -296,7 +325,9 @@ def evaluate(
                         system=judge_system, user=user_prompt, max_tokens=128
                     )
                 except Exception as e:
-                    logger.warning("Judge failed on %s/%s: %s", gt.name, case.name, e)
+                    error_type = type(e).__name__
+                    logger.warning("Judge failed on %s/%s: %s", gt.name, case.name, error_type)
+                    errors.append(error_type)
                     out = ""
                 outputs.append(out)
                 if case.matches(out):
@@ -307,6 +338,7 @@ def evaluate(
                     n_trials=n_trials,
                     n_passed=passes,
                     judge_outputs=outputs,
+                    errors=errors,
                 )
             )
         task_results.append(
@@ -329,11 +361,10 @@ def compare(
     judge_backend: Backend | None = None,
     n_trials: int = 1,
 ) -> ComparisonReport:
-    """Evaluate both original and compressed text against the same golden tasks.
+    """Evaluate original and candidate text against the same checks.
 
-    Returns a `ComparisonReport` with a `delta` property — the change in
-    pass-rate. Positive means compression improved task performance; negative
-    means it hurt.
+    `delta` is the change in observed check pass rate. A positive value does not
+    by itself prove that the candidate improves real behavior.
     """
     tt = task_type if isinstance(task_type, TaskType) else TaskType.parse(task_type)
     tasks = golden_tasks if golden_tasks is not None else load_golden_tasks(tt)

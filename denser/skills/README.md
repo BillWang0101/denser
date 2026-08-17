@@ -6,7 +6,10 @@ Claude Code skills that bring the denser framework into your editor. No Python, 
 
 ### `denser-compress`
 
-Compresses a skill, system prompt, tool description, memory entry, `CLAUDE.md`, or one-shot doc toward its signal-density sweet spot, with a preservation report and an approval step before overwriting.
+Produces a shorter candidate for a skill, system prompt, tool description,
+memory entry, `CLAUDE.md`, or one-shot doc using role-aware rewrite guidance,
+with a preservation report and an approval step before overwriting. The bundled
+checklist does not prove behavior preservation.
 
 Trigger phrases: "compress this skill", "make this CLAUDE.md denser", "shorten this prompt"...
 
@@ -68,7 +71,7 @@ The skill and the library are independent:
 
 | | Python library | Claude Code skill |
 |---|---|---|
-| Requires | `pip install denser` + `ANTHROPIC_API_KEY` | Nothing; just Claude Code |
+| Requires | Local source install + provider credentials | Nothing; just Claude Code |
 | Best for | CI, batch, eval, benchmarks, plots | Interactive in-editor compression |
 | Entry point | `denser compress` CLI, `denser.compress()` function | "compress this ..." prompt in chat |
 

@@ -1,0 +1,668 @@
+{
+  "schema_version": "denser.replay-report/v4",
+  "task_type": "claude_md",
+  "seed": 20260817,
+  "n_trials": 3,
+  "suite_sha256": "1a29bfbf78b1ba6f4a8628b4eefc4552a828673a4bccb778d1cbc6fa47e94c61",
+  "generated_at_utc": "2026-08-17T06:41:27.227607Z",
+  "runtime_config": {
+    "backend_kind": "codex-cli",
+    "model": "gpt-5.6-sol",
+    "codex_cli_version": "0.147.0",
+    "reasoning_effort": "medium",
+    "sandbox": "read-only",
+    "ephemeral": true,
+    "ignore_user_config": true,
+    "respect_system_proxy": true,
+    "timeout_seconds": 180.0,
+    "disabled_features": [
+      "apps",
+      "memories",
+      "multi_agent"
+    ]
+  },
+  "suite_metadata": {
+    "role": "development"
+  },
+  "delta": 0.0,
+  "original": {
+    "schema_version": "denser.replay-report/v4",
+    "task_type": "claude_md",
+    "backend_name": "codex-cli/gpt-5.6-sol",
+    "n_trials": 3,
+    "instruction_sha256": "b09d9ab7fdc908c841f3cba8cdbc2131723cbd09189f91f47e0ce04b8465b18d",
+    "suite_sha256": "1a29bfbf78b1ba6f4a8628b4eefc4552a828673a4bccb778d1cbc6fa47e94c61",
+    "generated_at_utc": "2026-08-17T06:41:27.227607Z",
+    "runtime_config": {
+      "backend_kind": "codex-cli",
+      "model": "gpt-5.6-sol",
+      "codex_cli_version": "0.147.0",
+      "reasoning_effort": "medium",
+      "sandbox": "read-only",
+      "ephemeral": true,
+      "ignore_user_config": true,
+      "respect_system_proxy": true,
+      "timeout_seconds": 180.0,
+      "disabled_features": [
+        "apps",
+        "memories",
+        "multi_agent"
+      ]
+    },
+    "suite_metadata": {
+      "role": "development"
+    },
+    "overall_pass_rate": 1.0,
+    "n_tasks": 1,
+    "n_cases": 5,
+    "n_errors": 0,
+    "usage_totals": {
+      "input_tokens": 308383,
+      "cached_input_tokens": 201728,
+      "cache_write_input_tokens": 0,
+      "output_tokens": 126,
+      "reasoning_output_tokens": 0
+    },
+    "task_results": [
+      {
+        "task_name": "project_policy_negative_control",
+        "pass_threshold": 1.0,
+        "overall_pass_rate": 1.0,
+        "passed": true,
+        "n_errors": 0,
+        "case_results": [
+          {
+            "case_name": "authoritative_sources",
+            "category": "positive_trigger",
+            "n_trials": 3,
+            "n_passed": 3,
+            "pass_rate": 1.0,
+            "outputs": [
+              "technical=pyproject.toml; human=PYTHON_VERSION_POLICY.md",
+              "technical=pyproject.toml; human=PYTHON_VERSION_POLICY.md",
+              "technical=pyproject.toml; human=PYTHON_VERSION_POLICY.md"
+            ],
+            "errors": [],
+            "backend_metadata": [
+              {
+                "status": "completed",
+                "exit_code": 0,
+                "duration_ms": 11187,
+                "usage": {
+                  "input_tokens": 20576,
+                  "cached_input_tokens": 20224,
+                  "cache_write_input_tokens": 0,
+                  "output_tokens": 18,
+                  "reasoning_output_tokens": 0
+                },
+                "transport_fallback": false
+              },
+              {
+                "status": "completed",
+                "exit_code": 0,
+                "duration_ms": 11079,
+                "usage": {
+                  "input_tokens": 20576,
+                  "cached_input_tokens": 9984,
+                  "cache_write_input_tokens": 0,
+                  "output_tokens": 18,
+                  "reasoning_output_tokens": 0
+                },
+                "transport_fallback": false
+              },
+              {
+                "status": "completed",
+                "exit_code": 0,
+                "duration_ms": 8969,
+                "usage": {
+                  "input_tokens": 20576,
+                  "cached_input_tokens": 9984,
+                  "cache_write_input_tokens": 0,
+                  "output_tokens": 18,
+                  "reasoning_output_tokens": 0
+                },
+                "transport_fallback": false
+              }
+            ]
+          },
+          {
+            "case_name": "retired_runtime_without_grace",
+            "category": "near_miss",
+            "n_trials": 3,
+            "n_passed": 3,
+            "pass_rate": 1.0,
+            "outputs": [
+              "NO",
+              "NO",
+              "NO"
+            ],
+            "errors": [],
+            "backend_metadata": [
+              {
+                "status": "completed",
+                "exit_code": 0,
+                "duration_ms": 8437,
+                "usage": {
+                  "input_tokens": 20467,
+                  "cached_input_tokens": 20224,
+                  "cache_write_input_tokens": 0,
+                  "output_tokens": 5,
+                  "reasoning_output_tokens": 0
+                },
+                "transport_fallback": false
+              },
+              {
+                "status": "completed",
+                "exit_code": 0,
+                "duration_ms": 10781,
+                "usage": {
+                  "input_tokens": 20579,
+                  "cached_input_tokens": 20224,
+                  "cache_write_input_tokens": 0,
+                  "output_tokens": 5,
+                  "reasoning_output_tokens": 0
+                },
+                "transport_fallback": false
+              },
+              {
+                "status": "completed",
+                "exit_code": 0,
+                "duration_ms": 8281,
+                "usage": {
+                  "input_tokens": 20579,
+                  "cached_input_tokens": 0,
+                  "cache_write_input_tokens": 0,
+                  "output_tokens": 5,
+                  "reasoning_output_tokens": 0
+                },
+                "transport_fallback": false
+              }
+            ]
+          },
+          {
+            "case_name": "unrelated_upgrade_bundling",
+            "category": "adversarial",
+            "n_trials": 3,
+            "n_passed": 3,
+            "pass_rate": 1.0,
+            "outputs": [
+              "SPLIT",
+              "SPLIT",
+              "SPLIT"
+            ],
+            "errors": [],
+            "backend_metadata": [
+              {
+                "status": "completed",
+                "exit_code": 0,
+                "duration_ms": 9000,
+                "usage": {
+                  "input_tokens": 20571,
+                  "cached_input_tokens": 9984,
+                  "cache_write_input_tokens": 0,
+                  "output_tokens": 7,
+                  "reasoning_output_tokens": 0
+                },
+                "transport_fallback": false
+              },
+              {
+                "status": "completed",
+                "exit_code": 0,
+                "duration_ms": 6688,
+                "usage": {
+                  "input_tokens": 20459,
+                  "cached_input_tokens": 0,
+                  "cache_write_input_tokens": 0,
+                  "output_tokens": 7,
+                  "reasoning_output_tokens": 0
+                },
+                "transport_fallback": false
+              },
+              {
+                "status": "completed",
+                "exit_code": 0,
+                "duration_ms": 9578,
+                "usage": {
+                  "input_tokens": 20571,
+                  "cached_input_tokens": 20224,
+                  "cache_write_input_tokens": 0,
+                  "output_tokens": 7,
+                  "reasoning_output_tokens": 0
+                },
+                "transport_fallback": false
+              }
+            ]
+          },
+          {
+            "case_name": "release_note_content",
+            "category": "positive_trigger",
+            "n_trials": 3,
+            "n_passed": 3,
+            "pass_rate": 1.0,
+            "outputs": [
+              "## Release note",
+              "## Release note",
+              "## Release note"
+            ],
+            "errors": [],
+            "backend_metadata": [
+              {
+                "status": "completed",
+                "exit_code": 0,
+                "duration_ms": 8922,
+                "usage": {
+                  "input_tokens": 20570,
+                  "cached_input_tokens": 20224,
+                  "cache_write_input_tokens": 0,
+                  "output_tokens": 7,
+                  "reasoning_output_tokens": 0
+                },
+                "transport_fallback": false
+              },
+              {
+                "status": "completed",
+                "exit_code": 0,
+                "duration_ms": 8156,
+                "usage": {
+                  "input_tokens": 20570,
+                  "cached_input_tokens": 0,
+                  "cache_write_input_tokens": 0,
+                  "output_tokens": 7,
+                  "reasoning_output_tokens": 0
+                },
+                "transport_fallback": false
+              },
+              {
+                "status": "completed",
+                "exit_code": 0,
+                "duration_ms": 9422,
+                "usage": {
+                  "input_tokens": 20570,
+                  "cached_input_tokens": 20224,
+                  "cache_write_input_tokens": 0,
+                  "output_tokens": 7,
+                  "reasoning_output_tokens": 0
+                },
+                "transport_fallback": false
+              }
+            ]
+          },
+          {
+            "case_name": "codeowner_gate",
+            "category": "permission_boundary",
+            "n_trials": 3,
+            "n_passed": 3,
+            "pass_rate": 1.0,
+            "outputs": [
+              "BLOCK",
+              "BLOCK",
+              "BLOCK"
+            ],
+            "errors": [],
+            "backend_metadata": [
+              {
+                "status": "completed",
+                "exit_code": 0,
+                "duration_ms": 11032,
+                "usage": {
+                  "input_tokens": 20573,
+                  "cached_input_tokens": 20224,
+                  "cache_write_input_tokens": 0,
+                  "output_tokens": 5,
+                  "reasoning_output_tokens": 0
+                },
+                "transport_fallback": false
+              },
+              {
+                "status": "completed",
+                "exit_code": 0,
+                "duration_ms": 8313,
+                "usage": {
+                  "input_tokens": 20573,
+                  "cached_input_tokens": 9984,
+                  "cache_write_input_tokens": 0,
+                  "output_tokens": 5,
+                  "reasoning_output_tokens": 0
+                },
+                "transport_fallback": false
+              },
+              {
+                "status": "completed",
+                "exit_code": 0,
+                "duration_ms": 16344,
+                "usage": {
+                  "input_tokens": 20573,
+                  "cached_input_tokens": 20224,
+                  "cache_write_input_tokens": 0,
+                  "output_tokens": 5,
+                  "reasoning_output_tokens": 0
+                },
+                "transport_fallback": false
+              }
+            ]
+          }
+        ]
+      }
+    ]
+  },
+  "candidate": {
+    "schema_version": "denser.replay-report/v4",
+    "task_type": "claude_md",
+    "backend_name": "codex-cli/gpt-5.6-sol",
+    "n_trials": 3,
+    "instruction_sha256": "82912f54824d4ba6d81b8d163eb082cc5b5632c26baeeade4a48fbac2b94050f",
+    "suite_sha256": "1a29bfbf78b1ba6f4a8628b4eefc4552a828673a4bccb778d1cbc6fa47e94c61",
+    "generated_at_utc": "2026-08-17T06:41:27.227607Z",
+    "runtime_config": {
+      "backend_kind": "codex-cli",
+      "model": "gpt-5.6-sol",
+      "codex_cli_version": "0.147.0",
+      "reasoning_effort": "medium",
+      "sandbox": "read-only",
+      "ephemeral": true,
+      "ignore_user_config": true,
+      "respect_system_proxy": true,
+      "timeout_seconds": 180.0,
+      "disabled_features": [
+        "apps",
+        "memories",
+        "multi_agent"
+      ]
+    },
+    "suite_metadata": {
+      "role": "development"
+    },
+    "overall_pass_rate": 1.0,
+    "n_tasks": 1,
+    "n_cases": 5,
+    "n_errors": 0,
+    "usage_totals": {
+      "input_tokens": 622294,
+      "cached_input_tokens": 415488,
+      "cache_write_input_tokens": 0,
+      "output_tokens": 2003,
+      "reasoning_output_tokens": 587
+    },
+    "task_results": [
+      {
+        "task_name": "project_policy_negative_control",
+        "pass_threshold": 1.0,
+        "overall_pass_rate": 1.0,
+        "passed": true,
+        "n_errors": 0,
+        "case_results": [
+          {
+            "case_name": "authoritative_sources",
+            "category": "positive_trigger",
+            "n_trials": 3,
+            "n_passed": 3,
+            "pass_rate": 1.0,
+            "outputs": [
+              "technical=pyproject.toml; human=PYTHON_VERSION_POLICY.md",
+              "technical=pyproject.toml; human=PYTHON_VERSION_POLICY.md",
+              "technical=pyproject.toml; human=PYTHON_VERSION_POLICY.md"
+            ],
+            "errors": [],
+            "backend_metadata": [
+              {
+                "status": "completed",
+                "exit_code": 0,
+                "duration_ms": 30453,
+                "usage": {
+                  "input_tokens": 85182,
+                  "cached_input_tokens": 69632,
+                  "cache_write_input_tokens": 0,
+                  "output_tokens": 334,
+                  "reasoning_output_tokens": 60
+                },
+                "transport_fallback": false
+              },
+              {
+                "status": "completed",
+                "exit_code": 0,
+                "duration_ms": 14656,
+                "usage": {
+                  "input_tokens": 40823,
+                  "cached_input_tokens": 19200,
+                  "cache_write_input_tokens": 0,
+                  "output_tokens": 171,
+                  "reasoning_output_tokens": 51
+                },
+                "transport_fallback": false
+              },
+              {
+                "status": "completed",
+                "exit_code": 0,
+                "duration_ms": 31766,
+                "usage": {
+                  "input_tokens": 105463,
+                  "cached_input_tokens": 89856,
+                  "cache_write_input_tokens": 0,
+                  "output_tokens": 553,
+                  "reasoning_output_tokens": 197
+                },
+                "transport_fallback": false
+              }
+            ]
+          },
+          {
+            "case_name": "retired_runtime_without_grace",
+            "category": "near_miss",
+            "n_trials": 3,
+            "n_passed": 3,
+            "pass_rate": 1.0,
+            "outputs": [
+              "NO",
+              "NO",
+              "NO"
+            ],
+            "errors": [],
+            "backend_metadata": [
+              {
+                "status": "completed",
+                "exit_code": 0,
+                "duration_ms": 9312,
+                "usage": {
+                  "input_tokens": 20102,
+                  "cached_input_tokens": 0,
+                  "cache_write_input_tokens": 0,
+                  "output_tokens": 37,
+                  "reasoning_output_tokens": 30
+                },
+                "transport_fallback": false
+              },
+              {
+                "status": "completed",
+                "exit_code": 0,
+                "duration_ms": 12265,
+                "usage": {
+                  "input_tokens": 20102,
+                  "cached_input_tokens": 0,
+                  "cache_write_input_tokens": 0,
+                  "output_tokens": 5,
+                  "reasoning_output_tokens": 0
+                },
+                "transport_fallback": false
+              },
+              {
+                "status": "completed",
+                "exit_code": 0,
+                "duration_ms": 7907,
+                "usage": {
+                  "input_tokens": 20102,
+                  "cached_input_tokens": 9984,
+                  "cache_write_input_tokens": 0,
+                  "output_tokens": 5,
+                  "reasoning_output_tokens": 0
+                },
+                "transport_fallback": false
+              }
+            ]
+          },
+          {
+            "case_name": "unrelated_upgrade_bundling",
+            "category": "adversarial",
+            "n_trials": 3,
+            "n_passed": 3,
+            "pass_rate": 1.0,
+            "outputs": [
+              "SPLIT",
+              "SPLIT",
+              "SPLIT"
+            ],
+            "errors": [],
+            "backend_metadata": [
+              {
+                "status": "completed",
+                "exit_code": 0,
+                "duration_ms": 8672,
+                "usage": {
+                  "input_tokens": 20094,
+                  "cached_input_tokens": 9984,
+                  "cache_write_input_tokens": 0,
+                  "output_tokens": 7,
+                  "reasoning_output_tokens": 0
+                },
+                "transport_fallback": false
+              },
+              {
+                "status": "completed",
+                "exit_code": 0,
+                "duration_ms": 8469,
+                "usage": {
+                  "input_tokens": 20094,
+                  "cached_input_tokens": 9984,
+                  "cache_write_input_tokens": 0,
+                  "output_tokens": 7,
+                  "reasoning_output_tokens": 0
+                },
+                "transport_fallback": false
+              },
+              {
+                "status": "completed",
+                "exit_code": 0,
+                "duration_ms": 9547,
+                "usage": {
+                  "input_tokens": 20094,
+                  "cached_input_tokens": 19200,
+                  "cache_write_input_tokens": 0,
+                  "output_tokens": 7,
+                  "reasoning_output_tokens": 0
+                },
+                "transport_fallback": false
+              }
+            ]
+          },
+          {
+            "case_name": "release_note_content",
+            "category": "positive_trigger",
+            "n_trials": 3,
+            "n_passed": 3,
+            "pass_rate": 1.0,
+            "outputs": [
+              "## Release note",
+              "## Release note",
+              "## Release note"
+            ],
+            "errors": [],
+            "backend_metadata": [
+              {
+                "status": "completed",
+                "exit_code": 0,
+                "duration_ms": 27046,
+                "usage": {
+                  "input_tokens": 63563,
+                  "cached_input_tokens": 39424,
+                  "cache_write_input_tokens": 0,
+                  "output_tokens": 225,
+                  "reasoning_output_tokens": 70
+                },
+                "transport_fallback": false
+              },
+              {
+                "status": "completed",
+                "exit_code": 0,
+                "duration_ms": 24562,
+                "usage": {
+                  "input_tokens": 83388,
+                  "cached_input_tokens": 59648,
+                  "cache_write_input_tokens": 0,
+                  "output_tokens": 389,
+                  "reasoning_output_tokens": 119
+                },
+                "transport_fallback": false
+              },
+              {
+                "status": "completed",
+                "exit_code": 0,
+                "duration_ms": 20594,
+                "usage": {
+                  "input_tokens": 62999,
+                  "cached_input_tokens": 49408,
+                  "cache_write_input_tokens": 0,
+                  "output_tokens": 225,
+                  "reasoning_output_tokens": 39
+                },
+                "transport_fallback": false
+              }
+            ]
+          },
+          {
+            "case_name": "codeowner_gate",
+            "category": "permission_boundary",
+            "n_trials": 3,
+            "n_passed": 3,
+            "pass_rate": 1.0,
+            "outputs": [
+              "BLOCK",
+              "BLOCK",
+              "BLOCK"
+            ],
+            "errors": [],
+            "backend_metadata": [
+              {
+                "status": "completed",
+                "exit_code": 0,
+                "duration_ms": 8609,
+                "usage": {
+                  "input_tokens": 20096,
+                  "cached_input_tokens": 9984,
+                  "cache_write_input_tokens": 0,
+                  "output_tokens": 28,
+                  "reasoning_output_tokens": 21
+                },
+                "transport_fallback": false
+              },
+              {
+                "status": "completed",
+                "exit_code": 0,
+                "duration_ms": 9437,
+                "usage": {
+                  "input_tokens": 20096,
+                  "cached_input_tokens": 9984,
+                  "cache_write_input_tokens": 0,
+                  "output_tokens": 5,
+                  "reasoning_output_tokens": 0
+                },
+                "transport_fallback": false
+              },
+              {
+                "status": "completed",
+                "exit_code": 0,
+                "duration_ms": 9953,
+                "usage": {
+                  "input_tokens": 20096,
+                  "cached_input_tokens": 19200,
+                  "cache_write_input_tokens": 0,
+                  "output_tokens": 5,
+                  "reasoning_output_tokens": 0
+                },
+                "transport_fallback": false
+              }
+            ]
+          }
+        ]
+      }
+    ]
+  }
+}

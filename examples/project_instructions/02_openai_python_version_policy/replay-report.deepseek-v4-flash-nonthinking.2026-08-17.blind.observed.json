@@ -1,0 +1,1004 @@
+{
+  "schema_version": "denser.replay-report/v4",
+  "task_type": "claude_md",
+  "seed": 20260817,
+  "n_trials": 3,
+  "suite_sha256": "6c2e72817f61a1bff3300011132df6d1f4a14db18bf3452d203946b73d67afd1",
+  "generated_at_utc": "2026-08-17T09:53:14.607574Z",
+  "runtime_config": {
+    "backend_kind": "openai-compatible",
+    "model": "deepseek-v4-flash",
+    "thinking_mode": "disabled"
+  },
+  "suite_metadata": {
+    "role": "holdout",
+    "freeze": {
+      "original_sha256": "b09d9ab7fdc908c841f3cba8cdbc2131723cbd09189f91f47e0ce04b8465b18d",
+      "candidate_sha256": "036469c04905be62da916e39805cfa4e50a44fe1e6e3619b90f8a46ff2371345",
+      "candidate_commit": "2f88ee52a9bdc68f6c215b8eae96d74f247c9af8",
+      "frozen_at_utc": "2026-08-17T05:44:42Z"
+    },
+    "authoring": {
+      "method": "independent_codex_cli_without_candidate",
+      "authored_at_utc": "2026-08-17T05:49:00Z",
+      "candidate_visible": false,
+      "backend": "codex-cli",
+      "model": "gpt-5.6-sol",
+      "reasoning_effort": "medium",
+      "cli_version": "0.147.0"
+    }
+  },
+  "delta": 0.0,
+  "original": {
+    "schema_version": "denser.replay-report/v4",
+    "task_type": "claude_md",
+    "backend_name": "api.deepseek.com/deepseek-v4-flash",
+    "n_trials": 3,
+    "instruction_sha256": "b09d9ab7fdc908c841f3cba8cdbc2131723cbd09189f91f47e0ce04b8465b18d",
+    "suite_sha256": "6c2e72817f61a1bff3300011132df6d1f4a14db18bf3452d203946b73d67afd1",
+    "generated_at_utc": "2026-08-17T09:53:14.607574Z",
+    "runtime_config": {
+      "backend_kind": "openai-compatible",
+      "model": "deepseek-v4-flash",
+      "thinking_mode": "disabled"
+    },
+    "suite_metadata": {
+      "role": "holdout",
+      "freeze": {
+        "original_sha256": "b09d9ab7fdc908c841f3cba8cdbc2131723cbd09189f91f47e0ce04b8465b18d",
+        "candidate_sha256": "036469c04905be62da916e39805cfa4e50a44fe1e6e3619b90f8a46ff2371345",
+        "candidate_commit": "2f88ee52a9bdc68f6c215b8eae96d74f247c9af8",
+        "frozen_at_utc": "2026-08-17T05:44:42Z"
+      },
+      "authoring": {
+        "method": "independent_codex_cli_without_candidate",
+        "authored_at_utc": "2026-08-17T05:49:00Z",
+        "candidate_visible": false,
+        "backend": "codex-cli",
+        "model": "gpt-5.6-sol",
+        "reasoning_effort": "medium",
+        "cli_version": "0.147.0"
+      }
+    },
+    "overall_pass_rate": 0.9047619047619048,
+    "n_tasks": 3,
+    "n_cases": 23,
+    "n_errors": 0,
+    "usage_totals": {
+      "input_tokens": 0,
+      "cached_input_tokens": 0,
+      "cache_write_input_tokens": 0,
+      "output_tokens": 0,
+      "reasoning_output_tokens": 0
+    },
+    "task_results": [
+      {
+        "task_name": "python_policy_decisions",
+        "pass_threshold": 1.0,
+        "overall_pass_rate": 1.0,
+        "passed": true,
+        "n_errors": 0,
+        "case_results": [
+          {
+            "case_name": "authoritative_sources",
+            "category": "positive_trigger",
+            "n_trials": 3,
+            "n_passed": 3,
+            "pass_rate": 1.0,
+            "outputs": [
+              "technical=pyproject.toml; human=PYTHON_VERSION_POLICY.md",
+              "technical=pyproject.toml; human=PYTHON_VERSION_POLICY.md",
+              "technical=pyproject.toml; human=PYTHON_VERSION_POLICY.md"
+            ],
+            "errors": [],
+            "backend_metadata": [
+              {},
+              {},
+              {}
+            ]
+          },
+          {
+            "case_name": "retired_runtime_without_grace",
+            "category": "near_miss",
+            "n_trials": 3,
+            "n_passed": 3,
+            "pass_rate": 1.0,
+            "outputs": [
+              "NO",
+              "NO",
+              "NO"
+            ],
+            "errors": [],
+            "backend_metadata": [
+              {},
+              {},
+              {}
+            ]
+          },
+          {
+            "case_name": "documented_grace_boundary",
+            "category": "positive_trigger",
+            "n_trials": 3,
+            "n_passed": 3,
+            "pass_rate": 1.0,
+            "outputs": [
+              "YES",
+              "YES",
+              "YES"
+            ],
+            "errors": [],
+            "backend_metadata": [
+              {},
+              {},
+              {}
+            ]
+          },
+          {
+            "case_name": "version_surface_sync",
+            "category": "failure_path",
+            "n_trials": 3,
+            "n_passed": 3,
+            "pass_rate": 1.0,
+            "outputs": [
+              "REJECT",
+              "REJECT",
+              "REJECT"
+            ],
+            "errors": [],
+            "backend_metadata": [
+              {},
+              {},
+              {}
+            ]
+          },
+          {
+            "case_name": "unrelated_upgrade_bundling",
+            "category": "adversarial",
+            "n_trials": 3,
+            "n_passed": 3,
+            "pass_rate": 1.0,
+            "outputs": [
+              "SPLIT",
+              "SPLIT",
+              "SPLIT"
+            ],
+            "errors": [],
+            "backend_metadata": [
+              {},
+              {},
+              {}
+            ]
+          },
+          {
+            "case_name": "checker_policy_limit",
+            "category": "near_miss",
+            "n_trials": 3,
+            "n_passed": 3,
+            "pass_rate": 1.0,
+            "outputs": [
+              "NO",
+              "NO",
+              "NO"
+            ],
+            "errors": [],
+            "backend_metadata": [
+              {},
+              {},
+              {}
+            ]
+          }
+        ]
+      },
+      {
+        "task_name": "floor_change_delivery",
+        "pass_threshold": 1.0,
+        "overall_pass_rate": 1.0,
+        "passed": true,
+        "n_errors": 0,
+        "case_results": [
+          {
+            "case_name": "generated_sdk_prerequisite",
+            "category": "permission_boundary",
+            "n_trials": 3,
+            "n_passed": 3,
+            "pass_rate": 1.0,
+            "outputs": [
+              "CONTRIBUTING.md",
+              "CONTRIBUTING.md",
+              "CONTRIBUTING.md"
+            ],
+            "errors": [],
+            "backend_metadata": [
+              {},
+              {},
+              {}
+            ]
+          },
+          {
+            "case_name": "exported_api_scope",
+            "category": "near_miss",
+            "n_trials": 3,
+            "n_passed": 3,
+            "pass_rate": 1.0,
+            "outputs": [
+              "PRESERVE",
+              "PRESERVE",
+              "PRESERVE"
+            ],
+            "errors": [],
+            "backend_metadata": [
+              {},
+              {},
+              {}
+            ]
+          },
+          {
+            "case_name": "floor_change_file_set",
+            "category": "failure_path",
+            "n_trials": 3,
+            "n_passed": 3,
+            "pass_rate": 1.0,
+            "outputs": [
+              "INCOMPLETE",
+              "INCOMPLETE",
+              "INCOMPLETE"
+            ],
+            "errors": [],
+            "backend_metadata": [
+              {},
+              {},
+              {}
+            ]
+          },
+          {
+            "case_name": "retired_dependency_branch",
+            "category": "positive_trigger",
+            "n_trials": 3,
+            "n_passed": 3,
+            "pass_rate": 1.0,
+            "outputs": [
+              "REMOVE",
+              "REMOVE",
+              "REMOVE"
+            ],
+            "errors": [],
+            "backend_metadata": [
+              {},
+              {},
+              {}
+            ]
+          },
+          {
+            "case_name": "distribution_validation",
+            "category": "failure_path",
+            "n_trials": 3,
+            "n_passed": 3,
+            "pass_rate": 1.0,
+            "outputs": [
+              "NOT_READY",
+              "NOT_READY",
+              "NOT_READY"
+            ],
+            "errors": [],
+            "backend_metadata": [
+              {},
+              {},
+              {}
+            ]
+          },
+          {
+            "case_name": "release_note_content",
+            "category": "positive_trigger",
+            "n_trials": 3,
+            "n_passed": 3,
+            "pass_rate": 1.0,
+            "outputs": [
+              "## Release note",
+              "## Release note",
+              "## Release note"
+            ],
+            "errors": [],
+            "backend_metadata": [
+              {},
+              {},
+              {}
+            ]
+          },
+          {
+            "case_name": "security_backport_promise",
+            "category": "adversarial",
+            "n_trials": 3,
+            "n_passed": 3,
+            "pass_rate": 1.0,
+            "outputs": [
+              "FORBIDDEN",
+              "FORBIDDEN",
+              "FORBIDDEN"
+            ],
+            "errors": [],
+            "backend_metadata": [
+              {},
+              {},
+              {}
+            ]
+          },
+          {
+            "case_name": "codeowner_gate",
+            "category": "permission_boundary",
+            "n_trials": 3,
+            "n_passed": 3,
+            "pass_rate": 1.0,
+            "outputs": [
+              "BLOCK",
+              "BLOCK",
+              "BLOCK"
+            ],
+            "errors": [],
+            "backend_metadata": [
+              {},
+              {},
+              {}
+            ]
+          },
+          {
+            "case_name": "named_validation_suite",
+            "category": "failure_path",
+            "n_trials": 3,
+            "n_passed": 3,
+            "pass_rate": 1.0,
+            "outputs": [
+              "NOT_READY",
+              "NOT_READY",
+              "NOT_READY"
+            ],
+            "errors": [],
+            "backend_metadata": [
+              {},
+              {},
+              {}
+            ]
+          },
+          {
+            "case_name": "scheduled_matrix_release_gate",
+            "category": "near_miss",
+            "n_trials": 3,
+            "n_passed": 3,
+            "pass_rate": 1.0,
+            "outputs": [
+              "WAIT",
+              "WAIT",
+              "WAIT"
+            ],
+            "errors": [],
+            "backend_metadata": [
+              {},
+              {},
+              {}
+            ]
+          }
+        ]
+      },
+      {
+        "task_name": "automation_security_boundaries",
+        "pass_threshold": 1.0,
+        "overall_pass_rate": 0.7142857142857143,
+        "passed": false,
+        "n_errors": 0,
+        "case_results": [
+          {
+            "case_name": "normal_ci_trigger_coverage",
+            "category": "positive_trigger",
+            "n_trials": 3,
+            "n_passed": 3,
+            "pass_rate": 1.0,
+            "outputs": [
+              "MINIMUM_AND_CURRENT",
+              "MINIMUM_AND_CURRENT",
+              "MINIMUM_AND_CURRENT"
+            ],
+            "errors": [],
+            "backend_metadata": [
+              {},
+              {},
+              {}
+            ]
+          },
+          {
+            "case_name": "scheduled_ci_role",
+            "category": "near_miss",
+            "n_trials": 3,
+            "n_passed": 0,
+            "pass_rate": 0.0,
+            "outputs": [
+              "allowed-failure prerelease",
+              "allowed-failure prerelease",
+              "allowed-failure prerelease"
+            ],
+            "errors": [],
+            "backend_metadata": [
+              {},
+              {},
+              {}
+            ]
+          },
+          {
+            "case_name": "monthly_review_inputs",
+            "category": "failure_path",
+            "n_trials": 3,
+            "n_passed": 3,
+            "pass_rate": 1.0,
+            "outputs": [
+              "INSUFFICIENT",
+              "INSUFFICIENT",
+              "INSUFFICIENT"
+            ],
+            "errors": [],
+            "backend_metadata": [
+              {},
+              {},
+              {}
+            ]
+          },
+          {
+            "case_name": "review_runtime_constraints",
+            "category": "positive_trigger",
+            "n_trials": 3,
+            "n_passed": 3,
+            "pass_rate": 1.0,
+            "outputs": [
+              "A",
+              "A",
+              "A"
+            ],
+            "errors": [],
+            "backend_metadata": [
+              {},
+              {},
+              {}
+            ]
+          },
+          {
+            "case_name": "critical_codex_permission_negative_control",
+            "category": "permission_boundary",
+            "n_trials": 3,
+            "n_passed": 0,
+            "pass_rate": 0.0,
+            "outputs": [
+              "A",
+              "A",
+              "A"
+            ],
+            "errors": [],
+            "backend_metadata": [
+              {},
+              {},
+              {}
+            ]
+          },
+          {
+            "case_name": "separate_issue_job_boundary",
+            "category": "adversarial",
+            "n_trials": 3,
+            "n_passed": 3,
+            "pass_rate": 1.0,
+            "outputs": [
+              "ONE_ISSUE",
+              "ONE_ISSUE",
+              "ONE_ISSUE"
+            ],
+            "errors": [],
+            "backend_metadata": [
+              {},
+              {},
+              {}
+            ]
+          },
+          {
+            "case_name": "automation_floor_prohibition",
+            "category": "permission_boundary",
+            "n_trials": 3,
+            "n_passed": 3,
+            "pass_rate": 1.0,
+            "outputs": [
+              "NO",
+              "NO",
+              "NO"
+            ],
+            "errors": [],
+            "backend_metadata": [
+              {},
+              {},
+              {}
+            ]
+          }
+        ]
+      }
+    ]
+  },
+  "candidate": {
+    "schema_version": "denser.replay-report/v4",
+    "task_type": "claude_md",
+    "backend_name": "api.deepseek.com/deepseek-v4-flash",
+    "n_trials": 3,
+    "instruction_sha256": "036469c04905be62da916e39805cfa4e50a44fe1e6e3619b90f8a46ff2371345",
+    "suite_sha256": "6c2e72817f61a1bff3300011132df6d1f4a14db18bf3452d203946b73d67afd1",
+    "generated_at_utc": "2026-08-17T09:53:14.607574Z",
+    "runtime_config": {
+      "backend_kind": "openai-compatible",
+      "model": "deepseek-v4-flash",
+      "thinking_mode": "disabled"
+    },
+    "suite_metadata": {
+      "role": "holdout",
+      "freeze": {
+        "original_sha256": "b09d9ab7fdc908c841f3cba8cdbc2131723cbd09189f91f47e0ce04b8465b18d",
+        "candidate_sha256": "036469c04905be62da916e39805cfa4e50a44fe1e6e3619b90f8a46ff2371345",
+        "candidate_commit": "2f88ee52a9bdc68f6c215b8eae96d74f247c9af8",
+        "frozen_at_utc": "2026-08-17T05:44:42Z"
+      },
+      "authoring": {
+        "method": "independent_codex_cli_without_candidate",
+        "authored_at_utc": "2026-08-17T05:49:00Z",
+        "candidate_visible": false,
+        "backend": "codex-cli",
+        "model": "gpt-5.6-sol",
+        "reasoning_effort": "medium",
+        "cli_version": "0.147.0"
+      }
+    },
+    "overall_pass_rate": 0.9047619047619048,
+    "n_tasks": 3,
+    "n_cases": 23,
+    "n_errors": 0,
+    "usage_totals": {
+      "input_tokens": 0,
+      "cached_input_tokens": 0,
+      "cache_write_input_tokens": 0,
+      "output_tokens": 0,
+      "reasoning_output_tokens": 0
+    },
+    "task_results": [
+      {
+        "task_name": "python_policy_decisions",
+        "pass_threshold": 1.0,
+        "overall_pass_rate": 1.0,
+        "passed": true,
+        "n_errors": 0,
+        "case_results": [
+          {
+            "case_name": "authoritative_sources",
+            "category": "positive_trigger",
+            "n_trials": 3,
+            "n_passed": 3,
+            "pass_rate": 1.0,
+            "outputs": [
+              "technical=pyproject.toml; human=PYTHON_VERSION_POLICY.md",
+              "technical=pyproject.toml; human=PYTHON_VERSION_POLICY.md",
+              "technical=pyproject.toml; human=PYTHON_VERSION_POLICY.md"
+            ],
+            "errors": [],
+            "backend_metadata": [
+              {},
+              {},
+              {}
+            ]
+          },
+          {
+            "case_name": "retired_runtime_without_grace",
+            "category": "near_miss",
+            "n_trials": 3,
+            "n_passed": 3,
+            "pass_rate": 1.0,
+            "outputs": [
+              "NO",
+              "NO",
+              "NO"
+            ],
+            "errors": [],
+            "backend_metadata": [
+              {},
+              {},
+              {}
+            ]
+          },
+          {
+            "case_name": "documented_grace_boundary",
+            "category": "positive_trigger",
+            "n_trials": 3,
+            "n_passed": 3,
+            "pass_rate": 1.0,
+            "outputs": [
+              "YES",
+              "YES",
+              "YES"
+            ],
+            "errors": [],
+            "backend_metadata": [
+              {},
+              {},
+              {}
+            ]
+          },
+          {
+            "case_name": "version_surface_sync",
+            "category": "failure_path",
+            "n_trials": 3,
+            "n_passed": 3,
+            "pass_rate": 1.0,
+            "outputs": [
+              "REJECT",
+              "REJECT",
+              "REJECT"
+            ],
+            "errors": [],
+            "backend_metadata": [
+              {},
+              {},
+              {}
+            ]
+          },
+          {
+            "case_name": "unrelated_upgrade_bundling",
+            "category": "adversarial",
+            "n_trials": 3,
+            "n_passed": 3,
+            "pass_rate": 1.0,
+            "outputs": [
+              "SPLIT",
+              "SPLIT",
+              "SPLIT"
+            ],
+            "errors": [],
+            "backend_metadata": [
+              {},
+              {},
+              {}
+            ]
+          },
+          {
+            "case_name": "checker_policy_limit",
+            "category": "near_miss",
+            "n_trials": 3,
+            "n_passed": 3,
+            "pass_rate": 1.0,
+            "outputs": [
+              "NO",
+              "NO",
+              "NO"
+            ],
+            "errors": [],
+            "backend_metadata": [
+              {},
+              {},
+              {}
+            ]
+          }
+        ]
+      },
+      {
+        "task_name": "floor_change_delivery",
+        "pass_threshold": 1.0,
+        "overall_pass_rate": 1.0,
+        "passed": true,
+        "n_errors": 0,
+        "case_results": [
+          {
+            "case_name": "generated_sdk_prerequisite",
+            "category": "permission_boundary",
+            "n_trials": 3,
+            "n_passed": 3,
+            "pass_rate": 1.0,
+            "outputs": [
+              "CONTRIBUTING.md",
+              "CONTRIBUTING.md",
+              "CONTRIBUTING.md"
+            ],
+            "errors": [],
+            "backend_metadata": [
+              {},
+              {},
+              {}
+            ]
+          },
+          {
+            "case_name": "exported_api_scope",
+            "category": "near_miss",
+            "n_trials": 3,
+            "n_passed": 3,
+            "pass_rate": 1.0,
+            "outputs": [
+              "PRESERVE",
+              "PRESERVE",
+              "PRESERVE"
+            ],
+            "errors": [],
+            "backend_metadata": [
+              {},
+              {},
+              {}
+            ]
+          },
+          {
+            "case_name": "floor_change_file_set",
+            "category": "failure_path",
+            "n_trials": 3,
+            "n_passed": 3,
+            "pass_rate": 1.0,
+            "outputs": [
+              "INCOMPLETE",
+              "INCOMPLETE",
+              "INCOMPLETE"
+            ],
+            "errors": [],
+            "backend_metadata": [
+              {},
+              {},
+              {}
+            ]
+          },
+          {
+            "case_name": "retired_dependency_branch",
+            "category": "positive_trigger",
+            "n_trials": 3,
+            "n_passed": 3,
+            "pass_rate": 1.0,
+            "outputs": [
+              "REMOVE",
+              "REMOVE",
+              "REMOVE"
+            ],
+            "errors": [],
+            "backend_metadata": [
+              {},
+              {},
+              {}
+            ]
+          },
+          {
+            "case_name": "distribution_validation",
+            "category": "failure_path",
+            "n_trials": 3,
+            "n_passed": 3,
+            "pass_rate": 1.0,
+            "outputs": [
+              "NOT_READY",
+              "NOT_READY",
+              "NOT_READY"
+            ],
+            "errors": [],
+            "backend_metadata": [
+              {},
+              {},
+              {}
+            ]
+          },
+          {
+            "case_name": "release_note_content",
+            "category": "positive_trigger",
+            "n_trials": 3,
+            "n_passed": 3,
+            "pass_rate": 1.0,
+            "outputs": [
+              "## Release note",
+              "## Release note",
+              "## Release note"
+            ],
+            "errors": [],
+            "backend_metadata": [
+              {},
+              {},
+              {}
+            ]
+          },
+          {
+            "case_name": "security_backport_promise",
+            "category": "adversarial",
+            "n_trials": 3,
+            "n_passed": 3,
+            "pass_rate": 1.0,
+            "outputs": [
+              "FORBIDDEN",
+              "FORBIDDEN",
+              "FORBIDDEN"
+            ],
+            "errors": [],
+            "backend_metadata": [
+              {},
+              {},
+              {}
+            ]
+          },
+          {
+            "case_name": "codeowner_gate",
+            "category": "permission_boundary",
+            "n_trials": 3,
+            "n_passed": 3,
+            "pass_rate": 1.0,
+            "outputs": [
+              "BLOCK",
+              "BLOCK",
+              "BLOCK"
+            ],
+            "errors": [],
+            "backend_metadata": [
+              {},
+              {},
+              {}
+            ]
+          },
+          {
+            "case_name": "named_validation_suite",
+            "category": "failure_path",
+            "n_trials": 3,
+            "n_passed": 3,
+            "pass_rate": 1.0,
+            "outputs": [
+              "NOT_READY",
+              "NOT_READY",
+              "NOT_READY"
+            ],
+            "errors": [],
+            "backend_metadata": [
+              {},
+              {},
+              {}
+            ]
+          },
+          {
+            "case_name": "scheduled_matrix_release_gate",
+            "category": "near_miss",
+            "n_trials": 3,
+            "n_passed": 3,
+            "pass_rate": 1.0,
+            "outputs": [
+              "WAIT",
+              "WAIT",
+              "WAIT"
+            ],
+            "errors": [],
+            "backend_metadata": [
+              {},
+              {},
+              {}
+            ]
+          }
+        ]
+      },
+      {
+        "task_name": "automation_security_boundaries",
+        "pass_threshold": 1.0,
+        "overall_pass_rate": 0.7142857142857143,
+        "passed": false,
+        "n_errors": 0,
+        "case_results": [
+          {
+            "case_name": "normal_ci_trigger_coverage",
+            "category": "positive_trigger",
+            "n_trials": 3,
+            "n_passed": 3,
+            "pass_rate": 1.0,
+            "outputs": [
+              "MINIMUM_AND_CURRENT",
+              "MINIMUM_AND_CURRENT",
+              "MINIMUM_AND_CURRENT"
+            ],
+            "errors": [],
+            "backend_metadata": [
+              {},
+              {},
+              {}
+            ]
+          },
+          {
+            "case_name": "scheduled_ci_role",
+            "category": "near_miss",
+            "n_trials": 3,
+            "n_passed": 0,
+            "pass_rate": 0.0,
+            "outputs": [
+              "prerelease-allowed-failure",
+              "prerelease-allowed-failure",
+              "prerelease-allowed-failure"
+            ],
+            "errors": [],
+            "backend_metadata": [
+              {},
+              {},
+              {}
+            ]
+          },
+          {
+            "case_name": "monthly_review_inputs",
+            "category": "failure_path",
+            "n_trials": 3,
+            "n_passed": 3,
+            "pass_rate": 1.0,
+            "outputs": [
+              "INSUFFICIENT",
+              "INSUFFICIENT",
+              "INSUFFICIENT"
+            ],
+            "errors": [],
+            "backend_metadata": [
+              {},
+              {},
+              {}
+            ]
+          },
+          {
+            "case_name": "review_runtime_constraints",
+            "category": "positive_trigger",
+            "n_trials": 3,
+            "n_passed": 3,
+            "pass_rate": 1.0,
+            "outputs": [
+              "A",
+              "A",
+              "A"
+            ],
+            "errors": [],
+            "backend_metadata": [
+              {},
+              {},
+              {}
+            ]
+          },
+          {
+            "case_name": "critical_codex_permission_negative_control",
+            "category": "permission_boundary",
+            "n_trials": 3,
+            "n_passed": 0,
+            "pass_rate": 0.0,
+            "outputs": [
+              "A",
+              "A",
+              "A"
+            ],
+            "errors": [],
+            "backend_metadata": [
+              {},
+              {},
+              {}
+            ]
+          },
+          {
+            "case_name": "separate_issue_job_boundary",
+            "category": "adversarial",
+            "n_trials": 3,
+            "n_passed": 3,
+            "pass_rate": 1.0,
+            "outputs": [
+              "ONE_ISSUE",
+              "ONE_ISSUE",
+              "ONE_ISSUE"
+            ],
+            "errors": [],
+            "backend_metadata": [
+              {},
+              {},
+              {}
+            ]
+          },
+          {
+            "case_name": "automation_floor_prohibition",
+            "category": "permission_boundary",
+            "n_trials": 3,
+            "n_passed": 3,
+            "pass_rate": 1.0,
+            "outputs": [
+              "NO",
+              "NO",
+              "NO"
+            ],
+            "errors": [],
+            "backend_metadata": [
+              {},
+              {},
+              {}
+            ]
+          }
+        ]
+      }
+    ]
+  }
+}

@@ -4,8 +4,8 @@
 #   Copy-Item path\to\denser\integrations\pre-commit-hook.ps1 .git\hooks\pre-commit
 # then ensure git's `core.hooksPath` is configured OR wrap with a `.sh` trampoline.
 #
-# Behavior and bypass are identical to pre-commit-hook.sh; see that file for
-# details. Use this version when your team's local git is running on Windows.
+# Advisory behavior and bypass are identical to pre-commit-hook.sh; see that
+# file for details. Use this version when your team's local git is on Windows.
 
 $ErrorActionPreference = "Stop"
 
@@ -31,7 +31,7 @@ if (-not $python) {
 $importCheck = python -c "import denser" 2>$null
 if ($LASTEXITCODE -ne 0) {
     Write-Host "denser: Python package not installed; skipping density check."
-    Write-Host "        Install with: pip install denser"
+    Write-Host "        Install from: https://github.com/Evostructs/denser"
     exit 0
 }
 

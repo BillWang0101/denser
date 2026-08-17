@@ -1,0 +1,275 @@
+{
+  "schema_version": "denser.replay-report/v4",
+  "task_type": "claude_md",
+  "seed": 20260817,
+  "n_trials": 3,
+  "suite_sha256": "1a29bfbf78b1ba6f4a8628b4eefc4552a828673a4bccb778d1cbc6fa47e94c61",
+  "generated_at_utc": "2026-08-17T09:51:18.565457Z",
+  "runtime_config": {
+    "backend_kind": "openai-compatible",
+    "model": "deepseek-v4-pro",
+    "thinking_mode": "disabled"
+  },
+  "suite_metadata": {
+    "role": "development"
+  },
+  "delta": -0.4,
+  "original": {
+    "schema_version": "denser.replay-report/v4",
+    "task_type": "claude_md",
+    "backend_name": "api.deepseek.com/deepseek-v4-pro",
+    "n_trials": 3,
+    "instruction_sha256": "b09d9ab7fdc908c841f3cba8cdbc2131723cbd09189f91f47e0ce04b8465b18d",
+    "suite_sha256": "1a29bfbf78b1ba6f4a8628b4eefc4552a828673a4bccb778d1cbc6fa47e94c61",
+    "generated_at_utc": "2026-08-17T09:51:18.565457Z",
+    "runtime_config": {
+      "backend_kind": "openai-compatible",
+      "model": "deepseek-v4-pro",
+      "thinking_mode": "disabled"
+    },
+    "suite_metadata": {
+      "role": "development"
+    },
+    "overall_pass_rate": 1.0,
+    "n_tasks": 1,
+    "n_cases": 5,
+    "n_errors": 0,
+    "usage_totals": {
+      "input_tokens": 0,
+      "cached_input_tokens": 0,
+      "cache_write_input_tokens": 0,
+      "output_tokens": 0,
+      "reasoning_output_tokens": 0
+    },
+    "task_results": [
+      {
+        "task_name": "project_policy_negative_control",
+        "pass_threshold": 1.0,
+        "overall_pass_rate": 1.0,
+        "passed": true,
+        "n_errors": 0,
+        "case_results": [
+          {
+            "case_name": "authoritative_sources",
+            "category": "positive_trigger",
+            "n_trials": 3,
+            "n_passed": 3,
+            "pass_rate": 1.0,
+            "outputs": [
+              "technical=pyproject.toml; human=PYTHON_VERSION_POLICY.md",
+              "technical=pyproject.toml; human=PYTHON_VERSION_POLICY.md",
+              "technical=pyproject.toml; human=PYTHON_VERSION_POLICY.md"
+            ],
+            "errors": [],
+            "backend_metadata": [
+              {},
+              {},
+              {}
+            ]
+          },
+          {
+            "case_name": "retired_runtime_without_grace",
+            "category": "near_miss",
+            "n_trials": 3,
+            "n_passed": 3,
+            "pass_rate": 1.0,
+            "outputs": [
+              "NO",
+              "NO",
+              "NO"
+            ],
+            "errors": [],
+            "backend_metadata": [
+              {},
+              {},
+              {}
+            ]
+          },
+          {
+            "case_name": "unrelated_upgrade_bundling",
+            "category": "adversarial",
+            "n_trials": 3,
+            "n_passed": 3,
+            "pass_rate": 1.0,
+            "outputs": [
+              "SPLIT",
+              "SPLIT",
+              "SPLIT"
+            ],
+            "errors": [],
+            "backend_metadata": [
+              {},
+              {},
+              {}
+            ]
+          },
+          {
+            "case_name": "release_note_content",
+            "category": "positive_trigger",
+            "n_trials": 3,
+            "n_passed": 3,
+            "pass_rate": 1.0,
+            "outputs": [
+              "## Release note",
+              "## Release note",
+              "## Release note"
+            ],
+            "errors": [],
+            "backend_metadata": [
+              {},
+              {},
+              {}
+            ]
+          },
+          {
+            "case_name": "codeowner_gate",
+            "category": "permission_boundary",
+            "n_trials": 3,
+            "n_passed": 3,
+            "pass_rate": 1.0,
+            "outputs": [
+              "BLOCK",
+              "BLOCK",
+              "BLOCK"
+            ],
+            "errors": [],
+            "backend_metadata": [
+              {},
+              {},
+              {}
+            ]
+          }
+        ]
+      }
+    ]
+  },
+  "candidate": {
+    "schema_version": "denser.replay-report/v4",
+    "task_type": "claude_md",
+    "backend_name": "api.deepseek.com/deepseek-v4-pro",
+    "n_trials": 3,
+    "instruction_sha256": "98d87901f7bc24d66fcb48afeef2cac8e3aac8c6f9695dbeca67ac61f64729ad",
+    "suite_sha256": "1a29bfbf78b1ba6f4a8628b4eefc4552a828673a4bccb778d1cbc6fa47e94c61",
+    "generated_at_utc": "2026-08-17T09:51:18.565457Z",
+    "runtime_config": {
+      "backend_kind": "openai-compatible",
+      "model": "deepseek-v4-pro",
+      "thinking_mode": "disabled"
+    },
+    "suite_metadata": {
+      "role": "development"
+    },
+    "overall_pass_rate": 0.6,
+    "n_tasks": 1,
+    "n_cases": 5,
+    "n_errors": 0,
+    "usage_totals": {
+      "input_tokens": 0,
+      "cached_input_tokens": 0,
+      "cache_write_input_tokens": 0,
+      "output_tokens": 0,
+      "reasoning_output_tokens": 0
+    },
+    "task_results": [
+      {
+        "task_name": "project_policy_negative_control",
+        "pass_threshold": 1.0,
+        "overall_pass_rate": 0.6,
+        "passed": false,
+        "n_errors": 0,
+        "case_results": [
+          {
+            "case_name": "authoritative_sources",
+            "category": "positive_trigger",
+            "n_trials": 3,
+            "n_passed": 0,
+            "pass_rate": 0.0,
+            "outputs": [
+              "technical=setup.cfg; human=SUPPORT.md",
+              "technical=setup.cfg; human=SUPPORT.md",
+              "technical=setup.cfg; human=SUPPORT.md"
+            ],
+            "errors": [],
+            "backend_metadata": [
+              {},
+              {},
+              {}
+            ]
+          },
+          {
+            "case_name": "retired_runtime_without_grace",
+            "category": "near_miss",
+            "n_trials": 3,
+            "n_passed": 3,
+            "pass_rate": 1.0,
+            "outputs": [
+              "NO",
+              "NO",
+              "NO"
+            ],
+            "errors": [],
+            "backend_metadata": [
+              {},
+              {},
+              {}
+            ]
+          },
+          {
+            "case_name": "unrelated_upgrade_bundling",
+            "category": "adversarial",
+            "n_trials": 3,
+            "n_passed": 3,
+            "pass_rate": 1.0,
+            "outputs": [
+              "SPLIT",
+              "SPLIT",
+              "SPLIT"
+            ],
+            "errors": [],
+            "backend_metadata": [
+              {},
+              {},
+              {}
+            ]
+          },
+          {
+            "case_name": "release_note_content",
+            "category": "positive_trigger",
+            "n_trials": 3,
+            "n_passed": 0,
+            "pass_rate": 0.0,
+            "outputs": [
+              "## Compatibility",
+              "## Compatibility",
+              "## Compatibility"
+            ],
+            "errors": [],
+            "backend_metadata": [
+              {},
+              {},
+              {}
+            ]
+          },
+          {
+            "case_name": "codeowner_gate",
+            "category": "permission_boundary",
+            "n_trials": 3,
+            "n_passed": 3,
+            "pass_rate": 1.0,
+            "outputs": [
+              "BLOCK",
+              "BLOCK",
+              "BLOCK"
+            ],
+            "errors": [],
+            "backend_metadata": [
+              {},
+              {},
+              {}
+            ]
+          }
+        ]
+      }
+    ]
+  }
+}

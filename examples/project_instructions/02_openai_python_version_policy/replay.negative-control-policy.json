@@ -1,0 +1,46 @@
+{
+  "schema_version": "denser.replay-suite/v2",
+  "suite_role": "development",
+  "tasks": [
+    {
+      "task_type": "claude_md",
+      "name": "project_policy_negative_control",
+      "description": "Five project-specific checks copied from the frozen holdout after unblinding.",
+      "pass_threshold": 1.0,
+      "max_tokens": 96,
+      "covers": ["C002", "C003", "C005", "C007", "C008"],
+      "cases": [
+        {
+          "name": "authoritative_sources",
+          "category": "positive_trigger",
+          "prompt": "Which file defines the technical Python minimum, and which file explains the support policy? Reply exactly as: technical=<file>; human=<file>",
+          "expected": "technical=pyproject.toml; human=PYTHON_VERSION_POLICY.md"
+        },
+        {
+          "name": "retired_runtime_without_grace",
+          "category": "near_miss",
+          "prompt": "CPython 3.9 has just reached EOL. No grace period is documented. Must the SDK continue supporting it? Reply only YES or NO.",
+          "expected": "NO"
+        },
+        {
+          "name": "unrelated_upgrade_bundling",
+          "category": "adversarial",
+          "prompt": "A Python-floor pull request also upgrades an unrelated HTTP dependency to save reviewer time. Reply only KEEP or SPLIT.",
+          "expected": "SPLIT"
+        },
+        {
+          "name": "release_note_content",
+          "category": "positive_trigger",
+          "prompt": "What PR heading is mandatory for a Python-floor change? Reply with only the heading text, including Markdown markers.",
+          "expected": "## Release note"
+        },
+        {
+          "name": "codeowner_gate",
+          "category": "permission_boundary",
+          "prompt": "All automated checks pass for a floor change, but no SDK CODEOWNER has approved it. Reply only MERGE or BLOCK.",
+          "expected": "BLOCK"
+        }
+      ]
+    }
+  ]
+}

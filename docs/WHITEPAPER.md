@@ -1,15 +1,27 @@
-# Finding the Signal Density Sweet Spot for LLM Inputs
+# Testing Signal Density in LLM Instruction Assets
 
 **A methodology for task-typed, eval-first prompt compression.**
 
 **Bill Wang**
 **Version 0.1 (April 2026)**
 
+> **Research status (August 2026): hypothesis, not validated result.** The
+> original draft stated planned benchmark counts and a concavity claim more
+> strongly than the committed evidence supports. Those claims are withdrawn
+> pending asset-specific behavior tests and reproducible results. The active
+> product and evidence design is in [`DESIGN.md`](DESIGN.md).
+
 ---
 
 ## Abstract
 
-We propose a framework for compressing text consumed by large language models (LLMs) that is **task-typed** (distinguishes skills from system prompts from memory entries), **eval-first** (every compression is validated by measured task pass-rate, not heuristics), and **curve-aware** (the relationship between compression ratio and task performance is modeled as a concave *Signal Density Curve* whose peak is an empirically-locatable sweet spot). We argue that existing prompt-compression tools, which treat all LLM inputs as a single homogeneous substrate and rely on perplexity or rule-based heuristics, systematically under-compress in some regimes and break task-critical structure in others. The agent era — characterized by skills, persistent system prompts, tool schemas, and multi-turn harnesses — amplifies the cost of both failures. `denser` operationalizes this framework as an open-source Python package.
+This note proposes role-aware refactoring for version-controlled LLM
+instruction assets. It treats shorter text as a candidate to verify, not an
+automatic improvement. The original Signal Density Curve is retained as a
+testable visualization hypothesis: observed quality may be concave, monotone,
+flat, noisy, multi-peaked, or maximized by the original. The implementation is
+an alpha prototype whose built-in fixtures currently check structure rather
+than establish behavioral equivalence.
 
 ---
 
@@ -20,9 +32,14 @@ The typical 2024-era view of prompt engineering treated LLM inputs as "the thing
 - **Repetitive**: system prompts are prefixed to every call; skills load on every triggering turn; tool descriptions are parsed on every invocation
 - **Structured by role**: a skill has different purpose from a memory entry has different purpose from a tool description
 - **Budget-bounded**: context windows, while large, are shared across many simultaneous concerns — the user's actual message, the model's reasoning scratchpad, persisted memory, conversation history, tool outputs
-- **Attention-sensitive**: transformer attention is softmax-normalized across all tokens, so every token in context dilutes the attention mass available to load-bearing content
+- **Attention-sensitive**: long-context behavior can vary with content,
+  position, model, and workload; additional text may help, hurt, or have no
+  measurable effect
 
-In this regime, prompt length is not free. A verbose skill loaded 50 times per day across 1000 users becomes millions of tokens of cache miss per month. A CLAUDE.md file padded with restatement and redundant examples shrinks the model's effective working memory every turn. A tool description that rambles about its parameters — when the schema already declares them — wastes attention that could be trained on the tool's non-obvious failure modes.
+In this regime, prompt length is not free, but its economic and behavioral cost
+must be measured separately. Prompt caching may reduce repeated-prefix cost
+without reducing active context. A rewrite is useful only when its generation,
+maintenance, and regression risk are justified by observed workload results.
 
 The obvious solution — compress LLM-bound text — has been attempted, but existing approaches are unsatisfying. We categorize them:
 
@@ -30,7 +47,8 @@ The obvious solution — compress LLM-bound text — has been attempted, but exi
 - **Rule-based trimming** (whitespace normalization, synonym substitution, template compaction) achieves modest compression but cannot understand which content is load-bearing and which is decorative.
 - **Manual authoring** (careful prompt engineering) produces the highest quality but does not scale: practitioners cannot maintain hand-crafted sparsity across a codebase of hundreds of skills.
 
-We propose a middle path: **LLM-guided compression**, **task-typed**, with **empirical evaluation** built in.
+We propose a narrower workflow: role-aware candidate generation with explicit
+preservation contracts and asset-specific regression tests.
 
 ---
 
@@ -52,38 +70,37 @@ The **Signal Density Curve** of a (text, task type) pair is the function:
 f_{T, τ}(ρ) = E(compress(T, τ, ρ), τ)
 ```
 
-### 2.2 The concavity claim
+### 2.2 The original concavity hypothesis
 
-Our central empirical claim is that for a broad class of (text, task type) pairs:
+The original draft proposed the following hypothesis for a broad class of
+(text, task type) pairs:
 
-> **f is concave in ρ, with peak ρ\* strictly less than 1.0.**
+> **H1: f is concave in ρ, with peak ρ\* strictly less than 1.0.**
 
-In plain language: **the original text is not optimal.** Some compression improves task performance (denoising the signal), and some compression degrades it (destroying load-bearing information). The transition is smooth enough to be modeled as a concave curve. The peak `ρ*` — the **sweet spot** — is the target for denser.
+The repository does not currently establish H1. The original may be best, and
+the observations may be non-concave. denser therefore treats the original as a
+candidate and selects only among versions that pass hard behavior gates.
 
-### 2.3 Why concavity?
+### 2.3 Why test density at all?
 
-Two opposing forces shape the curve.
+Two possible forces motivate a density sweep, without determining its shape.
 
-**Force 1: Attention dilution (favors compression).** Transformer attention is softmax over all tokens. Each additional token consumes a fraction of the model's attention budget. When the added token is low-signal (a rephrasing, a hedge word, a meta-comment), it *actively hurts* because it reduces the attention weight placed on the load-bearing tokens nearby. This is distinct from "useless tokens are free" — they are negative-value. Hence performance rises as `ρ` falls from 1.0.
+**Redundancy removal may help.** Repetition, hedging, and stale guidance can
+increase cost or obscure important rules for some models and workloads.
 
-**Force 2: Information loss (favors retention).** Below some threshold, compression begins to destroy information the model needs: a specific constraint, an edge-case rule, a trigger condition. Task performance falls precipitously once load-bearing content is removed.
+**Information loss may hurt.** Rewriting can remove a constraint, edge case,
+trigger, source, or useful redundancy. Harm may be abrupt or visible only in a
+rare case.
 
-The combination produces a concave curve. The peak location `ρ*` varies by task type and by input.
+Their interaction is an empirical question for each asset, workload, and model.
 
-### 2.4 Empirical observation (placeholder)
+### 2.4 Current evidence
 
-We provide curves for 120+ (text, task type) pairs in §5, fit concavity, and report peak locations. Preliminary results across 30 pilot samples:
-
-| Task type | Mean peak `ρ*` | Interquartile range |
-|---|---|---|
-| skill | 0.34 | 0.28 – 0.42 |
-| system_prompt | 0.48 | 0.40 – 0.58 |
-| tool_description | 0.55 | 0.45 – 0.65 |
-| memory_entry | 0.68 | 0.58 – 0.78 |
-| claude_md | 0.41 | 0.35 – 0.52 |
-| one_shot_doc | 0.50 | 0.40 – 0.60 |
-
-*Numbers to be finalized after the full v0.1 benchmark run.*
+The repository contains eight before/after examples and eleven built-in
+structural fixture files. It does not contain a 30-sample pilot, 120 evaluated
+pairs, confidence intervals, or evidence of a cross-asset density optimum. The
+ranges in §3 are exploratory generation defaults inherited from the original
+design and must not be cited as observed performance peaks.
 
 ---
 
@@ -93,7 +110,10 @@ We argue that compression strategy must depend on the *role* of the text within 
 
 ### 3.1 `skill`
 
-A **skill** is a named, triggerable unit of capability. It loads into context only when its description matches the current request. Compression target is aggressive (peak `ρ*` ≈ 0.30–0.45) because:
+A **skill** is a named, triggerable unit of capability. It loads into context
+only when its description matches the current request. The current aggressive
+candidate-generation range is 0.30–0.45; this is a working prior, not a measured
+peak.
 
 - Skills are loaded frequently per session — every compressed token compounds
 - Skill bodies are read under a specific pragmatic context ("the user just triggered me"), so supporting prose that situates the skill is redundant
@@ -105,7 +125,9 @@ A **skill** is a named, triggerable unit of capability. It loads into context on
 
 ### 3.2 `system_prompt`
 
-A **system prompt** persists across a conversation or session. Compression target is moderate (peak `ρ*` ≈ 0.40–0.55):
+A **system prompt** persists across a conversation or session. The current
+moderate candidate-generation range is 0.40–0.55 and remains unvalidated as an
+optimum:
 
 - System prompts benefit from prompt caching — per-call compression return is smaller
 - But attention dilution is still real, and longer prompts push user content into the middle of context (lost-in-the-middle effect)
@@ -117,7 +139,9 @@ A **system prompt** persists across a conversation or session. Compression targe
 
 ### 3.3 `tool_description`
 
-A **tool description** lives in the tool-use schema and is parsed by the model every time it considers calling a tool. Compression target is aggressive (peak `ρ*` ≈ 0.45–0.60):
+A **tool description** lives in the tool-use schema and is parsed by the model
+when it considers calling a tool. The current candidate-generation range is
+0.45–0.60 and remains exploratory:
 
 - Parameter types and names are already in the schema — prose repetition is wasted
 - The model needs to know *when* to call and *what surprises* to watch for; input/output mechanics are secondary
@@ -128,7 +152,9 @@ A **tool description** lives in the tool-use schema and is parsed by the model e
 
 ### 3.4 `memory_entry`
 
-A **memory entry** is a persisted fact the model loads from an external memory store when relevant. Compression target is conservative (peak `ρ*` ≈ 0.58–0.78):
+A **memory entry** is a persisted fact the model loads from an external memory
+store when relevant. The current conservative candidate-generation range is
+0.58–0.78 and remains exploratory:
 
 - Memory entries are short to begin with; aggressive compression risks information loss
 - The "why" of a memory fact often drives edge-case judgment — removing it breaks decisions
@@ -140,7 +166,10 @@ A **memory entry** is a persisted fact the model loads from an external memory s
 
 ### 3.5 `claude_md`
 
-A `CLAUDE.md` is a project-level instruction file loaded per-session in Claude Code. Compression target is moderate-aggressive (peak `ρ*` ≈ 0.35–0.50):
+A `CLAUDE.md` is one example of a project-level instruction file. The current
+moderate-aggressive candidate-generation range is 0.35–0.50 and remains
+exploratory. The active design generalizes this role to files such as
+`AGENTS.md` rather than treating one vendor filename as the domain model.
 
 - `CLAUDE.md` files accumulate cruft — every "from now on" edit adds without pruning
 - Many conventions can be inferred from code; stating them explicitly dilutes the rest
@@ -152,7 +181,9 @@ A `CLAUDE.md` is a project-level instruction file loaded per-session in Claude C
 
 ### 3.6 `one_shot_doc`
 
-A **one-shot doc** is a text provided once to accomplish a specific task — e.g., handing an implementation spec to an agent. Compression target is moderate (peak `ρ*` ≈ 0.40–0.60):
+A **one-shot doc** is a text provided once to accomplish a specific task — e.g.,
+handing an implementation spec to an agent. The current moderate
+candidate-generation range is 0.40–0.60 and remains exploratory:
 
 - One-shot docs are used once; amortized cost is low
 - But they are *executed* by the LLM, so instruction clarity is paramount
@@ -179,13 +210,21 @@ The taxonomy covers the practitioner-relevant inputs as of April 2026. Additiona
 - A **target density** `ρ_target` expressed as a fraction of original tokens
 - An instruction to also produce a **rationale** describing what was removed and why
 
-The capable-LLM choice is deliberate: rule-based or smaller-LM approaches cannot perform the level of semantic judgment required to distinguish "the hedge word that costs attention" from "the hedge word that signals uncertainty about a real constraint." The cost (on the order of $0.01–$0.05 per compression for Claude Opus) is justified because compression is a build-time or periodic operation, not per-inference.
+The current prototype uses a capable LLM because semantic rewrites require
+judgment. The repository does not yet contain a controlled comparison proving
+that a particular model class is necessary or cost-optimal.
 
-**Prompt caching**: the task-typed system prompts are stable across compressions of different inputs, so prompt caching (`cache_control: ephemeral`) yields cache hits on subsequent calls, reducing cost by approximately 50% after the first call. `denser` enables this by default.
+**Prompt caching**: the Anthropic adapter marks the stable system block for
+caching. Actual cache eligibility, hits, latency, and cost depend on provider,
+model, prefix size, order, and timing, and must be measured from provider usage
+data. Caching changes economic cost but not active-context length.
 
 ### 4.2 Evaluation harness
 
-Every compression can be evaluated by running both the original and compressed versions through a set of **golden tasks** for the input's task type.
+Original and candidate text can be compared with the same task definitions. The
+bundled fixtures currently test structural properties. Behavioral claims
+require asset-specific workloads that exercise real triggers, constraints,
+tool calls, outputs, and exceptional paths.
 
 A golden task consists of:
 
@@ -214,14 +253,16 @@ test_cases:
 pass_threshold: 0.9
 ```
 
-The eval harness:
+The current eval harness:
 1. Instantiates the task prompt with the input text
 2. Runs each test case through a judge LLM (Claude Haiku 4.5, chosen for cost/speed)
 3. Computes pass rate over test cases
-4. Repeats N trials per case (default 30) to handle judge noise
-5. Returns aggregate pass rate with confidence interval
+4. Repeats N trials per case when requested (default 1)
+5. Returns observed aggregate pass rates without a confidence interval
 
-For each task type, we provide 5–15 golden tasks covering different aspects of that type's role. Benchmarks report pass-rate delta (compressed − original).
+The repository currently provides one to three structural fixture files per
+task type, eleven files total. Their pass-rate delta is not a behavioral
+equivalence result.
 
 ### 4.3 Density curve computation
 
@@ -231,25 +272,31 @@ To compute the Signal Density Curve for a specific (text, task type):
 2. For each `ρ ∈ {0.2, 0.3, 0.4, 0.5, 0.6, 0.7, 0.8, 0.9, 1.0}`:
    a. `T_ρ = compress(T, τ, target_density=ρ)`
    b. `f(ρ) = evaluate(T_ρ, τ)`
-3. Fit a quadratic `f(ρ) ≈ aρ² + bρ + c` via least squares
-4. Locate peak: `ρ* = -b / (2a)` (clamped to [0.2, 1.0])
+3. Optionally fit a descriptive quadratic `f(ρ) ≈ aρ² + bρ + c`
+4. If the fit is concave, report its clamped vertex; otherwise report the best
+   raw point
 
-The fitted curve + raw points are produced as JSON and plotted (matplotlib).
+The fitted curve and raw points can be produced as JSON and plotted. The result
+is exploratory and does not prove concavity or identify a production-safe
+optimum.
 
 ### 4.4 Reproducibility
 
-All benchmarks use fixed random seeds. The evaluation harness caches LLM judge outputs keyed by `(input_hash, task_prompt_hash)` to make reruns cheap and deterministic. The `benchmarks/run.py` script in the repository rebuilds all reported numbers from a clean state given `ANTHROPIC_API_KEY`.
+The current runner records model identifiers and trial count when JSON output is
+requested. It does not currently control provider randomness, cache judge
+outputs, calculate confidence intervals, or rebuild any general performance
+table in the README. Reproducible publication requires committed inputs,
+behavior tasks, raw results, model/settings, provenance, and a reproduction
+command.
 
 ---
 
 ## 5. Results
 
-*Placeholder. Populated in v0.1 release with:*
-
-- *Full table of compression statistics across all 6 task types, ≥ 20 samples per type*
-- *Density curves for 20 randomly chosen inputs*
-- *Baseline comparison against trivial whitespace stripping and against LLMLingua (where applicable)*
-- *Per-type peak `ρ*` distribution with confidence intervals*
+No general performance results are published. The eight bundled examples are
+worked demonstrations and the cross-model note is a single-input observation.
+They are useful for developing hypotheses, not for estimating average savings,
+behavior change, density peaks, or model rankings.
 
 ---
 
@@ -257,16 +304,26 @@ All benchmarks use fixed random seeds. The evaluation harness caches LLM judge o
 
 ### 6.1 What we don't claim
 
-- **We do not claim** compressed prompts are universally superior. For very short inputs (< 50 tokens), compression has little room to help and substantial risk to hurt. `denser` warns the user in these cases.
-- **We do not claim** the framework generalizes unchanged across model families. The compression is tuned for Claude. Cross-model transfer is a v0.3 research question.
-- **We do not claim** LLM-guided compression is the end of the line. Distilling the LLM-guided outputs into a smaller specialized model is a promising direction.
+- **We do not claim** a shorter instruction is better. The original may be the
+  only passing candidate.
+- **We do not claim** the exploratory density ranges are observed optima.
+- **We do not claim** built-in structural checks establish behavior
+  preservation.
+- **We do not claim** results transfer unchanged across assets, languages,
+  models, provider versions, tool sets, or cache configurations.
 
 ### 6.2 Limitations
 
-- **Judge noise**: LLM judges have intrinsic variance. We mitigate with N=30 trials but cannot eliminate.
-- **Golden task coverage**: our 5–15 golden tasks per type may not cover all roles a task-typed text can play. Contributions to expand the golden set are welcomed.
-- **Compression cost**: LLM-guided compression is not free; $0.01–$0.05 per call. For very high-volume use, distillation is needed.
-- **Language**: benchmarks are English. Chinese and other languages are likely supported but unverified in v0.1.
+- **Judge validity and noise**: the current harness treats model answers as
+  pass/fail observations and does not calibrate a judge against human labels.
+- **Fixture coverage**: bundled fixtures are generic structural checks, not
+  asset-specific workloads.
+- **Operational errors**: current reports do not yet separate judge/provider
+  failures from content failures.
+- **Counting**: the local estimator is not a provider-rendered token count.
+- **Corpus**: eight examples are insufficient for cross-type conclusions.
+- **Language**: examples include English and limited Chinese material, without
+  a controlled multilingual evaluation.
 
 ### 6.3 Ethical considerations
 
@@ -276,18 +333,22 @@ Prompt compression can in principle remove safety-relevant constraints. `denser`
 
 ## 7. Future work
 
-1. **Distilled compressors**: train a small LM on LLM-guided compression outputs to reduce per-compression cost by 100×
-2. **Cross-model transfer studies**: measure how compression tuned for Claude transfers to GPT-4o, Gemini, Llama
-3. **Multi-stage pipelines**: compress → evaluate → re-compress iteratively to converge on sweet spot without pre-specified target
-4. **Live integration**: pre-commit hooks, CI gates that fail if a skill / CLAUDE.md is sub-optimal
-5. **Richer task types**: `retrieved_document`, `conversation_summary`, `code_comment`, `docstring`
-6. **Theoretical analysis**: when does the Signal Density Curve deviate from concavity? What properties of the input or task cause bimodality or monotonicity?
+1. **Preservation contracts**: extract obligations with source spans and test coverage.
+2. **Evidence reports**: connect each deletion or rewrite to a diff, test, and rollback path.
+3. **Behavior replay**: paired, randomized comparisons on asset-specific and holdout cases.
+4. **Provider-aware accounting**: separate estimated text length, rendered input,
+   active context, and cache economics.
+5. **Cross-model studies**: publish transfer results only with committed raw data
+   and negative cases.
+6. **Theory testing**: test concavity rather than assuming it, and report
+   monotone, flat, noisy, or multi-modal observations.
 
 ---
 
 ## References
 
-(To be populated as benchmarks and literature review expand. Representative seeds:)
+(Representative references; the related-work review will expand with the
+behavior-evaluation implementation.)
 
 - Jiang, H., et al. (2023). *LLMLingua: Compressing Prompts for Accelerated Inference of Large Language Models.* EMNLP 2023.
 - Liu, N., et al. (2023). *Lost in the Middle: How Language Models Use Long Contexts.* TACL 2024.
@@ -302,4 +363,4 @@ Prompt compression can in principle remove safety-relevant constraints. `denser`
 
 ---
 
-*Document version 0.1 — April 2026. Subject to revision as benchmarks populate. The canonical version is maintained at https://github.com/BillWang0101/denser/blob/main/docs/WHITEPAPER.md.*
+*Document version 0.1 — April 2026; evidence-status correction August 2026. The canonical version is maintained at https://github.com/Evostructs/denser/blob/main/docs/WHITEPAPER.md.*

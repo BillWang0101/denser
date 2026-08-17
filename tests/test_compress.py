@@ -8,9 +8,12 @@ default; requires `ANTHROPIC_API_KEY` and manual invocation).
 from __future__ import annotations
 
 import pytest
+from click.testing import CliRunner
 
 from denser.backends.base import Backend
+from denser.cli import main
 from denser.compress import CompressionResult, _parse_response, compress
+from denser.inspection import inspect
 from denser.taxonomy import TaskType
 
 
@@ -111,13 +114,10 @@ class TestCompress:
         result = compress("text", task_type="memory", backend=backend)
         assert result.task_type == TaskType.MEMORY_ENTRY
 
-    def test_malformed_response_preserves_raw(self) -> None:
-        # When backend output doesn't match contract, we preserve the raw
-        # response rather than hard-fail. Rationale will describe the miss.
+    def test_malformed_response_raises(self) -> None:
         backend = _MockBackend("this is not in the expected format")
-        result = compress("input text", task_type="skill", backend=backend)
-        assert "not in the expected format" in result.compressed
-        assert "did not match" in result.rationale.lower()
+        with pytest.raises(ValueError, match="did not match the output contract"):
+            compress("input text", task_type="skill", backend=backend)
 
     def test_actual_density_computed(self) -> None:
         backend = _MockBackend("=== COMPRESSED ===\nshort\n=== RATIONALE ===\n- compressed\n")
@@ -126,3 +126,45 @@ class TestCompress:
         assert result.original_tokens > result.compressed_tokens
         assert 0 < result.actual_density < 1
         assert result.savings_pct > 0
+
+    def test_preservation_contract_is_passed_as_input_data(self) -> None:
+        backend = _MockBackend("=== COMPRESSED ===\nShort\n=== RATIONALE ===\n- ok\n")
+        source = "MUST preserve `status=ready`."
+        contract = inspect(source, task_type="skill", min_tokens=1).contract
+
+        compress(
+            source,
+            task_type="skill",
+            backend=backend,
+            preservation_contract=contract,
+        )
+
+        user_message = backend.calls[0][1]
+        assert '"preservation_contract"' in user_message
+        assert '"source_text"' in user_message
+        assert "status=ready" in user_message
+
+
+class TestCompressCli:
+    def test_refuses_existing_output_before_backend_creation(self, tmp_path, monkeypatch) -> None:
+        source = tmp_path / "source.md"
+        output = tmp_path / "source.dense.md"
+        source.write_text("Some source text.", encoding="utf-8")
+        output.write_text("existing user content", encoding="utf-8")
+        called = False
+
+        def build_backend(*args, **kwargs):
+            nonlocal called
+            called = True
+            return _MockBackend("unused")
+
+        monkeypatch.setattr("denser.cli._build_backend", build_backend)
+        result = CliRunner().invoke(
+            main,
+            ["compress", str(source), "--type", "skill", "--out", str(output)],
+        )
+
+        assert result.exit_code != 0
+        assert "Refusing to overwrite existing output" in result.output
+        assert output.read_text(encoding="utf-8") == "existing user content"
+        assert not called

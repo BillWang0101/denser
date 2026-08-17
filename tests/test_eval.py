@@ -257,6 +257,21 @@ class TestEvaluate:
             judge_backend=_FailingJudge(),
         )
         assert report.overall_pass_rate == 0.0
+        assert report.n_errors == 1
+        assert report.task_results[0].n_errors == 1
+        assert report.task_results[0].case_results[0].errors == ["RuntimeError"]
+
+    def test_task_coverage_ids_load_from_json(self) -> None:
+        task = GoldenTask.from_dict(
+            {
+                "task_type": "skill",
+                "name": "permission_gate",
+                "task_prompt": "Check {input}",
+                "test_cases": [{"name": "c", "expected": "yes"}],
+                "covers": ["C003", "C004"],
+            }
+        )
+        assert task.covers == ("C003", "C004")
 
 
 class TestCompare:

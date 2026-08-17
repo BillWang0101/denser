@@ -1,9 +1,8 @@
 """Claude backend.
 
-Default model: `claude-opus-4-6`. The system prompt is always sent with
-`cache_control: ephemeral` so repeated calls with the same task-typed prompt
-hit the 5-minute prompt cache, reducing cost by approximately 50% after the
-first call.
+Default model: `claude-opus-4-6`. The system prompt is sent with an ephemeral
+cache hint. Actual eligibility, hits, retention, latency, and cost depend on the
+provider's current behavior and must be measured from usage data.
 """
 
 from __future__ import annotations
@@ -11,7 +10,10 @@ from __future__ import annotations
 import logging
 import os
 import time
-from typing import Any
+from typing import TYPE_CHECKING
+
+if TYPE_CHECKING:
+    from anthropic.types import MessageParam, TextBlockParam
 
 from denser.backends.base import Backend, BackendError
 
@@ -66,10 +68,12 @@ class ClaudeBackend(Backend):
 
     @property
     def name(self) -> str:
+        """Return the configured Claude model identifier."""
         return self._model
 
     @property
     def supports_caching(self) -> bool:
+        """Report that the backend requests ephemeral system-prompt caching."""
         return True
 
     def complete(
@@ -79,14 +83,15 @@ class ClaudeBackend(Backend):
         user: str,
         max_tokens: int = 4096,
     ) -> str:
-        system_blocks: list[dict[str, Any]] = [
+        """Return a Claude completion for one system and user message pair."""
+        system_blocks: list[TextBlockParam] = [
             {
                 "type": "text",
                 "text": system,
                 "cache_control": {"type": "ephemeral"},
             }
         ]
-        messages = [{"role": "user", "content": user}]
+        messages: list[MessageParam] = [{"role": "user", "content": user}]
 
         for attempt in range(MAX_RETRIES):
             try:

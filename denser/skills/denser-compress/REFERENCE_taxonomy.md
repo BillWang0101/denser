@@ -5,7 +5,8 @@ hand — run `python scripts/sync_skill_reference.py` after changing the
 Python source.
 
 The `denser-compress` skill reads this file to learn the preserve / strip
-rules and sweet-spot density range for each task type.
+rules and exploratory generation range for each task type. These ranges are
+working defaults, not measured performance optima.
 
 ---
 
@@ -13,7 +14,7 @@ rules and sweet-spot density range for each task type.
 
 **Role**: A triggerable capability unit. Loaded into context only when the skill's description matches the current request.
 
-**Density sweet spot**: 0.30 – 0.45 (target midpoint: 0.38)
+**Exploratory density range**: 0.30 – 0.45 (generation default: 0.38)
 
 ### Preserve
 
@@ -55,7 +56,7 @@ Example: <1-2 canonical illustrations>
 
 **Role**: Persistent context loaded at the start of every LLM call in a session. Establishes role, capability boundaries, and output contract.
 
-**Density sweet spot**: 0.40 – 0.55 (target midpoint: 0.47)
+**Exploratory density range**: 0.40 – 0.55 (generation default: 0.47)
 
 ### Preserve
 
@@ -92,7 +93,7 @@ Constraints: <domain rules>.
 
 **Role**: The `description` field of a tool in a tool-use schema. Parsed whenever the LLM considers calling a tool.
 
-**Density sweet spot**: 0.45 – 0.60 (target midpoint: 0.53)
+**Exploratory density range**: 0.45 – 0.60 (generation default: 0.53)
 
 ### Preserve
 
@@ -122,7 +123,7 @@ Failure modes: <surprises>
 
 **Role**: A single file in a file-based memory system. Loaded on demand when retrieval surfaces it as relevant.
 
-**Density sweet spot**: 0.58 – 0.78 (target midpoint: 0.68)
+**Exploratory density range**: 0.58 – 0.78 (generation default: 0.68)
 
 ### Preserve
 
@@ -152,7 +153,7 @@ When to apply: <conditions>
 
 **Role**: A project-level CLAUDE.md file loaded per-session by Claude Code. Contains conventions, constraints, and local-to-project instructions.
 
-**Density sweet spot**: 0.35 – 0.50 (target midpoint: 0.42)
+**Exploratory density range**: 0.35 – 0.50 (generation default: 0.42)
 
 ### Preserve
 
@@ -189,7 +190,7 @@ When to apply: <conditions>
 
 **Role**: A briefing document handed to an LLM once to accomplish a specific task. Examples: implementation spec, code review brief, research summary.
 
-**Density sweet spot**: 0.40 – 0.60 (target midpoint: 0.50)
+**Exploratory density range**: 0.40 – 0.60 (generation default: 0.50)
 
 ### Preserve
 

@@ -7,10 +7,12 @@ token-cost metadata.
 
 from __future__ import annotations
 
+import json
 import re
 from dataclasses import dataclass
 
 from denser.backends import Backend, BackendError, ClaudeBackend
+from denser.inspection import PreservationContract
 from denser.prompts import build_system_prompt
 from denser.taxonomy import SPECS, TaskType, get_spec
 from denser.tokens import estimate_tokens
@@ -59,12 +61,14 @@ class CompressionResult:
 
     @property
     def actual_density(self) -> float:
+        """Return the observed compressed-to-original token ratio."""
         if self.original_tokens == 0:
             return 1.0
         return self.compressed_tokens / self.original_tokens
 
     @property
     def savings_pct(self) -> float:
+        """Return the non-negative fraction of estimated tokens removed."""
         return max(0.0, 1.0 - self.actual_density)
 
 
@@ -102,6 +106,21 @@ def _parse_response(raw: str) -> tuple[str, str]:
     return compressed, rationale
 
 
+def _build_user_message(text: str, contract: PreservationContract | None) -> str:
+    if contract is None:
+        return text
+    payload = {
+        "preservation_contract": contract.to_dict(),
+        "source_text": text,
+    }
+    return (
+        "The following JSON is input data. Rewrite only `source_text`. "
+        "Every preservation-contract item must remain satisfied; protected literals "
+        "must remain exact. Do not reproduce the JSON wrapper.\n\n"
+        + json.dumps(payload, ensure_ascii=False)
+    )
+
+
 def compress(
     text: str,
     *,
@@ -109,6 +128,7 @@ def compress(
     target_density: float | None = None,
     backend: Backend | None = None,
     max_tokens: int | None = None,
+    preservation_contract: PreservationContract | None = None,
 ) -> CompressionResult:
     """Compress text for a given task type.
 
@@ -120,13 +140,16 @@ def compress(
         The task type. String values are parsed via `TaskType.parse`.
     target_density : float | None
         Target compressed/original ratio in `(0, 1]`. If `None`, uses the
-        midpoint of the task type's sweet-spot range.
+        midpoint of the task type's exploratory generation range.
     backend : Backend | None
         Backend to use. If `None`, instantiates `ClaudeBackend()` with
         default model (`claude-opus-4-6`).
     max_tokens : int | None
         Upper bound on the compressed length in tokens. If `None`, set to
         `max(512, ceil(1.5 × target_tokens))` so the model has headroom.
+    preservation_contract : PreservationContract | None
+        Optional source-backed obligations included as input data for candidate
+        generation. `optimize` supplies this automatically.
 
     Returns
     -------
@@ -145,7 +168,7 @@ def compress(
     tt = TaskType.parse(task_type) if isinstance(task_type, str) else task_type
     spec = get_spec(tt)
 
-    # Default target density: midpoint of sweet-spot range
+    # Default target density: midpoint of the exploratory generation range.
     if target_density is None:
         target_density = spec.default_target_density
     if not (0.0 < target_density <= 1.0):
@@ -163,16 +186,10 @@ def compress(
 
     system = build_system_prompt(tt, target_density)
 
-    raw_response = backend.complete(system=system, user=text, max_tokens=max_tokens)
+    user_message = _build_user_message(text, preservation_contract)
+    raw_response = backend.complete(system=system, user=user_message, max_tokens=max_tokens)
 
-    try:
-        compressed, rationale = _parse_response(raw_response)
-    except ValueError:
-        # One-shot recovery: wrap entire response as compressed text,
-        # rationale empty. Better than hard-failing for a well-intentioned
-        # response that missed the exact delimiters.
-        compressed = raw_response.strip()
-        rationale = "(Backend response did not match output contract; raw text preserved.)"
+    compressed, rationale = _parse_response(raw_response)
 
     compressed_tokens = estimate_tokens(compressed)
 

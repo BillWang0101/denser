@@ -1,0 +1,38 @@
+name: Feature request
+description: Propose a scoped improvement with its evidence needs.
+title: "[Feature]: "
+labels: ["enhancement"]
+body:
+  - type: textarea
+    id: problem
+    attributes:
+      label: Problem to solve
+      description: Describe the user or research problem before proposing an implementation.
+    validations:
+      required: true
+  - type: textarea
+    id: proposal
+    attributes:
+      label: Proposed change
+      description: Explain the smallest useful change and any alternatives considered.
+    validations:
+      required: true
+  - type: textarea
+    id: evidence
+    attributes:
+      label: Evidence and validation
+      description: What fixtures, behavior cases, controls, or reproduction steps would show that this works?
+    validations:
+      required: true
+  - type: textarea
+    id: risks
+    attributes:
+      label: Risks and claim limits
+      description: Note compatibility, privacy, cost, model variance, or maintenance concerns.
+  - type: checkboxes
+    id: checks
+    attributes:
+      label: Submission checks
+      options:
+        - label: I did not include credentials, private prompts, personal paths, or other sensitive data.
+          required: true

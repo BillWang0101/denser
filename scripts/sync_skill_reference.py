@@ -36,13 +36,15 @@ hand — run `python scripts/sync_skill_reference.py` after changing the
 Python source.
 
 The `denser-compress` skill reads this file to learn the preserve / strip
-rules and sweet-spot density range for each task type.
+rules and exploratory generation range for each task type. These ranges are
+working defaults, not measured performance optima.
 
 ---
 """
 
 
 def render() -> str:
+    """Render the generated skill reference from the canonical taxonomy."""
     parts: list[str] = [PREAMBLE]
 
     for tt in TaskType:
@@ -60,7 +62,7 @@ def render() -> str:
 
 **Role**: {spec.role_summary}
 
-**Density sweet spot**: {low:.2f} – {high:.2f} (target midpoint: {midpoint:.2f})
+**Exploratory density range**: {low:.2f} – {high:.2f} (generation default: {midpoint:.2f})
 
 ### Preserve
 
@@ -85,6 +87,7 @@ def render() -> str:
 
 
 def main() -> int:
+    """Write or verify the generated skill reference and return an exit code."""
     parser = argparse.ArgumentParser()
     parser.add_argument(
         "--check",

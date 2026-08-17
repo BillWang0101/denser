@@ -4,9 +4,9 @@ Concretely: OpenAI, SiliconFlow, OpenRouter, Groq, Together, Fireworks, DeepSeek
 (direct), Moonshot, self-hosted vLLM / Ollama / Text Generation Inference, and
 many others.
 
-Prompt caching is NOT enabled (only Anthropic's API supports it at the protocol
-level). For high-frequency use against a Claude-backed endpoint, use
-`ClaudeBackend` instead.
+This adapter does not configure provider-specific cache controls. A compatible
+provider may still perform automatic prefix caching; inspect its usage data
+rather than inferring cache behavior from this adapter.
 
 Convenience subclasses (`SiliconFlowBackend`, etc.) preset `base_url` and a
 sensible default model.
@@ -17,6 +17,10 @@ from __future__ import annotations
 import logging
 import os
 import time
+from typing import TYPE_CHECKING
+
+if TYPE_CHECKING:
+    from openai.types.chat import ChatCompletionMessageParam
 
 from denser.backends.base import Backend, BackendError
 
@@ -51,6 +55,10 @@ class OpenAICompatibleBackend(Backend):
     name : str | None
         Override the backend's reported name. If None, derived from
         `<host>/<model>` of `base_url` + `model`.
+    thinking_mode : str
+        Provider reasoning mode: ``"provider-default"``, ``"enabled"``, or
+        ``"disabled"``. Explicit modes are forwarded through the compatible
+        API's ``extra_body.thinking`` field.
     """
 
     def __init__(
@@ -62,6 +70,7 @@ class OpenAICompatibleBackend(Backend):
         api_key_env: str = "OPENAI_API_KEY",
         temperature: float = 0.3,
         name: str | None = None,
+        thinking_mode: str = "provider-default",
     ) -> None:
         try:
             import openai  # noqa: F401
@@ -76,6 +85,8 @@ class OpenAICompatibleBackend(Backend):
             raise BackendError(
                 f"API key not found. Set {api_key_env} or pass api_key=... explicitly."
             )
+        if thinking_mode not in {"provider-default", "enabled", "disabled"}:
+            raise BackendError("thinking_mode must be provider-default, enabled, or disabled")
 
         import openai as _openai
 
@@ -83,6 +94,7 @@ class OpenAICompatibleBackend(Backend):
         self._model = model
         self._temperature = temperature
         self._base_url = base_url.rstrip("/")
+        self._thinking_mode = thinking_mode
         if name is not None:
             self._name = name
         else:
@@ -91,11 +103,22 @@ class OpenAICompatibleBackend(Backend):
 
     @property
     def name(self) -> str:
+        """Return the configured provider and model label."""
         return self._name
 
     @property
     def supports_caching(self) -> bool:
+        """Report that this adapter does not configure provider cache controls."""
         return False
+
+    @property
+    def runtime_config(self) -> dict[str, object]:
+        """Return a reproducible configuration without credentials or paths."""
+        return {
+            "backend_kind": "openai-compatible",
+            "model": self._model,
+            "thinking_mode": self._thinking_mode,
+        }
 
     def complete(
         self,
@@ -104,19 +127,29 @@ class OpenAICompatibleBackend(Backend):
         user: str,
         max_tokens: int = 4096,
     ) -> str:
-        messages = [
+        """Return a chat completion for one system and user message pair."""
+        messages: list[ChatCompletionMessageParam] = [
             {"role": "system", "content": system},
             {"role": "user", "content": user},
         ]
 
         for attempt in range(MAX_RETRIES):
             try:
-                response = self._client.chat.completions.create(
-                    model=self._model,
-                    max_tokens=max_tokens,
-                    temperature=self._temperature,
-                    messages=messages,
-                )
+                if self._thinking_mode == "provider-default":
+                    response = self._client.chat.completions.create(
+                        model=self._model,
+                        max_tokens=max_tokens,
+                        temperature=self._temperature,
+                        messages=messages,
+                    )
+                else:
+                    response = self._client.chat.completions.create(
+                        model=self._model,
+                        max_tokens=max_tokens,
+                        temperature=self._temperature,
+                        messages=messages,
+                        extra_body={"thinking": {"type": self._thinking_mode}},
+                    )
             except Exception as e:
                 if attempt == MAX_RETRIES - 1:
                     raise BackendError(
@@ -134,11 +167,9 @@ class OpenAICompatibleBackend(Backend):
                 time.sleep(sleep_s)
                 continue
 
-            choices = getattr(response, "choices", None)
-            if not choices:
+            if not response.choices:
                 raise BackendError(f"{self._name} returned no choices")
-            msg = choices[0].message
-            content = getattr(msg, "content", None)
+            content = response.choices[0].message.content
             if not content:
                 raise BackendError(f"{self._name} returned empty content")
             return content
@@ -149,9 +180,8 @@ class OpenAICompatibleBackend(Backend):
 class SiliconFlowBackend(OpenAICompatibleBackend):
     """Preconfigured backend for SiliconFlow (https://siliconflow.cn).
 
-    Free-tier friendly; the default model (`deepseek-ai/DeepSeek-V3`) is
-    available on SiliconFlow's free plan at the time of writing. Pass
-    `model="Qwen/Qwen2.5-72B-Instruct"` or similar for alternatives.
+    Model availability and pricing change independently of denser. Pass a model
+    identifier available to your SiliconFlow account.
 
     Set `SILICONFLOW_API_KEY` in the environment, or pass `api_key=...`.
     """

@@ -1,22 +1,94 @@
-"""Token counting utilities.
+"""Explicit token-counting methods for evidence and local previews.
 
-Two modes:
-- `estimate_tokens(text)`: fast, model-agnostic heuristic (~4 chars per token)
-- `count_tokens_claude(text, model)`: exact count using Anthropic's token counting API
-
-The estimator is used for fast local checks and CLI progress. The API-based
-counter is used whenever we report numbers to users or use them in decisions
-that require accuracy.
+`HeuristicTokenCounter` is offline and approximate. `AnthropicTokenCounter` is
+provider-aware and fails explicitly instead of silently relabeling an estimate
+as an exact count. The historical function helpers remain for compatibility.
 """
 
 from __future__ import annotations
 
 import logging
 import re
+from typing import TYPE_CHECKING, Any, Protocol, runtime_checkable
+
+if TYPE_CHECKING:
+    import anthropic
 
 logger = logging.getLogger(__name__)
 
 _WORD_RE = re.compile(r"\S+")
+
+
+class TokenCountError(RuntimeError):
+    """Raised when a requested counting method cannot produce a measurement."""
+
+
+@runtime_checkable
+class TokenCounter(Protocol):
+    """Narrow counting adapter used by optimization evidence."""
+
+    method: str
+    provider: str | None
+    model: str | None
+    exact: bool
+
+    def count(self, text: str) -> int:
+        """Return a token count or raise `TokenCountError`."""
+        ...
+
+
+class HeuristicTokenCounter:
+    """Fast offline estimator, explicitly labeled as approximate."""
+
+    method = "heuristic-v1"
+    provider: str | None = None
+    model: str | None = None
+    exact = False
+
+    def count(self, text: str) -> int:
+        """Return an offline approximate token count."""
+        return estimate_tokens(text)
+
+
+class AnthropicTokenCounter:
+    """Strict adapter for Anthropic's provider token-counting endpoint."""
+
+    method = "anthropic-messages-count-tokens"
+    provider = "anthropic"
+    exact = True
+
+    def __init__(
+        self,
+        *,
+        model: str = "claude-opus-4-6",
+        client: Any | None = None,
+    ) -> None:
+        if client is None:
+            try:
+                import anthropic as anthropic_sdk
+            except ImportError as exc:  # pragma: no cover - install-time check
+                raise TokenCountError("Anthropic SDK is not installed") from exc
+            try:
+                client = anthropic_sdk.Anthropic()
+            except Exception as exc:
+                raise TokenCountError(
+                    f"Anthropic counter initialization failed: {type(exc).__name__}"
+                ) from exc
+        self.model = model
+        self._client = client
+
+    def count(self, text: str) -> int:
+        """Return a provider token count or raise ``TokenCountError``."""
+        if not text:
+            return 0
+        try:
+            result = self._client.messages.count_tokens(
+                model=self.model,
+                messages=[{"role": "user", "content": text}],
+            )
+            return int(result.input_tokens)
+        except Exception as exc:
+            raise TokenCountError(f"Anthropic token count failed: {type(exc).__name__}") from exc
 
 
 def estimate_tokens(text: str) -> int:
@@ -42,7 +114,7 @@ def estimate_tokens(text: str) -> int:
 def count_tokens_claude(
     text: str,
     model: str = "claude-opus-4-6",
-    client: object | None = None,
+    client: anthropic.Anthropic | None = None,
 ) -> int:
     """Count tokens exactly using Anthropic's API.
 
@@ -76,7 +148,10 @@ def count_tokens_claude(
         )
         return int(result.input_tokens)
     except Exception as e:
-        logger.warning("count_tokens_claude API failed (%s); falling back to estimate", e)
+        logger.warning(
+            "count_tokens_claude API failed (%s); falling back to estimate",
+            type(e).__name__,
+        )
         return estimate_tokens(text)
 
 

@@ -1,0 +1,320 @@
+{
+  "schema_version": "denser.replay-report/v4",
+  "task_type": "claude_md",
+  "seed": 20260817,
+  "n_trials": 3,
+  "suite_sha256": "b79a1312d57c397a00c9a5bf59312cbe66932276c32f2292cad7a51cdb06b1af",
+  "generated_at_utc": "2026-08-17T09:51:48.197757Z",
+  "runtime_config": {
+    "backend_kind": "openai-compatible",
+    "model": "deepseek-v4-pro",
+    "thinking_mode": "disabled"
+  },
+  "suite_metadata": {
+    "role": "holdout",
+    "freeze": {
+      "original_sha256": "b09d9ab7fdc908c841f3cba8cdbc2131723cbd09189f91f47e0ce04b8465b18d",
+      "candidate_sha256": "036469c04905be62da916e39805cfa4e50a44fe1e6e3619b90f8a46ff2371345",
+      "candidate_commit": "e336f1395486ab2a6e44638166ac009ddc8d1ace",
+      "frozen_at_utc": "2026-08-17T07:25:15Z"
+    },
+    "authoring": {
+      "method": "independent_codex_cli_source_only_permission_causal",
+      "authored_at_utc": "2026-08-17T07:27:37Z",
+      "candidate_visible": false,
+      "backend": "codex-cli",
+      "model": "gpt-5.6-sol",
+      "reasoning_effort": "medium",
+      "cli_version": "0.147.0"
+    }
+  },
+  "delta": 0.0,
+  "original": {
+    "schema_version": "denser.replay-report/v4",
+    "task_type": "claude_md",
+    "backend_name": "api.deepseek.com/deepseek-v4-pro",
+    "n_trials": 3,
+    "instruction_sha256": "b09d9ab7fdc908c841f3cba8cdbc2131723cbd09189f91f47e0ce04b8465b18d",
+    "suite_sha256": "b79a1312d57c397a00c9a5bf59312cbe66932276c32f2292cad7a51cdb06b1af",
+    "generated_at_utc": "2026-08-17T09:51:48.197757Z",
+    "runtime_config": {
+      "backend_kind": "openai-compatible",
+      "model": "deepseek-v4-pro",
+      "thinking_mode": "disabled"
+    },
+    "suite_metadata": {
+      "role": "holdout",
+      "freeze": {
+        "original_sha256": "b09d9ab7fdc908c841f3cba8cdbc2131723cbd09189f91f47e0ce04b8465b18d",
+        "candidate_sha256": "036469c04905be62da916e39805cfa4e50a44fe1e6e3619b90f8a46ff2371345",
+        "candidate_commit": "e336f1395486ab2a6e44638166ac009ddc8d1ace",
+        "frozen_at_utc": "2026-08-17T07:25:15Z"
+      },
+      "authoring": {
+        "method": "independent_codex_cli_source_only_permission_causal",
+        "authored_at_utc": "2026-08-17T07:27:37Z",
+        "candidate_visible": false,
+        "backend": "codex-cli",
+        "model": "gpt-5.6-sol",
+        "reasoning_effort": "medium",
+        "cli_version": "0.147.0"
+      }
+    },
+    "overall_pass_rate": 1.0,
+    "n_tasks": 1,
+    "n_cases": 5,
+    "n_errors": 0,
+    "usage_totals": {
+      "input_tokens": 0,
+      "cached_input_tokens": 0,
+      "cache_write_input_tokens": 0,
+      "output_tokens": 0,
+      "reasoning_output_tokens": 0
+    },
+    "task_results": [
+      {
+        "task_name": "automation_permission_routing",
+        "pass_threshold": 1.0,
+        "overall_pass_rate": 1.0,
+        "passed": true,
+        "n_errors": 0,
+        "case_results": [
+          {
+            "case_name": "monthly_finding_new_issue",
+            "category": "positive_trigger",
+            "n_trials": 3,
+            "n_passed": 3,
+            "pass_rate": 1.0,
+            "outputs": [
+              "OPEN_ONE_ISSUE",
+              "OPEN_ONE_ISSUE",
+              "OPEN_ONE_ISSUE"
+            ],
+            "errors": [],
+            "backend_metadata": [
+              {},
+              {},
+              {}
+            ]
+          },
+          {
+            "case_name": "monthly_finding_existing_issue",
+            "category": "positive_trigger",
+            "n_trials": 3,
+            "n_passed": 3,
+            "pass_rate": 1.0,
+            "outputs": [
+              "REFRESH_EXISTING_ISSUE",
+              "REFRESH_EXISTING_ISSUE",
+              "REFRESH_EXISTING_ISSUE"
+            ],
+            "errors": [],
+            "backend_metadata": [
+              {},
+              {},
+              {}
+            ]
+          },
+          {
+            "case_name": "monthly_review_all_clear",
+            "category": "near_miss",
+            "n_trials": 3,
+            "n_passed": 3,
+            "pass_rate": 1.0,
+            "outputs": [
+              "FINISH_WITH_REPORT_ONLY",
+              "FINISH_WITH_REPORT_ONLY",
+              "FINISH_WITH_REPORT_ONLY"
+            ],
+            "errors": [],
+            "backend_metadata": [
+              {},
+              {},
+              {}
+            ]
+          },
+          {
+            "case_name": "review_runtime_profile",
+            "category": "permission_boundary",
+            "n_trials": 3,
+            "n_passed": 3,
+            "pass_rate": 1.0,
+            "outputs": [
+              "PINNED_RESTRICTED_PROFILE",
+              "PINNED_RESTRICTED_PROFILE",
+              "PINNED_RESTRICTED_PROFILE"
+            ],
+            "errors": [],
+            "backend_metadata": [
+              {},
+              {},
+              {}
+            ]
+          },
+          {
+            "case_name": "recommended_floor_change",
+            "category": "adversarial",
+            "n_trials": 3,
+            "n_passed": 3,
+            "pass_rate": 1.0,
+            "outputs": [
+              "HAND_OFF_FOR_MAINTAINER_ACTION",
+              "HAND_OFF_FOR_MAINTAINER_ACTION",
+              "HAND_OFF_FOR_MAINTAINER_ACTION"
+            ],
+            "errors": [],
+            "backend_metadata": [
+              {},
+              {},
+              {}
+            ]
+          }
+        ]
+      }
+    ]
+  },
+  "candidate": {
+    "schema_version": "denser.replay-report/v4",
+    "task_type": "claude_md",
+    "backend_name": "api.deepseek.com/deepseek-v4-pro",
+    "n_trials": 3,
+    "instruction_sha256": "036469c04905be62da916e39805cfa4e50a44fe1e6e3619b90f8a46ff2371345",
+    "suite_sha256": "b79a1312d57c397a00c9a5bf59312cbe66932276c32f2292cad7a51cdb06b1af",
+    "generated_at_utc": "2026-08-17T09:51:48.197757Z",
+    "runtime_config": {
+      "backend_kind": "openai-compatible",
+      "model": "deepseek-v4-pro",
+      "thinking_mode": "disabled"
+    },
+    "suite_metadata": {
+      "role": "holdout",
+      "freeze": {
+        "original_sha256": "b09d9ab7fdc908c841f3cba8cdbc2131723cbd09189f91f47e0ce04b8465b18d",
+        "candidate_sha256": "036469c04905be62da916e39805cfa4e50a44fe1e6e3619b90f8a46ff2371345",
+        "candidate_commit": "e336f1395486ab2a6e44638166ac009ddc8d1ace",
+        "frozen_at_utc": "2026-08-17T07:25:15Z"
+      },
+      "authoring": {
+        "method": "independent_codex_cli_source_only_permission_causal",
+        "authored_at_utc": "2026-08-17T07:27:37Z",
+        "candidate_visible": false,
+        "backend": "codex-cli",
+        "model": "gpt-5.6-sol",
+        "reasoning_effort": "medium",
+        "cli_version": "0.147.0"
+      }
+    },
+    "overall_pass_rate": 1.0,
+    "n_tasks": 1,
+    "n_cases": 5,
+    "n_errors": 0,
+    "usage_totals": {
+      "input_tokens": 0,
+      "cached_input_tokens": 0,
+      "cache_write_input_tokens": 0,
+      "output_tokens": 0,
+      "reasoning_output_tokens": 0
+    },
+    "task_results": [
+      {
+        "task_name": "automation_permission_routing",
+        "pass_threshold": 1.0,
+        "overall_pass_rate": 1.0,
+        "passed": true,
+        "n_errors": 0,
+        "case_results": [
+          {
+            "case_name": "monthly_finding_new_issue",
+            "category": "positive_trigger",
+            "n_trials": 3,
+            "n_passed": 3,
+            "pass_rate": 1.0,
+            "outputs": [
+              "OPEN_ONE_ISSUE",
+              "OPEN_ONE_ISSUE",
+              "OPEN_ONE_ISSUE"
+            ],
+            "errors": [],
+            "backend_metadata": [
+              {},
+              {},
+              {}
+            ]
+          },
+          {
+            "case_name": "monthly_finding_existing_issue",
+            "category": "positive_trigger",
+            "n_trials": 3,
+            "n_passed": 3,
+            "pass_rate": 1.0,
+            "outputs": [
+              "REFRESH_EXISTING_ISSUE",
+              "REFRESH_EXISTING_ISSUE",
+              "REFRESH_EXISTING_ISSUE"
+            ],
+            "errors": [],
+            "backend_metadata": [
+              {},
+              {},
+              {}
+            ]
+          },
+          {
+            "case_name": "monthly_review_all_clear",
+            "category": "near_miss",
+            "n_trials": 3,
+            "n_passed": 3,
+            "pass_rate": 1.0,
+            "outputs": [
+              "FINISH_WITH_REPORT_ONLY",
+              "FINISH_WITH_REPORT_ONLY",
+              "FINISH_WITH_REPORT_ONLY"
+            ],
+            "errors": [],
+            "backend_metadata": [
+              {},
+              {},
+              {}
+            ]
+          },
+          {
+            "case_name": "review_runtime_profile",
+            "category": "permission_boundary",
+            "n_trials": 3,
+            "n_passed": 3,
+            "pass_rate": 1.0,
+            "outputs": [
+              "PINNED_RESTRICTED_PROFILE",
+              "PINNED_RESTRICTED_PROFILE",
+              "PINNED_RESTRICTED_PROFILE"
+            ],
+            "errors": [],
+            "backend_metadata": [
+              {},
+              {},
+              {}
+            ]
+          },
+          {
+            "case_name": "recommended_floor_change",
+            "category": "adversarial",
+            "n_trials": 3,
+            "n_passed": 3,
+            "pass_rate": 1.0,
+            "outputs": [
+              "HAND_OFF_FOR_MAINTAINER_ACTION",
+              "HAND_OFF_FOR_MAINTAINER_ACTION",
+              "HAND_OFF_FOR_MAINTAINER_ACTION"
+            ],
+            "errors": [],
+            "backend_metadata": [
+              {},
+              {},
+              {}
+            ]
+          }
+        ]
+      }
+    ]
+  }
+}

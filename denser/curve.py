@@ -1,12 +1,13 @@
-"""Signal Density Curve.
+"""Experimental density sweep.
 
 For a given (text, task type), sweep several target densities, compress at
-each, evaluate, and locate the peak — the sweet spot.
+each, and record the observed check pass rates.
 
-The curve is modeled as concave. We fit a quadratic `f(ρ) = aρ² + bρ + c`
-via least squares and locate the peak at `ρ* = -b / (2a)` (clamped to the
-sampled range). If the fit fails (a ≥ 0, or fewer than 3 points), we fall
-back to the highest raw-data density.
+A quadratic fit is retained as an exploratory visualization. If the fitted
+quadratic is concave, the reported density uses its vertex (clamped to the
+sampled range); otherwise it uses the best raw point. This procedure does not
+establish that the underlying relationship is concave or that the result is a
+behavioral optimum.
 
 Public API:
     curve(text, task_type, ...) -> DensityCurve
@@ -15,13 +16,12 @@ Public API:
 from __future__ import annotations
 
 import logging
-import statistics
 from dataclasses import dataclass, field
 from pathlib import Path
 
 from denser.backends import Backend, ClaudeBackend
 from denser.compress import compress
-from denser.eval import GoldenTask, evaluate, load_golden_tasks
+from denser.eval import GoldenTask, evaluate
 from denser.taxonomy import TaskType
 
 logger = logging.getLogger(__name__)
@@ -50,7 +50,8 @@ class DensityCurve:
     peak_pass_rate: float = 0.0
     fit_coeffs: tuple[float, float, float] | None = None
 
-    def to_dict(self) -> dict:
+    def to_dict(self) -> dict[str, object]:
+        """Return the measured curve and fitted summary as serializable data."""
         return {
             "task_type": self.task_type.value,
             "points": [
@@ -98,7 +99,7 @@ class DensityCurve:
             color="tab:red",
             linestyle=":",
             alpha=0.7,
-            label=f"peak ρ* = {self.peak_density:.2f}",
+            label=f"best observed/fitted ρ = {self.peak_density:.2f}",
         )
         ax.set_xlabel("compression ratio ρ (compressed / original)")
         ax.set_ylabel("task pass-rate")
@@ -190,7 +191,7 @@ def _locate_peak(
     """
     if coeffs is not None:
         a, b, c = coeffs
-        if a < -1e-6:  # concave (as expected)
+        if a < -1e-6:  # exploratory concave fit; not an assumed property
             xstar = -b / (2 * a)
             xstar = max(min(xs), min(max(xs), xstar))
             ystar = a * xstar * xstar + b * xstar + c
@@ -211,23 +212,23 @@ def curve(
     judge_backend: Backend | None = None,
     n_trials: int = 1,
 ) -> DensityCurve:
-    """Compute the Signal Density Curve for `text` at `task_type`.
+    """Compute an experimental density sweep for `text` at `task_type`.
 
     For each target density in `densities`, compresses the text, evaluates
-    pass-rate, and adds a point to the curve. Fits a concave quadratic and
-    locates the peak.
+    observed check pass-rate, and adds a point. A descriptive quadratic fit is
+    included when possible; callers must inspect the raw points.
 
     Parameters
     ----------
     text : str
         The text to analyze.
     task_type : TaskType | str
-        Task type driving compression strategy and golden tasks.
+        Task type driving rewrite guidance and built-in structural checks.
     densities : tuple | list
         Target density values to sample. Values at 1.0 are treated as
         "original text, uncompressed" (no API call to the compressor).
     golden_tasks : list | None
-        Override tasks. If None, loads built-in fixtures.
+        Override tasks. If None, loads built-in structural fixtures.
     compressor_backend : Backend | None
         Backend for compression. Defaults to Claude Opus 4.6.
     judge_backend : Backend | None
@@ -297,11 +298,6 @@ def curve(
         peak_pass_rate=peak_y,
         fit_coeffs=coeffs,
     )
-
-
-# Expose an unused-import guard for module consumers using `from denser.curve import *`.
-_ = statistics
-_ = load_golden_tasks
 
 
 __all__ = ["DensityCurve", "DensityPoint", "curve"]

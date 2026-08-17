@@ -1,0 +1,97 @@
+{
+  "schema_version": "denser.preservation-contract/v1",
+  "task_type": "claude_md",
+  "source_file": "AGENTS.md",
+  "items": [
+    {
+      "id": "C001",
+      "statement": "Generated SDK files require reading CONTRIBUTING.md first; handwritten surfaces stay small and exported APIs change only when the task requires it.",
+      "risk": "high",
+      "source_lines": [5, 8]
+    },
+    {
+      "id": "C002",
+      "statement": "requires-python is the technical minimum and PYTHON_VERSION_POLICY.md is the human-readable policy.",
+      "risk": "high",
+      "source_lines": [12, 13]
+    },
+    {
+      "id": "C003",
+      "statement": "Support every fully released non-EOL CPython line, with only a documented grace period for the most recently retired line.",
+      "risk": "high",
+      "source_lines": [14, 16]
+    },
+    {
+      "id": "C004",
+      "statement": "All listed repository and CI Python-version surfaces must stay synchronized.",
+      "risk": "high",
+      "source_lines": [16, 17]
+    },
+    {
+      "id": "C005",
+      "statement": "A minimum-Python change must not be combined with unrelated SDK or dependency upgrades.",
+      "risk": "high",
+      "source_lines": [18, 19]
+    },
+    {
+      "id": "C006",
+      "statement": "A floor change updates all named policy, lock, documentation, compatibility, CI, build, metadata, and old-interpreter checks.",
+      "risk": "high",
+      "source_lines": [23, 28]
+    },
+    {
+      "id": "C007",
+      "statement": "The pull request adds the specified release-note section without promising old-release security backports.",
+      "risk": "high",
+      "source_lines": [29, 31]
+    },
+    {
+      "id": "C008",
+      "statement": "An SDK CODEOWNER must approve the floor change.",
+      "risk": "high",
+      "source_lines": [32, 32]
+    },
+    {
+      "id": "C009",
+      "statement": "The deterministic policy check proves consistency only; it cannot decide the grace-period or floor policy.",
+      "risk": "medium",
+      "source_lines": [34, 35]
+    },
+    {
+      "id": "C010",
+      "statement": "The normal CI workflow and its scheduled modes retain their distinct trigger and coverage responsibilities.",
+      "risk": "medium",
+      "source_lines": [39, 43]
+    },
+    {
+      "id": "C011",
+      "statement": "The monthly review consumes both official CPython lifecycle and public PyPI minor-version data.",
+      "risk": "medium",
+      "source_lines": [44, 47]
+    },
+    {
+      "id": "C012",
+      "statement": "The review Codex runtime is pinned, unprivileged, has no command network access, and has read-only repository permissions.",
+      "risk": "high",
+      "source_lines": [48, 49]
+    },
+    {
+      "id": "C013",
+      "statement": "Codex cannot edit or call GitHub; a separate credential-free job may open or refresh one issue only when needed, and automation never changes the floor or merges.",
+      "risk": "high",
+      "source_lines": [50, 52]
+    },
+    {
+      "id": "C014",
+      "statement": "All ten named local validation commands run before publishing a Python-version change.",
+      "risk": "high",
+      "source_lines": [56, 69]
+    },
+    {
+      "id": "C015",
+      "statement": "The scheduled compatibility matrix also runs before release.",
+      "risk": "high",
+      "source_lines": [71, 71]
+    }
+  ]
+}

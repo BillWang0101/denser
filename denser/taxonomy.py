@@ -1,8 +1,8 @@
 """Task type taxonomy.
 
-Six task types, each with a canonical compression strategy and sweet-spot density
-range. See `docs/TAXONOMY.md` for the operational reference, `docs/WHITEPAPER.md`
-for the theoretical framing.
+Six task types, each with role-aware rewrite guidance and an exploratory target
+density range. The ranges are generation defaults, not measured optima. See
+`docs/TAXONOMY.md` for the operational reference.
 """
 
 from __future__ import annotations
@@ -76,7 +76,7 @@ class TaskSpec:
 
     @property
     def default_target_density(self) -> float:
-        """Midpoint of the observed sweet-spot range for this type."""
+        """Midpoint of the exploratory generation range for this type."""
         low, high = self.density_range
         return round((low + high) / 2, 3)
 

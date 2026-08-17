@@ -21,7 +21,7 @@ Thanks for your interest. denser is built in the open because signal density is 
 ## Dev setup
 
 ```bash
-git clone https://github.com/BillWang0101/denser.git
+git clone https://github.com/Evostructs/denser.git
 cd denser
 python -m venv .venv
 source .venv/bin/activate  # or .venv\Scripts\activate on Windows
@@ -69,9 +69,11 @@ examples/<task_type>/<NN_slug>/
 
 - Token counts (original + compressed)
 - Achieved density ratio
-- Where it sits relative to the task type's sweet spot range
+- Where it sits relative to the exploratory generation range (do not describe
+  the range as a measured optimum)
 - Itemized preserved / stripped categories
-- A "risk check" noting what could go wrong and whether eval confirms it didn't
+- A risk check noting what could go wrong, which checks were structural, and
+  which asset-specific behavior cases confirm the candidate
 
 When writing `notes.md`, reference the 4-layer methodology in [`METHODOLOGY.md`](METHODOLOGY.md): describe which macro moves (Layer 2) applied, which sentence-level tactics (Layer 3) triggered, and why you stopped compressing where you did (Layer 4). The self-compression case study at [`examples/skills/02_denser_compress_self/notes.md`](../examples/skills/02_denser_compress_self/notes.md) is the canonical template.
 

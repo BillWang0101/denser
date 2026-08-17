@@ -1,8 +1,14 @@
 # denser examples
 
-Curated before/after pairs demonstrating the compression each task type produces.
+> These are worked rewrite examples, not an independent benchmark. Token counts
+> use local estimates unless stated otherwise, density ranges are exploratory,
+> and preserve-list review is structural rather than proof of behavior
+> preservation. Contributions should add realistic behavior cases and
+> provenance alongside future examples.
 
-Each subdirectory contains:
+Curated before/after pairs documenting possible rewrites for each task type.
+
+Most subdirectories contain:
 - `verbose.md` — the original, typical "as-written" text
 - `dense.md` — the compressed equivalent, hand-curated as a golden reference
 - `notes.md` — what was removed and why (feeds into the benchmark suite)
@@ -10,7 +16,7 @@ Each subdirectory contains:
 These pairs serve three purposes:
 
 1. **Documentation**: concrete evidence that denser produces non-trivial compression
-2. **Golden benchmarks**: the eval harness uses these pairs to measure regression
+2. **Behavior-test inputs**: asset-specific suites can replay original and candidate
 3. **Contribution templates**: PRs adding more pairs follow this structure
 
 ## Structure
@@ -36,6 +42,19 @@ examples/
     ...
   one_shot_docs/
     ...
+  project_instructions/
+    01_codex_release_ops/
+      AGENTS.md
+      AGENTS.dense.md
+      replay.json
+      README.md
+    02_openai_python_version_policy/
+      AGENTS.md
+      AGENTS.dense.md
+      preservation-contract.json
+      replay.holdout.json
+      holdout-authoring.md
+      README.md
 ```
 
 ## Contributing a new pair
@@ -47,4 +66,8 @@ examples/
 5. Write `notes.md` describing what was preserved vs. stripped, and why
 6. Open a PR
 
-Pairs with particularly instructive differences (sharp sweet-spot peaks, surprising preservation decisions, cross-type comparisons) are especially welcome.
+Pairs with instructive behavior differences, failed candidates, negative cases,
+and surprising preservation decisions are especially welcome. The
+`project_instructions` cases show the preferred provenance and replay-suite
+shape. New blind evidence should freeze the candidate before a separate process
+authors the holdout and should bind both asset hashes in suite metadata.

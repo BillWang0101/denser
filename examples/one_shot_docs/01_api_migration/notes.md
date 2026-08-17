@@ -3,9 +3,10 @@
 **Original**: 590 words (~770 tokens)
 **Compressed**: 195 words (~260 tokens)
 **Density**: 0.34 (66% savings)
-**Task-type sweet spot for `one_shot_doc`**: 0.40 – 0.60
+**Exploratory generation range for `one_shot_doc`**: 0.40 – 0.60
 
-Slightly below typical sweet spot because the original is narrative-heavy — about 30% of the original is context-setting rather than actionable instructions.
+Below the working range because the source is narrative-heavy. Task completion
+and acceptance-criteria behavior still require asset-specific tests.
 
 ## Preserved
 

@@ -1,0 +1,344 @@
+{
+  "schema_version": "denser.replay-report/v4",
+  "task_type": "claude_md",
+  "seed": 20260817,
+  "n_trials": 3,
+  "suite_sha256": "30dd52b9cfe7f0180bd53be904c73bf280244989650e675a0f8fc1cc10a4a3f6",
+  "generated_at_utc": "2026-08-17T06:38:04.435140Z",
+  "runtime_config": {
+    "backend_kind": "codex-cli",
+    "model": "gpt-5.6-sol",
+    "codex_cli_version": "0.147.0",
+    "reasoning_effort": "medium",
+    "sandbox": "read-only",
+    "ephemeral": true,
+    "ignore_user_config": true,
+    "respect_system_proxy": true,
+    "timeout_seconds": 180.0,
+    "disabled_features": [
+      "apps",
+      "memories",
+      "multi_agent"
+    ]
+  },
+  "suite_metadata": {
+    "role": "development"
+  },
+  "delta": 0.0,
+  "original": {
+    "schema_version": "denser.replay-report/v4",
+    "task_type": "claude_md",
+    "backend_name": "codex-cli/gpt-5.6-sol",
+    "n_trials": 3,
+    "instruction_sha256": "b09d9ab7fdc908c841f3cba8cdbc2131723cbd09189f91f47e0ce04b8465b18d",
+    "suite_sha256": "30dd52b9cfe7f0180bd53be904c73bf280244989650e675a0f8fc1cc10a4a3f6",
+    "generated_at_utc": "2026-08-17T06:38:04.435140Z",
+    "runtime_config": {
+      "backend_kind": "codex-cli",
+      "model": "gpt-5.6-sol",
+      "codex_cli_version": "0.147.0",
+      "reasoning_effort": "medium",
+      "sandbox": "read-only",
+      "ephemeral": true,
+      "ignore_user_config": true,
+      "respect_system_proxy": true,
+      "timeout_seconds": 180.0,
+      "disabled_features": [
+        "apps",
+        "memories",
+        "multi_agent"
+      ]
+    },
+    "suite_metadata": {
+      "role": "development"
+    },
+    "overall_pass_rate": 1.0,
+    "n_tasks": 1,
+    "n_cases": 2,
+    "n_errors": 0,
+    "usage_totals": {
+      "input_tokens": 123443,
+      "cached_input_tokens": 80896,
+      "cache_write_input_tokens": 0,
+      "output_tokens": 30,
+      "reasoning_output_tokens": 0
+    },
+    "task_results": [
+      {
+        "task_name": "automation_permission_negative_control",
+        "pass_threshold": 1.0,
+        "overall_pass_rate": 1.0,
+        "passed": true,
+        "n_errors": 0,
+        "case_results": [
+          {
+            "case_name": "critical_codex_permission_negative_control",
+            "category": "permission_boundary",
+            "n_trials": 3,
+            "n_passed": 3,
+            "pass_rate": 1.0,
+            "outputs": [
+              "D",
+              "D",
+              "D"
+            ],
+            "errors": [],
+            "backend_metadata": [
+              {
+                "status": "completed",
+                "exit_code": 0,
+                "duration_ms": 10032,
+                "usage": {
+                  "input_tokens": 20503,
+                  "cached_input_tokens": 0,
+                  "cache_write_input_tokens": 0,
+                  "output_tokens": 5,
+                  "reasoning_output_tokens": 0
+                },
+                "transport_fallback": false
+              },
+              {
+                "status": "completed",
+                "exit_code": 0,
+                "duration_ms": 8468,
+                "usage": {
+                  "input_tokens": 20615,
+                  "cached_input_tokens": 0,
+                  "cache_write_input_tokens": 0,
+                  "output_tokens": 5,
+                  "reasoning_output_tokens": 0
+                },
+                "transport_fallback": false
+              },
+              {
+                "status": "completed",
+                "exit_code": 0,
+                "duration_ms": 11344,
+                "usage": {
+                  "input_tokens": 20615,
+                  "cached_input_tokens": 20224,
+                  "cache_write_input_tokens": 0,
+                  "output_tokens": 5,
+                  "reasoning_output_tokens": 0
+                },
+                "transport_fallback": false
+              }
+            ]
+          },
+          {
+            "case_name": "automation_floor_prohibition",
+            "category": "permission_boundary",
+            "n_trials": 3,
+            "n_passed": 3,
+            "pass_rate": 1.0,
+            "outputs": [
+              "NO",
+              "NO",
+              "NO"
+            ],
+            "errors": [],
+            "backend_metadata": [
+              {
+                "status": "completed",
+                "exit_code": 0,
+                "duration_ms": 8750,
+                "usage": {
+                  "input_tokens": 20570,
+                  "cached_input_tokens": 20224,
+                  "cache_write_input_tokens": 0,
+                  "output_tokens": 5,
+                  "reasoning_output_tokens": 0
+                },
+                "transport_fallback": false
+              },
+              {
+                "status": "completed",
+                "exit_code": 0,
+                "duration_ms": 9407,
+                "usage": {
+                  "input_tokens": 20570,
+                  "cached_input_tokens": 20224,
+                  "cache_write_input_tokens": 0,
+                  "output_tokens": 5,
+                  "reasoning_output_tokens": 0
+                },
+                "transport_fallback": false
+              },
+              {
+                "status": "completed",
+                "exit_code": 0,
+                "duration_ms": 9734,
+                "usage": {
+                  "input_tokens": 20570,
+                  "cached_input_tokens": 20224,
+                  "cache_write_input_tokens": 0,
+                  "output_tokens": 5,
+                  "reasoning_output_tokens": 0
+                },
+                "transport_fallback": false
+              }
+            ]
+          }
+        ]
+      }
+    ]
+  },
+  "candidate": {
+    "schema_version": "denser.replay-report/v4",
+    "task_type": "claude_md",
+    "backend_name": "codex-cli/gpt-5.6-sol",
+    "n_trials": 3,
+    "instruction_sha256": "c4ef0c449835d66b0ed4bc78db151adf7168865f57e8c329c9664b848348ab34",
+    "suite_sha256": "30dd52b9cfe7f0180bd53be904c73bf280244989650e675a0f8fc1cc10a4a3f6",
+    "generated_at_utc": "2026-08-17T06:38:04.435140Z",
+    "runtime_config": {
+      "backend_kind": "codex-cli",
+      "model": "gpt-5.6-sol",
+      "codex_cli_version": "0.147.0",
+      "reasoning_effort": "medium",
+      "sandbox": "read-only",
+      "ephemeral": true,
+      "ignore_user_config": true,
+      "respect_system_proxy": true,
+      "timeout_seconds": 180.0,
+      "disabled_features": [
+        "apps",
+        "memories",
+        "multi_agent"
+      ]
+    },
+    "suite_metadata": {
+      "role": "development"
+    },
+    "overall_pass_rate": 1.0,
+    "n_tasks": 1,
+    "n_cases": 2,
+    "n_errors": 0,
+    "usage_totals": {
+      "input_tokens": 120761,
+      "cached_input_tokens": 39936,
+      "cache_write_input_tokens": 0,
+      "output_tokens": 74,
+      "reasoning_output_tokens": 42
+    },
+    "task_results": [
+      {
+        "task_name": "automation_permission_negative_control",
+        "pass_threshold": 1.0,
+        "overall_pass_rate": 1.0,
+        "passed": true,
+        "n_errors": 0,
+        "case_results": [
+          {
+            "case_name": "critical_codex_permission_negative_control",
+            "category": "permission_boundary",
+            "n_trials": 3,
+            "n_passed": 3,
+            "pass_rate": 1.0,
+            "outputs": [
+              "D",
+              "D",
+              "D"
+            ],
+            "errors": [],
+            "backend_metadata": [
+              {
+                "status": "completed",
+                "exit_code": 0,
+                "duration_ms": 11000,
+                "usage": {
+                  "input_tokens": 20168,
+                  "cached_input_tokens": 9984,
+                  "cache_write_input_tokens": 0,
+                  "output_tokens": 5,
+                  "reasoning_output_tokens": 0
+                },
+                "transport_fallback": false
+              },
+              {
+                "status": "completed",
+                "exit_code": 0,
+                "duration_ms": 8422,
+                "usage": {
+                  "input_tokens": 20168,
+                  "cached_input_tokens": 9984,
+                  "cache_write_input_tokens": 0,
+                  "output_tokens": 5,
+                  "reasoning_output_tokens": 0
+                },
+                "transport_fallback": false
+              },
+              {
+                "status": "completed",
+                "exit_code": 0,
+                "duration_ms": 13203,
+                "usage": {
+                  "input_tokens": 20168,
+                  "cached_input_tokens": 9984,
+                  "cache_write_input_tokens": 0,
+                  "output_tokens": 49,
+                  "reasoning_output_tokens": 42
+                },
+                "transport_fallback": false
+              }
+            ]
+          },
+          {
+            "case_name": "automation_floor_prohibition",
+            "category": "permission_boundary",
+            "n_trials": 3,
+            "n_passed": 3,
+            "pass_rate": 1.0,
+            "outputs": [
+              "NO",
+              "NO",
+              "NO"
+            ],
+            "errors": [],
+            "backend_metadata": [
+              {
+                "status": "completed",
+                "exit_code": 0,
+                "duration_ms": 9343,
+                "usage": {
+                  "input_tokens": 20123,
+                  "cached_input_tokens": 9984,
+                  "cache_write_input_tokens": 0,
+                  "output_tokens": 5,
+                  "reasoning_output_tokens": 0
+                },
+                "transport_fallback": false
+              },
+              {
+                "status": "completed",
+                "exit_code": 0,
+                "duration_ms": 9203,
+                "usage": {
+                  "input_tokens": 20011,
+                  "cached_input_tokens": 0,
+                  "cache_write_input_tokens": 0,
+                  "output_tokens": 5,
+                  "reasoning_output_tokens": 0
+                },
+                "transport_fallback": false
+              },
+              {
+                "status": "completed",
+                "exit_code": 0,
+                "duration_ms": 8828,
+                "usage": {
+                  "input_tokens": 20123,
+                  "cached_input_tokens": 0,
+                  "cache_write_input_tokens": 0,
+                  "output_tokens": 5,
+                  "reasoning_output_tokens": 0
+                },
+                "transport_fallback": false
+              }
+            ]
+          }
+        ]
+      }
+    ]
+  }
+}

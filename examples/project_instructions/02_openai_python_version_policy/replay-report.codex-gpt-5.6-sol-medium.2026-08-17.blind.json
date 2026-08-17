@@ -1,0 +1,2693 @@
+{
+  "schema_version": "denser.replay-report/v4",
+  "task_type": "claude_md",
+  "seed": 20260817,
+  "n_trials": 3,
+  "suite_sha256": "6c2e72817f61a1bff3300011132df6d1f4a14db18bf3452d203946b73d67afd1",
+  "generated_at_utc": "2026-08-17T05:57:43.189593Z",
+  "runtime_config": {
+    "backend_kind": "codex-cli",
+    "model": "gpt-5.6-sol",
+    "codex_cli_version": "0.147.0",
+    "reasoning_effort": "medium",
+    "sandbox": "read-only",
+    "ephemeral": true,
+    "ignore_user_config": true,
+    "respect_system_proxy": true,
+    "timeout_seconds": 180.0,
+    "disabled_features": [
+      "apps",
+      "memories",
+      "multi_agent"
+    ]
+  },
+  "suite_metadata": {
+    "role": "holdout",
+    "freeze": {
+      "original_sha256": "b09d9ab7fdc908c841f3cba8cdbc2131723cbd09189f91f47e0ce04b8465b18d",
+      "candidate_sha256": "036469c04905be62da916e39805cfa4e50a44fe1e6e3619b90f8a46ff2371345",
+      "candidate_commit": "2f88ee52a9bdc68f6c215b8eae96d74f247c9af8",
+      "frozen_at_utc": "2026-08-17T05:44:42Z"
+    },
+    "authoring": {
+      "method": "independent_codex_cli_without_candidate",
+      "authored_at_utc": "2026-08-17T05:49:00Z",
+      "candidate_visible": false,
+      "backend": "codex-cli",
+      "model": "gpt-5.6-sol",
+      "reasoning_effort": "medium",
+      "cli_version": "0.147.0"
+    }
+  },
+  "delta": 0.0,
+  "original": {
+    "schema_version": "denser.replay-report/v4",
+    "task_type": "claude_md",
+    "backend_name": "codex-cli/gpt-5.6-sol",
+    "n_trials": 3,
+    "instruction_sha256": "b09d9ab7fdc908c841f3cba8cdbc2131723cbd09189f91f47e0ce04b8465b18d",
+    "suite_sha256": "6c2e72817f61a1bff3300011132df6d1f4a14db18bf3452d203946b73d67afd1",
+    "generated_at_utc": "2026-08-17T05:57:43.189593Z",
+    "runtime_config": {
+      "backend_kind": "codex-cli",
+      "model": "gpt-5.6-sol",
+      "codex_cli_version": "0.147.0",
+      "reasoning_effort": "medium",
+      "sandbox": "read-only",
+      "ephemeral": true,
+      "ignore_user_config": true,
+      "respect_system_proxy": true,
+      "timeout_seconds": 180.0,
+      "disabled_features": [
+        "apps",
+        "memories",
+        "multi_agent"
+      ]
+    },
+    "suite_metadata": {
+      "role": "holdout",
+      "freeze": {
+        "original_sha256": "b09d9ab7fdc908c841f3cba8cdbc2131723cbd09189f91f47e0ce04b8465b18d",
+        "candidate_sha256": "036469c04905be62da916e39805cfa4e50a44fe1e6e3619b90f8a46ff2371345",
+        "candidate_commit": "2f88ee52a9bdc68f6c215b8eae96d74f247c9af8",
+        "frozen_at_utc": "2026-08-17T05:44:42Z"
+      },
+      "authoring": {
+        "method": "independent_codex_cli_without_candidate",
+        "authored_at_utc": "2026-08-17T05:49:00Z",
+        "candidate_visible": false,
+        "backend": "codex-cli",
+        "model": "gpt-5.6-sol",
+        "reasoning_effort": "medium",
+        "cli_version": "0.147.0"
+      }
+    },
+    "overall_pass_rate": 0.9682539682539683,
+    "n_tasks": 3,
+    "n_cases": 23,
+    "n_errors": 0,
+    "usage_totals": {
+      "input_tokens": 1411899,
+      "cached_input_tokens": 634112,
+      "cache_write_input_tokens": 0,
+      "output_tokens": 475,
+      "reasoning_output_tokens": 0
+    },
+    "task_results": [
+      {
+        "task_name": "python_policy_decisions",
+        "pass_threshold": 1.0,
+        "overall_pass_rate": 1.0,
+        "passed": true,
+        "n_errors": 0,
+        "case_results": [
+          {
+            "case_name": "authoritative_sources",
+            "category": "positive_trigger",
+            "n_trials": 3,
+            "n_passed": 3,
+            "pass_rate": 1.0,
+            "outputs": [
+              "technical=pyproject.toml; human=PYTHON_VERSION_POLICY.md",
+              "technical=pyproject.toml; human=PYTHON_VERSION_POLICY.md",
+              "technical=pyproject.toml; human=PYTHON_VERSION_POLICY.md"
+            ],
+            "errors": [],
+            "backend_metadata": [
+              {
+                "status": "completed",
+                "exit_code": 0,
+                "duration_ms": 10234,
+                "usage": {
+                  "input_tokens": 20576,
+                  "cached_input_tokens": 5888,
+                  "cache_write_input_tokens": 0,
+                  "output_tokens": 18,
+                  "reasoning_output_tokens": 0
+                },
+                "transport_fallback": false
+              },
+              {
+                "status": "completed",
+                "exit_code": 0,
+                "duration_ms": 9844,
+                "usage": {
+                  "input_tokens": 20576,
+                  "cached_input_tokens": 0,
+                  "cache_write_input_tokens": 0,
+                  "output_tokens": 18,
+                  "reasoning_output_tokens": 0
+                },
+                "transport_fallback": false
+              },
+              {
+                "status": "completed",
+                "exit_code": 0,
+                "duration_ms": 10594,
+                "usage": {
+                  "input_tokens": 20576,
+                  "cached_input_tokens": 5888,
+                  "cache_write_input_tokens": 0,
+                  "output_tokens": 18,
+                  "reasoning_output_tokens": 0
+                },
+                "transport_fallback": false
+              }
+            ]
+          },
+          {
+            "case_name": "retired_runtime_without_grace",
+            "category": "near_miss",
+            "n_trials": 3,
+            "n_passed": 3,
+            "pass_rate": 1.0,
+            "outputs": [
+              "NO",
+              "NO",
+              "NO"
+            ],
+            "errors": [],
+            "backend_metadata": [
+              {
+                "status": "completed",
+                "exit_code": 0,
+                "duration_ms": 8515,
+                "usage": {
+                  "input_tokens": 20579,
+                  "cached_input_tokens": 0,
+                  "cache_write_input_tokens": 0,
+                  "output_tokens": 5,
+                  "reasoning_output_tokens": 0
+                },
+                "transport_fallback": false
+              },
+              {
+                "status": "completed",
+                "exit_code": 0,
+                "duration_ms": 26078,
+                "usage": {
+                  "input_tokens": 20467,
+                  "cached_input_tokens": 20224,
+                  "cache_write_input_tokens": 0,
+                  "output_tokens": 5,
+                  "reasoning_output_tokens": 0
+                },
+                "transport_fallback": false
+              },
+              {
+                "status": "completed",
+                "exit_code": 0,
+                "duration_ms": 10171,
+                "usage": {
+                  "input_tokens": 20579,
+                  "cached_input_tokens": 20224,
+                  "cache_write_input_tokens": 0,
+                  "output_tokens": 5,
+                  "reasoning_output_tokens": 0
+                },
+                "transport_fallback": false
+              }
+            ]
+          },
+          {
+            "case_name": "documented_grace_boundary",
+            "category": "positive_trigger",
+            "n_trials": 3,
+            "n_passed": 3,
+            "pass_rate": 1.0,
+            "outputs": [
+              "YES",
+              "YES",
+              "YES"
+            ],
+            "errors": [],
+            "backend_metadata": [
+              {
+                "status": "completed",
+                "exit_code": 0,
+                "duration_ms": 9609,
+                "usage": {
+                  "input_tokens": 20573,
+                  "cached_input_tokens": 5888,
+                  "cache_write_input_tokens": 0,
+                  "output_tokens": 5,
+                  "reasoning_output_tokens": 0
+                },
+                "transport_fallback": false
+              },
+              {
+                "status": "completed",
+                "exit_code": 0,
+                "duration_ms": 15671,
+                "usage": {
+                  "input_tokens": 20573,
+                  "cached_input_tokens": 20224,
+                  "cache_write_input_tokens": 0,
+                  "output_tokens": 5,
+                  "reasoning_output_tokens": 0
+                },
+                "transport_fallback": false
+              },
+              {
+                "status": "completed",
+                "exit_code": 0,
+                "duration_ms": 17234,
+                "usage": {
+                  "input_tokens": 20573,
+                  "cached_input_tokens": 9984,
+                  "cache_write_input_tokens": 0,
+                  "output_tokens": 5,
+                  "reasoning_output_tokens": 0
+                },
+                "transport_fallback": false
+              }
+            ]
+          },
+          {
+            "case_name": "version_surface_sync",
+            "category": "failure_path",
+            "n_trials": 3,
+            "n_passed": 3,
+            "pass_rate": 1.0,
+            "outputs": [
+              "REJECT",
+              "REJECT",
+              "REJECT"
+            ],
+            "errors": [],
+            "backend_metadata": [
+              {
+                "status": "completed",
+                "exit_code": 0,
+                "duration_ms": 23829,
+                "usage": {
+                  "input_tokens": 20582,
+                  "cached_input_tokens": 20224,
+                  "cache_write_input_tokens": 0,
+                  "output_tokens": 6,
+                  "reasoning_output_tokens": 0
+                },
+                "transport_fallback": false
+              },
+              {
+                "status": "completed",
+                "exit_code": 0,
+                "duration_ms": 117422,
+                "usage": {
+                  "input_tokens": 19482,
+                  "cached_input_tokens": 0,
+                  "cache_write_input_tokens": 0,
+                  "output_tokens": 6,
+                  "reasoning_output_tokens": 0
+                },
+                "transport_fallback": true
+              },
+              {
+                "status": "completed",
+                "exit_code": 0,
+                "duration_ms": 12906,
+                "usage": {
+                  "input_tokens": 20470,
+                  "cached_input_tokens": 9984,
+                  "cache_write_input_tokens": 0,
+                  "output_tokens": 6,
+                  "reasoning_output_tokens": 0
+                },
+                "transport_fallback": false
+              }
+            ]
+          },
+          {
+            "case_name": "unrelated_upgrade_bundling",
+            "category": "adversarial",
+            "n_trials": 3,
+            "n_passed": 3,
+            "pass_rate": 1.0,
+            "outputs": [
+              "SPLIT",
+              "SPLIT",
+              "SPLIT"
+            ],
+            "errors": [],
+            "backend_metadata": [
+              {
+                "status": "completed",
+                "exit_code": 0,
+                "duration_ms": 11828,
+                "usage": {
+                  "input_tokens": 20571,
+                  "cached_input_tokens": 9984,
+                  "cache_write_input_tokens": 0,
+                  "output_tokens": 7,
+                  "reasoning_output_tokens": 0
+                },
+                "transport_fallback": false
+              },
+              {
+                "status": "completed",
+                "exit_code": 0,
+                "duration_ms": 26985,
+                "usage": {
+                  "input_tokens": 20459,
+                  "cached_input_tokens": 9984,
+                  "cache_write_input_tokens": 0,
+                  "output_tokens": 7,
+                  "reasoning_output_tokens": 0
+                },
+                "transport_fallback": false
+              },
+              {
+                "status": "completed",
+                "exit_code": 0,
+                "duration_ms": 16203,
+                "usage": {
+                  "input_tokens": 20571,
+                  "cached_input_tokens": 20224,
+                  "cache_write_input_tokens": 0,
+                  "output_tokens": 7,
+                  "reasoning_output_tokens": 0
+                },
+                "transport_fallback": false
+              }
+            ]
+          },
+          {
+            "case_name": "checker_policy_limit",
+            "category": "near_miss",
+            "n_trials": 3,
+            "n_passed": 3,
+            "pass_rate": 1.0,
+            "outputs": [
+              "NO",
+              "NO",
+              "NO"
+            ],
+            "errors": [],
+            "backend_metadata": [
+              {
+                "status": "completed",
+                "exit_code": 0,
+                "duration_ms": 9984,
+                "usage": {
+                  "input_tokens": 20569,
+                  "cached_input_tokens": 20224,
+                  "cache_write_input_tokens": 0,
+                  "output_tokens": 5,
+                  "reasoning_output_tokens": 0
+                },
+                "transport_fallback": false
+              },
+              {
+                "status": "completed",
+                "exit_code": 0,
+                "duration_ms": 9328,
+                "usage": {
+                  "input_tokens": 20569,
+                  "cached_input_tokens": 20224,
+                  "cache_write_input_tokens": 0,
+                  "output_tokens": 5,
+                  "reasoning_output_tokens": 0
+                },
+                "transport_fallback": false
+              },
+              {
+                "status": "completed",
+                "exit_code": 0,
+                "duration_ms": 21969,
+                "usage": {
+                  "input_tokens": 20457,
+                  "cached_input_tokens": 0,
+                  "cache_write_input_tokens": 0,
+                  "output_tokens": 5,
+                  "reasoning_output_tokens": 0
+                },
+                "transport_fallback": false
+              }
+            ]
+          }
+        ]
+      },
+      {
+        "task_name": "floor_change_delivery",
+        "pass_threshold": 1.0,
+        "overall_pass_rate": 1.0,
+        "passed": true,
+        "n_errors": 0,
+        "case_results": [
+          {
+            "case_name": "generated_sdk_prerequisite",
+            "category": "permission_boundary",
+            "n_trials": 3,
+            "n_passed": 3,
+            "pass_rate": 1.0,
+            "outputs": [
+              "CONTRIBUTING.md",
+              "CONTRIBUTING.md",
+              "CONTRIBUTING.md"
+            ],
+            "errors": [],
+            "backend_metadata": [
+              {
+                "status": "completed",
+                "exit_code": 0,
+                "duration_ms": 10812,
+                "usage": {
+                  "input_tokens": 20569,
+                  "cached_input_tokens": 20224,
+                  "cache_write_input_tokens": 0,
+                  "output_tokens": 9,
+                  "reasoning_output_tokens": 0
+                },
+                "transport_fallback": false
+              },
+              {
+                "status": "completed",
+                "exit_code": 0,
+                "duration_ms": 23782,
+                "usage": {
+                  "input_tokens": 20457,
+                  "cached_input_tokens": 9984,
+                  "cache_write_input_tokens": 0,
+                  "output_tokens": 9,
+                  "reasoning_output_tokens": 0
+                },
+                "transport_fallback": false
+              },
+              {
+                "status": "completed",
+                "exit_code": 0,
+                "duration_ms": 9797,
+                "usage": {
+                  "input_tokens": 20569,
+                  "cached_input_tokens": 20224,
+                  "cache_write_input_tokens": 0,
+                  "output_tokens": 9,
+                  "reasoning_output_tokens": 0
+                },
+                "transport_fallback": false
+              }
+            ]
+          },
+          {
+            "case_name": "exported_api_scope",
+            "category": "near_miss",
+            "n_trials": 3,
+            "n_passed": 3,
+            "pass_rate": 1.0,
+            "outputs": [
+              "PRESERVE",
+              "PRESERVE",
+              "PRESERVE"
+            ],
+            "errors": [],
+            "backend_metadata": [
+              {
+                "status": "completed",
+                "exit_code": 0,
+                "duration_ms": 10797,
+                "usage": {
+                  "input_tokens": 20579,
+                  "cached_input_tokens": 0,
+                  "cache_write_input_tokens": 0,
+                  "output_tokens": 7,
+                  "reasoning_output_tokens": 0
+                },
+                "transport_fallback": false
+              },
+              {
+                "status": "completed",
+                "exit_code": 0,
+                "duration_ms": 11547,
+                "usage": {
+                  "input_tokens": 20467,
+                  "cached_input_tokens": 0,
+                  "cache_write_input_tokens": 0,
+                  "output_tokens": 7,
+                  "reasoning_output_tokens": 0
+                },
+                "transport_fallback": false
+              },
+              {
+                "status": "completed",
+                "exit_code": 0,
+                "duration_ms": 35532,
+                "usage": {
+                  "input_tokens": 19479,
+                  "cached_input_tokens": 0,
+                  "cache_write_input_tokens": 0,
+                  "output_tokens": 7,
+                  "reasoning_output_tokens": 0
+                },
+                "transport_fallback": false
+              }
+            ]
+          },
+          {
+            "case_name": "floor_change_file_set",
+            "category": "failure_path",
+            "n_trials": 3,
+            "n_passed": 3,
+            "pass_rate": 1.0,
+            "outputs": [
+              "INCOMPLETE",
+              "INCOMPLETE",
+              "INCOMPLETE"
+            ],
+            "errors": [],
+            "backend_metadata": [
+              {
+                "status": "completed",
+                "exit_code": 0,
+                "duration_ms": 10547,
+                "usage": {
+                  "input_tokens": 20592,
+                  "cached_input_tokens": 0,
+                  "cache_write_input_tokens": 0,
+                  "output_tokens": 7,
+                  "reasoning_output_tokens": 0
+                },
+                "transport_fallback": false
+              },
+              {
+                "status": "completed",
+                "exit_code": 0,
+                "duration_ms": 12625,
+                "usage": {
+                  "input_tokens": 20480,
+                  "cached_input_tokens": 20224,
+                  "cache_write_input_tokens": 0,
+                  "output_tokens": 7,
+                  "reasoning_output_tokens": 0
+                },
+                "transport_fallback": false
+              },
+              {
+                "status": "completed",
+                "exit_code": 0,
+                "duration_ms": 10000,
+                "usage": {
+                  "input_tokens": 20592,
+                  "cached_input_tokens": 9984,
+                  "cache_write_input_tokens": 0,
+                  "output_tokens": 7,
+                  "reasoning_output_tokens": 0
+                },
+                "transport_fallback": false
+              }
+            ]
+          },
+          {
+            "case_name": "retired_dependency_branch",
+            "category": "positive_trigger",
+            "n_trials": 3,
+            "n_passed": 3,
+            "pass_rate": 1.0,
+            "outputs": [
+              "REMOVE",
+              "REMOVE",
+              "REMOVE"
+            ],
+            "errors": [],
+            "backend_metadata": [
+              {
+                "status": "completed",
+                "exit_code": 0,
+                "duration_ms": 8000,
+                "usage": {
+                  "input_tokens": 20568,
+                  "cached_input_tokens": 0,
+                  "cache_write_input_tokens": 0,
+                  "output_tokens": 5,
+                  "reasoning_output_tokens": 0
+                },
+                "transport_fallback": false
+              },
+              {
+                "status": "completed",
+                "exit_code": 0,
+                "duration_ms": 23390,
+                "usage": {
+                  "input_tokens": 20456,
+                  "cached_input_tokens": 9984,
+                  "cache_write_input_tokens": 0,
+                  "output_tokens": 5,
+                  "reasoning_output_tokens": 0
+                },
+                "transport_fallback": false
+              },
+              {
+                "status": "completed",
+                "exit_code": 0,
+                "duration_ms": 12079,
+                "usage": {
+                  "input_tokens": 20456,
+                  "cached_input_tokens": 9984,
+                  "cache_write_input_tokens": 0,
+                  "output_tokens": 5,
+                  "reasoning_output_tokens": 0
+                },
+                "transport_fallback": false
+              }
+            ]
+          },
+          {
+            "case_name": "distribution_validation",
+            "category": "failure_path",
+            "n_trials": 3,
+            "n_passed": 3,
+            "pass_rate": 1.0,
+            "outputs": [
+              "NOT_READY",
+              "NOT_READY",
+              "NOT_READY"
+            ],
+            "errors": [],
+            "backend_metadata": [
+              {
+                "status": "completed",
+                "exit_code": 0,
+                "duration_ms": 11438,
+                "usage": {
+                  "input_tokens": 20578,
+                  "cached_input_tokens": 9984,
+                  "cache_write_input_tokens": 0,
+                  "output_tokens": 6,
+                  "reasoning_output_tokens": 0
+                },
+                "transport_fallback": false
+              },
+              {
+                "status": "completed",
+                "exit_code": 0,
+                "duration_ms": 11437,
+                "usage": {
+                  "input_tokens": 20578,
+                  "cached_input_tokens": 9984,
+                  "cache_write_input_tokens": 0,
+                  "output_tokens": 6,
+                  "reasoning_output_tokens": 0
+                },
+                "transport_fallback": false
+              },
+              {
+                "status": "completed",
+                "exit_code": 0,
+                "duration_ms": 7328,
+                "usage": {
+                  "input_tokens": 20466,
+                  "cached_input_tokens": 0,
+                  "cache_write_input_tokens": 0,
+                  "output_tokens": 6,
+                  "reasoning_output_tokens": 0
+                },
+                "transport_fallback": false
+              }
+            ]
+          },
+          {
+            "case_name": "release_note_content",
+            "category": "positive_trigger",
+            "n_trials": 3,
+            "n_passed": 3,
+            "pass_rate": 1.0,
+            "outputs": [
+              "## Release note",
+              "## Release note",
+              "## Release note"
+            ],
+            "errors": [],
+            "backend_metadata": [
+              {
+                "status": "completed",
+                "exit_code": 0,
+                "duration_ms": 9047,
+                "usage": {
+                  "input_tokens": 20570,
+                  "cached_input_tokens": 20224,
+                  "cache_write_input_tokens": 0,
+                  "output_tokens": 7,
+                  "reasoning_output_tokens": 0
+                },
+                "transport_fallback": false
+              },
+              {
+                "status": "completed",
+                "exit_code": 0,
+                "duration_ms": 21344,
+                "usage": {
+                  "input_tokens": 20458,
+                  "cached_input_tokens": 5888,
+                  "cache_write_input_tokens": 0,
+                  "output_tokens": 7,
+                  "reasoning_output_tokens": 0
+                },
+                "transport_fallback": false
+              },
+              {
+                "status": "completed",
+                "exit_code": 0,
+                "duration_ms": 16953,
+                "usage": {
+                  "input_tokens": 20458,
+                  "cached_input_tokens": 20224,
+                  "cache_write_input_tokens": 0,
+                  "output_tokens": 7,
+                  "reasoning_output_tokens": 0
+                },
+                "transport_fallback": false
+              }
+            ]
+          },
+          {
+            "case_name": "security_backport_promise",
+            "category": "adversarial",
+            "n_trials": 3,
+            "n_passed": 3,
+            "pass_rate": 1.0,
+            "outputs": [
+              "FORBIDDEN",
+              "FORBIDDEN",
+              "FORBIDDEN"
+            ],
+            "errors": [],
+            "backend_metadata": [
+              {
+                "status": "completed",
+                "exit_code": 0,
+                "duration_ms": 26625,
+                "usage": {
+                  "input_tokens": 20468,
+                  "cached_input_tokens": 9984,
+                  "cache_write_input_tokens": 0,
+                  "output_tokens": 7,
+                  "reasoning_output_tokens": 0
+                },
+                "transport_fallback": false
+              },
+              {
+                "status": "completed",
+                "exit_code": 0,
+                "duration_ms": 10235,
+                "usage": {
+                  "input_tokens": 20580,
+                  "cached_input_tokens": 20224,
+                  "cache_write_input_tokens": 0,
+                  "output_tokens": 7,
+                  "reasoning_output_tokens": 0
+                },
+                "transport_fallback": false
+              },
+              {
+                "status": "completed",
+                "exit_code": 0,
+                "duration_ms": 11906,
+                "usage": {
+                  "input_tokens": 20580,
+                  "cached_input_tokens": 9984,
+                  "cache_write_input_tokens": 0,
+                  "output_tokens": 7,
+                  "reasoning_output_tokens": 0
+                },
+                "transport_fallback": false
+              }
+            ]
+          },
+          {
+            "case_name": "codeowner_gate",
+            "category": "permission_boundary",
+            "n_trials": 3,
+            "n_passed": 3,
+            "pass_rate": 1.0,
+            "outputs": [
+              "BLOCK",
+              "BLOCK",
+              "BLOCK"
+            ],
+            "errors": [],
+            "backend_metadata": [
+              {
+                "status": "completed",
+                "exit_code": 0,
+                "duration_ms": 21000,
+                "usage": {
+                  "input_tokens": 20461,
+                  "cached_input_tokens": 5888,
+                  "cache_write_input_tokens": 0,
+                  "output_tokens": 5,
+                  "reasoning_output_tokens": 0
+                },
+                "transport_fallback": false
+              },
+              {
+                "status": "completed",
+                "exit_code": 0,
+                "duration_ms": 17625,
+                "usage": {
+                  "input_tokens": 20573,
+                  "cached_input_tokens": 0,
+                  "cache_write_input_tokens": 0,
+                  "output_tokens": 5,
+                  "reasoning_output_tokens": 0
+                },
+                "transport_fallback": false
+              },
+              {
+                "status": "completed",
+                "exit_code": 0,
+                "duration_ms": 10703,
+                "usage": {
+                  "input_tokens": 20573,
+                  "cached_input_tokens": 9984,
+                  "cache_write_input_tokens": 0,
+                  "output_tokens": 5,
+                  "reasoning_output_tokens": 0
+                },
+                "transport_fallback": false
+              }
+            ]
+          },
+          {
+            "case_name": "named_validation_suite",
+            "category": "failure_path",
+            "n_trials": 3,
+            "n_passed": 3,
+            "pass_rate": 1.0,
+            "outputs": [
+              "NOT_READY",
+              "NOT_READY",
+              "NOT_READY"
+            ],
+            "errors": [],
+            "backend_metadata": [
+              {
+                "status": "completed",
+                "exit_code": 0,
+                "duration_ms": 9969,
+                "usage": {
+                  "input_tokens": 20574,
+                  "cached_input_tokens": 0,
+                  "cache_write_input_tokens": 0,
+                  "output_tokens": 6,
+                  "reasoning_output_tokens": 0
+                },
+                "transport_fallback": false
+              },
+              {
+                "status": "completed",
+                "exit_code": 0,
+                "duration_ms": 15219,
+                "usage": {
+                  "input_tokens": 20462,
+                  "cached_input_tokens": 0,
+                  "cache_write_input_tokens": 0,
+                  "output_tokens": 6,
+                  "reasoning_output_tokens": 0
+                },
+                "transport_fallback": false
+              },
+              {
+                "status": "completed",
+                "exit_code": 0,
+                "duration_ms": 11422,
+                "usage": {
+                  "input_tokens": 20574,
+                  "cached_input_tokens": 20224,
+                  "cache_write_input_tokens": 0,
+                  "output_tokens": 6,
+                  "reasoning_output_tokens": 0
+                },
+                "transport_fallback": false
+              }
+            ]
+          },
+          {
+            "case_name": "scheduled_matrix_release_gate",
+            "category": "near_miss",
+            "n_trials": 3,
+            "n_passed": 3,
+            "pass_rate": 1.0,
+            "outputs": [
+              "WAIT",
+              "WAIT",
+              "WAIT"
+            ],
+            "errors": [],
+            "backend_metadata": [
+              {
+                "status": "completed",
+                "exit_code": 0,
+                "duration_ms": 7875,
+                "usage": {
+                  "input_tokens": 20458,
+                  "cached_input_tokens": 0,
+                  "cache_write_input_tokens": 0,
+                  "output_tokens": 5,
+                  "reasoning_output_tokens": 0
+                },
+                "transport_fallback": false
+              },
+              {
+                "status": "completed",
+                "exit_code": 0,
+                "duration_ms": 9796,
+                "usage": {
+                  "input_tokens": 20570,
+                  "cached_input_tokens": 9984,
+                  "cache_write_input_tokens": 0,
+                  "output_tokens": 5,
+                  "reasoning_output_tokens": 0
+                },
+                "transport_fallback": false
+              },
+              {
+                "status": "completed",
+                "exit_code": 0,
+                "duration_ms": 25594,
+                "usage": {
+                  "input_tokens": 20458,
+                  "cached_input_tokens": 9984,
+                  "cache_write_input_tokens": 0,
+                  "output_tokens": 5,
+                  "reasoning_output_tokens": 0
+                },
+                "transport_fallback": false
+              }
+            ]
+          }
+        ]
+      },
+      {
+        "task_name": "automation_security_boundaries",
+        "pass_threshold": 1.0,
+        "overall_pass_rate": 0.9047619047619048,
+        "passed": false,
+        "n_errors": 0,
+        "case_results": [
+          {
+            "case_name": "normal_ci_trigger_coverage",
+            "category": "positive_trigger",
+            "n_trials": 3,
+            "n_passed": 3,
+            "pass_rate": 1.0,
+            "outputs": [
+              "MINIMUM_AND_CURRENT",
+              "MINIMUM_AND_CURRENT",
+              "MINIMUM_AND_CURRENT"
+            ],
+            "errors": [],
+            "backend_metadata": [
+              {
+                "status": "completed",
+                "exit_code": 0,
+                "duration_ms": 10281,
+                "usage": {
+                  "input_tokens": 20571,
+                  "cached_input_tokens": 0,
+                  "cache_write_input_tokens": 0,
+                  "output_tokens": 8,
+                  "reasoning_output_tokens": 0
+                },
+                "transport_fallback": false
+              },
+              {
+                "status": "completed",
+                "exit_code": 0,
+                "duration_ms": 9297,
+                "usage": {
+                  "input_tokens": 20571,
+                  "cached_input_tokens": 20224,
+                  "cache_write_input_tokens": 0,
+                  "output_tokens": 8,
+                  "reasoning_output_tokens": 0
+                },
+                "transport_fallback": false
+              },
+              {
+                "status": "completed",
+                "exit_code": 0,
+                "duration_ms": 8609,
+                "usage": {
+                  "input_tokens": 20571,
+                  "cached_input_tokens": 20224,
+                  "cache_write_input_tokens": 0,
+                  "output_tokens": 8,
+                  "reasoning_output_tokens": 0
+                },
+                "transport_fallback": false
+              }
+            ]
+          },
+          {
+            "case_name": "scheduled_ci_role",
+            "category": "near_miss",
+            "n_trials": 3,
+            "n_passed": 1,
+            "pass_rate": 0.3333333333333333,
+            "outputs": [
+              "allowed-failure-prerelease",
+              "allowed-failure prerelease",
+              "allowed-failure prerelease"
+            ],
+            "errors": [],
+            "backend_metadata": [
+              {
+                "status": "completed",
+                "exit_code": 0,
+                "duration_ms": 10454,
+                "usage": {
+                  "input_tokens": 20573,
+                  "cached_input_tokens": 20224,
+                  "cache_write_input_tokens": 0,
+                  "output_tokens": 10,
+                  "reasoning_output_tokens": 0
+                },
+                "transport_fallback": false
+              },
+              {
+                "status": "completed",
+                "exit_code": 0,
+                "duration_ms": 12406,
+                "usage": {
+                  "input_tokens": 20573,
+                  "cached_input_tokens": 0,
+                  "cache_write_input_tokens": 0,
+                  "output_tokens": 9,
+                  "reasoning_output_tokens": 0
+                },
+                "transport_fallback": false
+              },
+              {
+                "status": "completed",
+                "exit_code": 0,
+                "duration_ms": 8500,
+                "usage": {
+                  "input_tokens": 20573,
+                  "cached_input_tokens": 9984,
+                  "cache_write_input_tokens": 0,
+                  "output_tokens": 9,
+                  "reasoning_output_tokens": 0
+                },
+                "transport_fallback": false
+              }
+            ]
+          },
+          {
+            "case_name": "monthly_review_inputs",
+            "category": "failure_path",
+            "n_trials": 3,
+            "n_passed": 3,
+            "pass_rate": 1.0,
+            "outputs": [
+              "INSUFFICIENT",
+              "INSUFFICIENT",
+              "INSUFFICIENT"
+            ],
+            "errors": [],
+            "backend_metadata": [
+              {
+                "status": "completed",
+                "exit_code": 0,
+                "duration_ms": 25875,
+                "usage": {
+                  "input_tokens": 20580,
+                  "cached_input_tokens": 0,
+                  "cache_write_input_tokens": 0,
+                  "output_tokens": 8,
+                  "reasoning_output_tokens": 0
+                },
+                "transport_fallback": false
+              },
+              {
+                "status": "completed",
+                "exit_code": 0,
+                "duration_ms": 9875,
+                "usage": {
+                  "input_tokens": 20580,
+                  "cached_input_tokens": 0,
+                  "cache_write_input_tokens": 0,
+                  "output_tokens": 8,
+                  "reasoning_output_tokens": 0
+                },
+                "transport_fallback": false
+              },
+              {
+                "status": "completed",
+                "exit_code": 0,
+                "duration_ms": 41391,
+                "usage": {
+                  "input_tokens": 19480,
+                  "cached_input_tokens": 0,
+                  "cache_write_input_tokens": 0,
+                  "output_tokens": 8,
+                  "reasoning_output_tokens": 0
+                },
+                "transport_fallback": false
+              }
+            ]
+          },
+          {
+            "case_name": "review_runtime_constraints",
+            "category": "positive_trigger",
+            "n_trials": 3,
+            "n_passed": 3,
+            "pass_rate": 1.0,
+            "outputs": [
+              "A",
+              "A",
+              "A"
+            ],
+            "errors": [],
+            "backend_metadata": [
+              {
+                "status": "completed",
+                "exit_code": 0,
+                "duration_ms": 10718,
+                "usage": {
+                  "input_tokens": 20588,
+                  "cached_input_tokens": 20224,
+                  "cache_write_input_tokens": 0,
+                  "output_tokens": 5,
+                  "reasoning_output_tokens": 0
+                },
+                "transport_fallback": false
+              },
+              {
+                "status": "completed",
+                "exit_code": 0,
+                "duration_ms": 39031,
+                "usage": {
+                  "input_tokens": 20587,
+                  "cached_input_tokens": 0,
+                  "cache_write_input_tokens": 0,
+                  "output_tokens": 5,
+                  "reasoning_output_tokens": 0
+                },
+                "transport_fallback": false
+              },
+              {
+                "status": "completed",
+                "exit_code": 0,
+                "duration_ms": 11594,
+                "usage": {
+                  "input_tokens": 20588,
+                  "cached_input_tokens": 20224,
+                  "cache_write_input_tokens": 0,
+                  "output_tokens": 5,
+                  "reasoning_output_tokens": 0
+                },
+                "transport_fallback": false
+              }
+            ]
+          },
+          {
+            "case_name": "critical_codex_permission_negative_control",
+            "category": "permission_boundary",
+            "n_trials": 3,
+            "n_passed": 3,
+            "pass_rate": 1.0,
+            "outputs": [
+              "D",
+              "D",
+              "D"
+            ],
+            "errors": [],
+            "backend_metadata": [
+              {
+                "status": "completed",
+                "exit_code": 0,
+                "duration_ms": 9766,
+                "usage": {
+                  "input_tokens": 20615,
+                  "cached_input_tokens": 20224,
+                  "cache_write_input_tokens": 0,
+                  "output_tokens": 5,
+                  "reasoning_output_tokens": 0
+                },
+                "transport_fallback": false
+              },
+              {
+                "status": "completed",
+                "exit_code": 0,
+                "duration_ms": 15250,
+                "usage": {
+                  "input_tokens": 19515,
+                  "cached_input_tokens": 0,
+                  "cache_write_input_tokens": 0,
+                  "output_tokens": 5,
+                  "reasoning_output_tokens": 0
+                },
+                "transport_fallback": false
+              },
+              {
+                "status": "completed",
+                "exit_code": 0,
+                "duration_ms": 8985,
+                "usage": {
+                  "input_tokens": 20615,
+                  "cached_input_tokens": 0,
+                  "cache_write_input_tokens": 0,
+                  "output_tokens": 5,
+                  "reasoning_output_tokens": 0
+                },
+                "transport_fallback": false
+              }
+            ]
+          },
+          {
+            "case_name": "separate_issue_job_boundary",
+            "category": "adversarial",
+            "n_trials": 3,
+            "n_passed": 3,
+            "pass_rate": 1.0,
+            "outputs": [
+              "ONE_ISSUE",
+              "ONE_ISSUE",
+              "ONE_ISSUE"
+            ],
+            "errors": [],
+            "backend_metadata": [
+              {
+                "status": "completed",
+                "exit_code": 0,
+                "duration_ms": 16031,
+                "usage": {
+                  "input_tokens": 20476,
+                  "cached_input_tokens": 20224,
+                  "cache_write_input_tokens": 0,
+                  "output_tokens": 8,
+                  "reasoning_output_tokens": 0
+                },
+                "transport_fallback": false
+              },
+              {
+                "status": "completed",
+                "exit_code": 0,
+                "duration_ms": 27266,
+                "usage": {
+                  "input_tokens": 19488,
+                  "cached_input_tokens": 0,
+                  "cache_write_input_tokens": 0,
+                  "output_tokens": 8,
+                  "reasoning_output_tokens": 0
+                },
+                "transport_fallback": false
+              },
+              {
+                "status": "completed",
+                "exit_code": 0,
+                "duration_ms": 9078,
+                "usage": {
+                  "input_tokens": 20476,
+                  "cached_input_tokens": 20224,
+                  "cache_write_input_tokens": 0,
+                  "output_tokens": 8,
+                  "reasoning_output_tokens": 0
+                },
+                "transport_fallback": false
+              }
+            ]
+          },
+          {
+            "case_name": "automation_floor_prohibition",
+            "category": "permission_boundary",
+            "n_trials": 3,
+            "n_passed": 3,
+            "pass_rate": 1.0,
+            "outputs": [
+              "NO",
+              "NO",
+              "NO"
+            ],
+            "errors": [],
+            "backend_metadata": [
+              {
+                "status": "completed",
+                "exit_code": 0,
+                "duration_ms": 9719,
+                "usage": {
+                  "input_tokens": 20458,
+                  "cached_input_tokens": 0,
+                  "cache_write_input_tokens": 0,
+                  "output_tokens": 5,
+                  "reasoning_output_tokens": 0
+                },
+                "transport_fallback": false
+              },
+              {
+                "status": "completed",
+                "exit_code": 0,
+                "duration_ms": 10859,
+                "usage": {
+                  "input_tokens": 20458,
+                  "cached_input_tokens": 0,
+                  "cache_write_input_tokens": 0,
+                  "output_tokens": 5,
+                  "reasoning_output_tokens": 0
+                },
+                "transport_fallback": false
+              },
+              {
+                "status": "completed",
+                "exit_code": 0,
+                "duration_ms": 17156,
+                "usage": {
+                  "input_tokens": 20458,
+                  "cached_input_tokens": 0,
+                  "cache_write_input_tokens": 0,
+                  "output_tokens": 5,
+                  "reasoning_output_tokens": 0
+                },
+                "transport_fallback": false
+              }
+            ]
+          }
+        ]
+      }
+    ]
+  },
+  "candidate": {
+    "schema_version": "denser.replay-report/v4",
+    "task_type": "claude_md",
+    "backend_name": "codex-cli/gpt-5.6-sol",
+    "n_trials": 3,
+    "instruction_sha256": "036469c04905be62da916e39805cfa4e50a44fe1e6e3619b90f8a46ff2371345",
+    "suite_sha256": "6c2e72817f61a1bff3300011132df6d1f4a14db18bf3452d203946b73d67afd1",
+    "generated_at_utc": "2026-08-17T05:57:43.189593Z",
+    "runtime_config": {
+      "backend_kind": "codex-cli",
+      "model": "gpt-5.6-sol",
+      "codex_cli_version": "0.147.0",
+      "reasoning_effort": "medium",
+      "sandbox": "read-only",
+      "ephemeral": true,
+      "ignore_user_config": true,
+      "respect_system_proxy": true,
+      "timeout_seconds": 180.0,
+      "disabled_features": [
+        "apps",
+        "memories",
+        "multi_agent"
+      ]
+    },
+    "suite_metadata": {
+      "role": "holdout",
+      "freeze": {
+        "original_sha256": "b09d9ab7fdc908c841f3cba8cdbc2131723cbd09189f91f47e0ce04b8465b18d",
+        "candidate_sha256": "036469c04905be62da916e39805cfa4e50a44fe1e6e3619b90f8a46ff2371345",
+        "candidate_commit": "2f88ee52a9bdc68f6c215b8eae96d74f247c9af8",
+        "frozen_at_utc": "2026-08-17T05:44:42Z"
+      },
+      "authoring": {
+        "method": "independent_codex_cli_without_candidate",
+        "authored_at_utc": "2026-08-17T05:49:00Z",
+        "candidate_visible": false,
+        "backend": "codex-cli",
+        "model": "gpt-5.6-sol",
+        "reasoning_effort": "medium",
+        "cli_version": "0.147.0"
+      }
+    },
+    "overall_pass_rate": 0.9682539682539683,
+    "n_tasks": 3,
+    "n_cases": 23,
+    "n_errors": 0,
+    "usage_totals": {
+      "input_tokens": 1408400,
+      "cached_input_tokens": 480000,
+      "cache_write_input_tokens": 0,
+      "output_tokens": 475,
+      "reasoning_output_tokens": 0
+    },
+    "task_results": [
+      {
+        "task_name": "python_policy_decisions",
+        "pass_threshold": 1.0,
+        "overall_pass_rate": 1.0,
+        "passed": true,
+        "n_errors": 0,
+        "case_results": [
+          {
+            "case_name": "authoritative_sources",
+            "category": "positive_trigger",
+            "n_trials": 3,
+            "n_passed": 3,
+            "pass_rate": 1.0,
+            "outputs": [
+              "technical=pyproject.toml; human=PYTHON_VERSION_POLICY.md",
+              "technical=pyproject.toml; human=PYTHON_VERSION_POLICY.md",
+              "technical=pyproject.toml; human=PYTHON_VERSION_POLICY.md"
+            ],
+            "errors": [],
+            "backend_metadata": [
+              {
+                "status": "completed",
+                "exit_code": 0,
+                "duration_ms": 19266,
+                "usage": {
+                  "input_tokens": 20426,
+                  "cached_input_tokens": 9984,
+                  "cache_write_input_tokens": 0,
+                  "output_tokens": 18,
+                  "reasoning_output_tokens": 0
+                },
+                "transport_fallback": false
+              },
+              {
+                "status": "completed",
+                "exit_code": 0,
+                "duration_ms": 20485,
+                "usage": {
+                  "input_tokens": 20538,
+                  "cached_input_tokens": 20224,
+                  "cache_write_input_tokens": 0,
+                  "output_tokens": 18,
+                  "reasoning_output_tokens": 0
+                },
+                "transport_fallback": false
+              },
+              {
+                "status": "completed",
+                "exit_code": 0,
+                "duration_ms": 9703,
+                "usage": {
+                  "input_tokens": 20538,
+                  "cached_input_tokens": 5888,
+                  "cache_write_input_tokens": 0,
+                  "output_tokens": 18,
+                  "reasoning_output_tokens": 0
+                },
+                "transport_fallback": false
+              }
+            ]
+          },
+          {
+            "case_name": "retired_runtime_without_grace",
+            "category": "near_miss",
+            "n_trials": 3,
+            "n_passed": 3,
+            "pass_rate": 1.0,
+            "outputs": [
+              "NO",
+              "NO",
+              "NO"
+            ],
+            "errors": [],
+            "backend_metadata": [
+              {
+                "status": "completed",
+                "exit_code": 0,
+                "duration_ms": 67406,
+                "usage": {
+                  "input_tokens": 19441,
+                  "cached_input_tokens": 0,
+                  "cache_write_input_tokens": 0,
+                  "output_tokens": 5,
+                  "reasoning_output_tokens": 0
+                },
+                "transport_fallback": false
+              },
+              {
+                "status": "completed",
+                "exit_code": 0,
+                "duration_ms": 11609,
+                "usage": {
+                  "input_tokens": 20541,
+                  "cached_input_tokens": 9984,
+                  "cache_write_input_tokens": 0,
+                  "output_tokens": 5,
+                  "reasoning_output_tokens": 0
+                },
+                "transport_fallback": false
+              },
+              {
+                "status": "completed",
+                "exit_code": 0,
+                "duration_ms": 9500,
+                "usage": {
+                  "input_tokens": 20541,
+                  "cached_input_tokens": 20224,
+                  "cache_write_input_tokens": 0,
+                  "output_tokens": 5,
+                  "reasoning_output_tokens": 0
+                },
+                "transport_fallback": false
+              }
+            ]
+          },
+          {
+            "case_name": "documented_grace_boundary",
+            "category": "positive_trigger",
+            "n_trials": 3,
+            "n_passed": 3,
+            "pass_rate": 1.0,
+            "outputs": [
+              "YES",
+              "YES",
+              "YES"
+            ],
+            "errors": [],
+            "backend_metadata": [
+              {
+                "status": "completed",
+                "exit_code": 0,
+                "duration_ms": 26766,
+                "usage": {
+                  "input_tokens": 20534,
+                  "cached_input_tokens": 0,
+                  "cache_write_input_tokens": 0,
+                  "output_tokens": 5,
+                  "reasoning_output_tokens": 0
+                },
+                "transport_fallback": false
+              },
+              {
+                "status": "completed",
+                "exit_code": 0,
+                "duration_ms": 47906,
+                "usage": {
+                  "input_tokens": 20423,
+                  "cached_input_tokens": 0,
+                  "cache_write_input_tokens": 0,
+                  "output_tokens": 5,
+                  "reasoning_output_tokens": 0
+                },
+                "transport_fallback": false
+              },
+              {
+                "status": "completed",
+                "exit_code": 0,
+                "duration_ms": 8781,
+                "usage": {
+                  "input_tokens": 20535,
+                  "cached_input_tokens": 5888,
+                  "cache_write_input_tokens": 0,
+                  "output_tokens": 5,
+                  "reasoning_output_tokens": 0
+                },
+                "transport_fallback": false
+              }
+            ]
+          },
+          {
+            "case_name": "version_surface_sync",
+            "category": "failure_path",
+            "n_trials": 3,
+            "n_passed": 3,
+            "pass_rate": 1.0,
+            "outputs": [
+              "REJECT",
+              "REJECT",
+              "REJECT"
+            ],
+            "errors": [],
+            "backend_metadata": [
+              {
+                "status": "completed",
+                "exit_code": 0,
+                "duration_ms": 9984,
+                "usage": {
+                  "input_tokens": 20544,
+                  "cached_input_tokens": 0,
+                  "cache_write_input_tokens": 0,
+                  "output_tokens": 6,
+                  "reasoning_output_tokens": 0
+                },
+                "transport_fallback": false
+              },
+              {
+                "status": "completed",
+                "exit_code": 0,
+                "duration_ms": 11781,
+                "usage": {
+                  "input_tokens": 20544,
+                  "cached_input_tokens": 0,
+                  "cache_write_input_tokens": 0,
+                  "output_tokens": 6,
+                  "reasoning_output_tokens": 0
+                },
+                "transport_fallback": false
+              },
+              {
+                "status": "completed",
+                "exit_code": 0,
+                "duration_ms": 9204,
+                "usage": {
+                  "input_tokens": 20544,
+                  "cached_input_tokens": 20224,
+                  "cache_write_input_tokens": 0,
+                  "output_tokens": 6,
+                  "reasoning_output_tokens": 0
+                },
+                "transport_fallback": false
+              }
+            ]
+          },
+          {
+            "case_name": "unrelated_upgrade_bundling",
+            "category": "adversarial",
+            "n_trials": 3,
+            "n_passed": 3,
+            "pass_rate": 1.0,
+            "outputs": [
+              "SPLIT",
+              "SPLIT",
+              "SPLIT"
+            ],
+            "errors": [],
+            "backend_metadata": [
+              {
+                "status": "completed",
+                "exit_code": 0,
+                "duration_ms": 10766,
+                "usage": {
+                  "input_tokens": 20533,
+                  "cached_input_tokens": 9984,
+                  "cache_write_input_tokens": 0,
+                  "output_tokens": 7,
+                  "reasoning_output_tokens": 0
+                },
+                "transport_fallback": false
+              },
+              {
+                "status": "completed",
+                "exit_code": 0,
+                "duration_ms": 33843,
+                "usage": {
+                  "input_tokens": 20421,
+                  "cached_input_tokens": 0,
+                  "cache_write_input_tokens": 0,
+                  "output_tokens": 7,
+                  "reasoning_output_tokens": 0
+                },
+                "transport_fallback": false
+              },
+              {
+                "status": "completed",
+                "exit_code": 0,
+                "duration_ms": 10969,
+                "usage": {
+                  "input_tokens": 20533,
+                  "cached_input_tokens": 20224,
+                  "cache_write_input_tokens": 0,
+                  "output_tokens": 7,
+                  "reasoning_output_tokens": 0
+                },
+                "transport_fallback": false
+              }
+            ]
+          },
+          {
+            "case_name": "checker_policy_limit",
+            "category": "near_miss",
+            "n_trials": 3,
+            "n_passed": 3,
+            "pass_rate": 1.0,
+            "outputs": [
+              "NO",
+              "NO",
+              "NO"
+            ],
+            "errors": [],
+            "backend_metadata": [
+              {
+                "status": "completed",
+                "exit_code": 0,
+                "duration_ms": 9843,
+                "usage": {
+                  "input_tokens": 20531,
+                  "cached_input_tokens": 0,
+                  "cache_write_input_tokens": 0,
+                  "output_tokens": 5,
+                  "reasoning_output_tokens": 0
+                },
+                "transport_fallback": false
+              },
+              {
+                "status": "completed",
+                "exit_code": 0,
+                "duration_ms": 8406,
+                "usage": {
+                  "input_tokens": 20419,
+                  "cached_input_tokens": 9984,
+                  "cache_write_input_tokens": 0,
+                  "output_tokens": 5,
+                  "reasoning_output_tokens": 0
+                },
+                "transport_fallback": false
+              },
+              {
+                "status": "completed",
+                "exit_code": 0,
+                "duration_ms": 10078,
+                "usage": {
+                  "input_tokens": 20531,
+                  "cached_input_tokens": 0,
+                  "cache_write_input_tokens": 0,
+                  "output_tokens": 5,
+                  "reasoning_output_tokens": 0
+                },
+                "transport_fallback": false
+              }
+            ]
+          }
+        ]
+      },
+      {
+        "task_name": "floor_change_delivery",
+        "pass_threshold": 1.0,
+        "overall_pass_rate": 1.0,
+        "passed": true,
+        "n_errors": 0,
+        "case_results": [
+          {
+            "case_name": "generated_sdk_prerequisite",
+            "category": "permission_boundary",
+            "n_trials": 3,
+            "n_passed": 3,
+            "pass_rate": 1.0,
+            "outputs": [
+              "CONTRIBUTING.md",
+              "CONTRIBUTING.md",
+              "CONTRIBUTING.md"
+            ],
+            "errors": [],
+            "backend_metadata": [
+              {
+                "status": "completed",
+                "exit_code": 0,
+                "duration_ms": 8610,
+                "usage": {
+                  "input_tokens": 20531,
+                  "cached_input_tokens": 5888,
+                  "cache_write_input_tokens": 0,
+                  "output_tokens": 9,
+                  "reasoning_output_tokens": 0
+                },
+                "transport_fallback": false
+              },
+              {
+                "status": "completed",
+                "exit_code": 0,
+                "duration_ms": 8625,
+                "usage": {
+                  "input_tokens": 20419,
+                  "cached_input_tokens": 9984,
+                  "cache_write_input_tokens": 0,
+                  "output_tokens": 9,
+                  "reasoning_output_tokens": 0
+                },
+                "transport_fallback": false
+              },
+              {
+                "status": "completed",
+                "exit_code": 0,
+                "duration_ms": 19750,
+                "usage": {
+                  "input_tokens": 20531,
+                  "cached_input_tokens": 0,
+                  "cache_write_input_tokens": 0,
+                  "output_tokens": 9,
+                  "reasoning_output_tokens": 0
+                },
+                "transport_fallback": false
+              }
+            ]
+          },
+          {
+            "case_name": "exported_api_scope",
+            "category": "near_miss",
+            "n_trials": 3,
+            "n_passed": 3,
+            "pass_rate": 1.0,
+            "outputs": [
+              "PRESERVE",
+              "PRESERVE",
+              "PRESERVE"
+            ],
+            "errors": [],
+            "backend_metadata": [
+              {
+                "status": "completed",
+                "exit_code": 0,
+                "duration_ms": 10094,
+                "usage": {
+                  "input_tokens": 20541,
+                  "cached_input_tokens": 9984,
+                  "cache_write_input_tokens": 0,
+                  "output_tokens": 7,
+                  "reasoning_output_tokens": 0
+                },
+                "transport_fallback": false
+              },
+              {
+                "status": "completed",
+                "exit_code": 0,
+                "duration_ms": 8782,
+                "usage": {
+                  "input_tokens": 20541,
+                  "cached_input_tokens": 0,
+                  "cache_write_input_tokens": 0,
+                  "output_tokens": 7,
+                  "reasoning_output_tokens": 0
+                },
+                "transport_fallback": false
+              },
+              {
+                "status": "completed",
+                "exit_code": 0,
+                "duration_ms": 33953,
+                "usage": {
+                  "input_tokens": 19441,
+                  "cached_input_tokens": 19200,
+                  "cache_write_input_tokens": 0,
+                  "output_tokens": 7,
+                  "reasoning_output_tokens": 0
+                },
+                "transport_fallback": false
+              }
+            ]
+          },
+          {
+            "case_name": "floor_change_file_set",
+            "category": "failure_path",
+            "n_trials": 3,
+            "n_passed": 3,
+            "pass_rate": 1.0,
+            "outputs": [
+              "INCOMPLETE",
+              "INCOMPLETE",
+              "INCOMPLETE"
+            ],
+            "errors": [],
+            "backend_metadata": [
+              {
+                "status": "completed",
+                "exit_code": 0,
+                "duration_ms": 11906,
+                "usage": {
+                  "input_tokens": 20554,
+                  "cached_input_tokens": 9984,
+                  "cache_write_input_tokens": 0,
+                  "output_tokens": 7,
+                  "reasoning_output_tokens": 0
+                },
+                "transport_fallback": false
+              },
+              {
+                "status": "completed",
+                "exit_code": 0,
+                "duration_ms": 25187,
+                "usage": {
+                  "input_tokens": 20554,
+                  "cached_input_tokens": 20224,
+                  "cache_write_input_tokens": 0,
+                  "output_tokens": 7,
+                  "reasoning_output_tokens": 0
+                },
+                "transport_fallback": false
+              },
+              {
+                "status": "completed",
+                "exit_code": 0,
+                "duration_ms": 19765,
+                "usage": {
+                  "input_tokens": 20442,
+                  "cached_input_tokens": 20224,
+                  "cache_write_input_tokens": 0,
+                  "output_tokens": 7,
+                  "reasoning_output_tokens": 0
+                },
+                "transport_fallback": false
+              }
+            ]
+          },
+          {
+            "case_name": "retired_dependency_branch",
+            "category": "positive_trigger",
+            "n_trials": 3,
+            "n_passed": 3,
+            "pass_rate": 1.0,
+            "outputs": [
+              "REMOVE",
+              "REMOVE",
+              "REMOVE"
+            ],
+            "errors": [],
+            "backend_metadata": [
+              {
+                "status": "completed",
+                "exit_code": 0,
+                "duration_ms": 8734,
+                "usage": {
+                  "input_tokens": 20530,
+                  "cached_input_tokens": 9984,
+                  "cache_write_input_tokens": 0,
+                  "output_tokens": 5,
+                  "reasoning_output_tokens": 0
+                },
+                "transport_fallback": false
+              },
+              {
+                "status": "completed",
+                "exit_code": 0,
+                "duration_ms": 9094,
+                "usage": {
+                  "input_tokens": 20530,
+                  "cached_input_tokens": 0,
+                  "cache_write_input_tokens": 0,
+                  "output_tokens": 5,
+                  "reasoning_output_tokens": 0
+                },
+                "transport_fallback": false
+              },
+              {
+                "status": "completed",
+                "exit_code": 0,
+                "duration_ms": 11109,
+                "usage": {
+                  "input_tokens": 20530,
+                  "cached_input_tokens": 20224,
+                  "cache_write_input_tokens": 0,
+                  "output_tokens": 5,
+                  "reasoning_output_tokens": 0
+                },
+                "transport_fallback": false
+              }
+            ]
+          },
+          {
+            "case_name": "distribution_validation",
+            "category": "failure_path",
+            "n_trials": 3,
+            "n_passed": 3,
+            "pass_rate": 1.0,
+            "outputs": [
+              "NOT_READY",
+              "NOT_READY",
+              "NOT_READY"
+            ],
+            "errors": [],
+            "backend_metadata": [
+              {
+                "status": "completed",
+                "exit_code": 0,
+                "duration_ms": 19500,
+                "usage": {
+                  "input_tokens": 20428,
+                  "cached_input_tokens": 9984,
+                  "cache_write_input_tokens": 0,
+                  "output_tokens": 6,
+                  "reasoning_output_tokens": 0
+                },
+                "transport_fallback": false
+              },
+              {
+                "status": "completed",
+                "exit_code": 0,
+                "duration_ms": 12906,
+                "usage": {
+                  "input_tokens": 20428,
+                  "cached_input_tokens": 20224,
+                  "cache_write_input_tokens": 0,
+                  "output_tokens": 6,
+                  "reasoning_output_tokens": 0
+                },
+                "transport_fallback": false
+              },
+              {
+                "status": "completed",
+                "exit_code": 0,
+                "duration_ms": 13531,
+                "usage": {
+                  "input_tokens": 20540,
+                  "cached_input_tokens": 20224,
+                  "cache_write_input_tokens": 0,
+                  "output_tokens": 6,
+                  "reasoning_output_tokens": 0
+                },
+                "transport_fallback": false
+              }
+            ]
+          },
+          {
+            "case_name": "release_note_content",
+            "category": "positive_trigger",
+            "n_trials": 3,
+            "n_passed": 3,
+            "pass_rate": 1.0,
+            "outputs": [
+              "## Release note",
+              "## Release note",
+              "## Release note"
+            ],
+            "errors": [],
+            "backend_metadata": [
+              {
+                "status": "completed",
+                "exit_code": 0,
+                "duration_ms": 9000,
+                "usage": {
+                  "input_tokens": 20532,
+                  "cached_input_tokens": 20224,
+                  "cache_write_input_tokens": 0,
+                  "output_tokens": 7,
+                  "reasoning_output_tokens": 0
+                },
+                "transport_fallback": false
+              },
+              {
+                "status": "completed",
+                "exit_code": 0,
+                "duration_ms": 30000,
+                "usage": {
+                  "input_tokens": 20420,
+                  "cached_input_tokens": 20224,
+                  "cache_write_input_tokens": 0,
+                  "output_tokens": 7,
+                  "reasoning_output_tokens": 0
+                },
+                "transport_fallback": false
+              },
+              {
+                "status": "completed",
+                "exit_code": 0,
+                "duration_ms": 17203,
+                "usage": {
+                  "input_tokens": 20532,
+                  "cached_input_tokens": 0,
+                  "cache_write_input_tokens": 0,
+                  "output_tokens": 7,
+                  "reasoning_output_tokens": 0
+                },
+                "transport_fallback": false
+              }
+            ]
+          },
+          {
+            "case_name": "security_backport_promise",
+            "category": "adversarial",
+            "n_trials": 3,
+            "n_passed": 3,
+            "pass_rate": 1.0,
+            "outputs": [
+              "FORBIDDEN",
+              "FORBIDDEN",
+              "FORBIDDEN"
+            ],
+            "errors": [],
+            "backend_metadata": [
+              {
+                "status": "completed",
+                "exit_code": 0,
+                "duration_ms": 12110,
+                "usage": {
+                  "input_tokens": 20542,
+                  "cached_input_tokens": 2816,
+                  "cache_write_input_tokens": 0,
+                  "output_tokens": 7,
+                  "reasoning_output_tokens": 0
+                },
+                "transport_fallback": false
+              },
+              {
+                "status": "completed",
+                "exit_code": 0,
+                "duration_ms": 19203,
+                "usage": {
+                  "input_tokens": 20430,
+                  "cached_input_tokens": 0,
+                  "cache_write_input_tokens": 0,
+                  "output_tokens": 7,
+                  "reasoning_output_tokens": 0
+                },
+                "transport_fallback": false
+              },
+              {
+                "status": "completed",
+                "exit_code": 0,
+                "duration_ms": 15235,
+                "usage": {
+                  "input_tokens": 20430,
+                  "cached_input_tokens": 20224,
+                  "cache_write_input_tokens": 0,
+                  "output_tokens": 7,
+                  "reasoning_output_tokens": 0
+                },
+                "transport_fallback": false
+              }
+            ]
+          },
+          {
+            "case_name": "codeowner_gate",
+            "category": "permission_boundary",
+            "n_trials": 3,
+            "n_passed": 3,
+            "pass_rate": 1.0,
+            "outputs": [
+              "BLOCK",
+              "BLOCK",
+              "BLOCK"
+            ],
+            "errors": [],
+            "backend_metadata": [
+              {
+                "status": "completed",
+                "exit_code": 0,
+                "duration_ms": 12359,
+                "usage": {
+                  "input_tokens": 19435,
+                  "cached_input_tokens": 0,
+                  "cache_write_input_tokens": 0,
+                  "output_tokens": 5,
+                  "reasoning_output_tokens": 0
+                },
+                "transport_fallback": false
+              },
+              {
+                "status": "completed",
+                "exit_code": 0,
+                "duration_ms": 20968,
+                "usage": {
+                  "input_tokens": 20534,
+                  "cached_input_tokens": 0,
+                  "cache_write_input_tokens": 0,
+                  "output_tokens": 5,
+                  "reasoning_output_tokens": 0
+                },
+                "transport_fallback": false
+              },
+              {
+                "status": "completed",
+                "exit_code": 0,
+                "duration_ms": 22671,
+                "usage": {
+                  "input_tokens": 19435,
+                  "cached_input_tokens": 0,
+                  "cache_write_input_tokens": 0,
+                  "output_tokens": 5,
+                  "reasoning_output_tokens": 0
+                },
+                "transport_fallback": false
+              }
+            ]
+          },
+          {
+            "case_name": "named_validation_suite",
+            "category": "failure_path",
+            "n_trials": 3,
+            "n_passed": 3,
+            "pass_rate": 1.0,
+            "outputs": [
+              "NOT_READY",
+              "NOT_READY",
+              "NOT_READY"
+            ],
+            "errors": [],
+            "backend_metadata": [
+              {
+                "status": "completed",
+                "exit_code": 0,
+                "duration_ms": 17422,
+                "usage": {
+                  "input_tokens": 20536,
+                  "cached_input_tokens": 0,
+                  "cache_write_input_tokens": 0,
+                  "output_tokens": 6,
+                  "reasoning_output_tokens": 0
+                },
+                "transport_fallback": false
+              },
+              {
+                "status": "completed",
+                "exit_code": 0,
+                "duration_ms": 12218,
+                "usage": {
+                  "input_tokens": 20424,
+                  "cached_input_tokens": 9984,
+                  "cache_write_input_tokens": 0,
+                  "output_tokens": 6,
+                  "reasoning_output_tokens": 0
+                },
+                "transport_fallback": false
+              },
+              {
+                "status": "completed",
+                "exit_code": 0,
+                "duration_ms": 17672,
+                "usage": {
+                  "input_tokens": 20536,
+                  "cached_input_tokens": 5888,
+                  "cache_write_input_tokens": 0,
+                  "output_tokens": 6,
+                  "reasoning_output_tokens": 0
+                },
+                "transport_fallback": false
+              }
+            ]
+          },
+          {
+            "case_name": "scheduled_matrix_release_gate",
+            "category": "near_miss",
+            "n_trials": 3,
+            "n_passed": 3,
+            "pass_rate": 1.0,
+            "outputs": [
+              "WAIT",
+              "WAIT",
+              "WAIT"
+            ],
+            "errors": [],
+            "backend_metadata": [
+              {
+                "status": "completed",
+                "exit_code": 0,
+                "duration_ms": 10594,
+                "usage": {
+                  "input_tokens": 20532,
+                  "cached_input_tokens": 0,
+                  "cache_write_input_tokens": 0,
+                  "output_tokens": 5,
+                  "reasoning_output_tokens": 0
+                },
+                "transport_fallback": false
+              },
+              {
+                "status": "completed",
+                "exit_code": 0,
+                "duration_ms": 24828,
+                "usage": {
+                  "input_tokens": 20420,
+                  "cached_input_tokens": 0,
+                  "cache_write_input_tokens": 0,
+                  "output_tokens": 5,
+                  "reasoning_output_tokens": 0
+                },
+                "transport_fallback": false
+              },
+              {
+                "status": "completed",
+                "exit_code": 0,
+                "duration_ms": 38484,
+                "usage": {
+                  "input_tokens": 20420,
+                  "cached_input_tokens": 9984,
+                  "cache_write_input_tokens": 0,
+                  "output_tokens": 5,
+                  "reasoning_output_tokens": 0
+                },
+                "transport_fallback": false
+              }
+            ]
+          }
+        ]
+      },
+      {
+        "task_name": "automation_security_boundaries",
+        "pass_threshold": 1.0,
+        "overall_pass_rate": 0.9047619047619048,
+        "passed": false,
+        "n_errors": 0,
+        "case_results": [
+          {
+            "case_name": "normal_ci_trigger_coverage",
+            "category": "positive_trigger",
+            "n_trials": 3,
+            "n_passed": 3,
+            "pass_rate": 1.0,
+            "outputs": [
+              "MINIMUM_AND_CURRENT",
+              "MINIMUM_AND_CURRENT",
+              "MINIMUM_AND_CURRENT"
+            ],
+            "errors": [],
+            "backend_metadata": [
+              {
+                "status": "completed",
+                "exit_code": 0,
+                "duration_ms": 9281,
+                "usage": {
+                  "input_tokens": 20533,
+                  "cached_input_tokens": 0,
+                  "cache_write_input_tokens": 0,
+                  "output_tokens": 8,
+                  "reasoning_output_tokens": 0
+                },
+                "transport_fallback": false
+              },
+              {
+                "status": "completed",
+                "exit_code": 0,
+                "duration_ms": 11906,
+                "usage": {
+                  "input_tokens": 20533,
+                  "cached_input_tokens": 0,
+                  "cache_write_input_tokens": 0,
+                  "output_tokens": 8,
+                  "reasoning_output_tokens": 0
+                },
+                "transport_fallback": false
+              },
+              {
+                "status": "completed",
+                "exit_code": 0,
+                "duration_ms": 19234,
+                "usage": {
+                  "input_tokens": 19433,
+                  "cached_input_tokens": 0,
+                  "cache_write_input_tokens": 0,
+                  "output_tokens": 8,
+                  "reasoning_output_tokens": 0
+                },
+                "transport_fallback": false
+              }
+            ]
+          },
+          {
+            "case_name": "scheduled_ci_role",
+            "category": "near_miss",
+            "n_trials": 3,
+            "n_passed": 1,
+            "pass_rate": 0.3333333333333333,
+            "outputs": [
+              "allowed-failure-prerelease",
+              "allowed-failure prerelease",
+              "allowed-failure prerelease"
+            ],
+            "errors": [],
+            "backend_metadata": [
+              {
+                "status": "completed",
+                "exit_code": 0,
+                "duration_ms": 8937,
+                "usage": {
+                  "input_tokens": 20535,
+                  "cached_input_tokens": 0,
+                  "cache_write_input_tokens": 0,
+                  "output_tokens": 10,
+                  "reasoning_output_tokens": 0
+                },
+                "transport_fallback": false
+              },
+              {
+                "status": "completed",
+                "exit_code": 0,
+                "duration_ms": 26218,
+                "usage": {
+                  "input_tokens": 20423,
+                  "cached_input_tokens": 0,
+                  "cache_write_input_tokens": 0,
+                  "output_tokens": 9,
+                  "reasoning_output_tokens": 0
+                },
+                "transport_fallback": false
+              },
+              {
+                "status": "completed",
+                "exit_code": 0,
+                "duration_ms": 40438,
+                "usage": {
+                  "input_tokens": 20423,
+                  "cached_input_tokens": 9984,
+                  "cache_write_input_tokens": 0,
+                  "output_tokens": 9,
+                  "reasoning_output_tokens": 0
+                },
+                "transport_fallback": false
+              }
+            ]
+          },
+          {
+            "case_name": "monthly_review_inputs",
+            "category": "failure_path",
+            "n_trials": 3,
+            "n_passed": 3,
+            "pass_rate": 1.0,
+            "outputs": [
+              "INSUFFICIENT",
+              "INSUFFICIENT",
+              "INSUFFICIENT"
+            ],
+            "errors": [],
+            "backend_metadata": [
+              {
+                "status": "completed",
+                "exit_code": 0,
+                "duration_ms": 9625,
+                "usage": {
+                  "input_tokens": 20542,
+                  "cached_input_tokens": 0,
+                  "cache_write_input_tokens": 0,
+                  "output_tokens": 8,
+                  "reasoning_output_tokens": 0
+                },
+                "transport_fallback": false
+              },
+              {
+                "status": "completed",
+                "exit_code": 0,
+                "duration_ms": 9281,
+                "usage": {
+                  "input_tokens": 20542,
+                  "cached_input_tokens": 5888,
+                  "cache_write_input_tokens": 0,
+                  "output_tokens": 8,
+                  "reasoning_output_tokens": 0
+                },
+                "transport_fallback": false
+              },
+              {
+                "status": "completed",
+                "exit_code": 0,
+                "duration_ms": 24703,
+                "usage": {
+                  "input_tokens": 20430,
+                  "cached_input_tokens": 9984,
+                  "cache_write_input_tokens": 0,
+                  "output_tokens": 8,
+                  "reasoning_output_tokens": 0
+                },
+                "transport_fallback": false
+              }
+            ]
+          },
+          {
+            "case_name": "review_runtime_constraints",
+            "category": "positive_trigger",
+            "n_trials": 3,
+            "n_passed": 3,
+            "pass_rate": 1.0,
+            "outputs": [
+              "A",
+              "A",
+              "A"
+            ],
+            "errors": [],
+            "backend_metadata": [
+              {
+                "status": "completed",
+                "exit_code": 0,
+                "duration_ms": 10344,
+                "usage": {
+                  "input_tokens": 20438,
+                  "cached_input_tokens": 0,
+                  "cache_write_input_tokens": 0,
+                  "output_tokens": 5,
+                  "reasoning_output_tokens": 0
+                },
+                "transport_fallback": false
+              },
+              {
+                "status": "completed",
+                "exit_code": 0,
+                "duration_ms": 7937,
+                "usage": {
+                  "input_tokens": 20550,
+                  "cached_input_tokens": 0,
+                  "cache_write_input_tokens": 0,
+                  "output_tokens": 5,
+                  "reasoning_output_tokens": 0
+                },
+                "transport_fallback": false
+              },
+              {
+                "status": "completed",
+                "exit_code": 0,
+                "duration_ms": 9360,
+                "usage": {
+                  "input_tokens": 20550,
+                  "cached_input_tokens": 9984,
+                  "cache_write_input_tokens": 0,
+                  "output_tokens": 5,
+                  "reasoning_output_tokens": 0
+                },
+                "transport_fallback": false
+              }
+            ]
+          },
+          {
+            "case_name": "critical_codex_permission_negative_control",
+            "category": "permission_boundary",
+            "n_trials": 3,
+            "n_passed": 3,
+            "pass_rate": 1.0,
+            "outputs": [
+              "D",
+              "D",
+              "D"
+            ],
+            "errors": [],
+            "backend_metadata": [
+              {
+                "status": "completed",
+                "exit_code": 0,
+                "duration_ms": 19656,
+                "usage": {
+                  "input_tokens": 20577,
+                  "cached_input_tokens": 20224,
+                  "cache_write_input_tokens": 0,
+                  "output_tokens": 5,
+                  "reasoning_output_tokens": 0
+                },
+                "transport_fallback": false
+              },
+              {
+                "status": "completed",
+                "exit_code": 0,
+                "duration_ms": 14516,
+                "usage": {
+                  "input_tokens": 20465,
+                  "cached_input_tokens": 9984,
+                  "cache_write_input_tokens": 0,
+                  "output_tokens": 5,
+                  "reasoning_output_tokens": 0
+                },
+                "transport_fallback": false
+              },
+              {
+                "status": "completed",
+                "exit_code": 0,
+                "duration_ms": 22687,
+                "usage": {
+                  "input_tokens": 19477,
+                  "cached_input_tokens": 0,
+                  "cache_write_input_tokens": 0,
+                  "output_tokens": 5,
+                  "reasoning_output_tokens": 0
+                },
+                "transport_fallback": false
+              }
+            ]
+          },
+          {
+            "case_name": "separate_issue_job_boundary",
+            "category": "adversarial",
+            "n_trials": 3,
+            "n_passed": 3,
+            "pass_rate": 1.0,
+            "outputs": [
+              "ONE_ISSUE",
+              "ONE_ISSUE",
+              "ONE_ISSUE"
+            ],
+            "errors": [],
+            "backend_metadata": [
+              {
+                "status": "completed",
+                "exit_code": 0,
+                "duration_ms": 9687,
+                "usage": {
+                  "input_tokens": 20550,
+                  "cached_input_tokens": 0,
+                  "cache_write_input_tokens": 0,
+                  "output_tokens": 8,
+                  "reasoning_output_tokens": 0
+                },
+                "transport_fallback": false
+              },
+              {
+                "status": "completed",
+                "exit_code": 0,
+                "duration_ms": 10828,
+                "usage": {
+                  "input_tokens": 20550,
+                  "cached_input_tokens": 5888,
+                  "cache_write_input_tokens": 0,
+                  "output_tokens": 8,
+                  "reasoning_output_tokens": 0
+                },
+                "transport_fallback": false
+              },
+              {
+                "status": "completed",
+                "exit_code": 0,
+                "duration_ms": 17329,
+                "usage": {
+                  "input_tokens": 20550,
+                  "cached_input_tokens": 0,
+                  "cache_write_input_tokens": 0,
+                  "output_tokens": 8,
+                  "reasoning_output_tokens": 0
+                },
+                "transport_fallback": false
+              }
+            ]
+          },
+          {
+            "case_name": "automation_floor_prohibition",
+            "category": "permission_boundary",
+            "n_trials": 3,
+            "n_passed": 3,
+            "pass_rate": 1.0,
+            "outputs": [
+              "NO",
+              "NO",
+              "NO"
+            ],
+            "errors": [],
+            "backend_metadata": [
+              {
+                "status": "completed",
+                "exit_code": 0,
+                "duration_ms": 11484,
+                "usage": {
+                  "input_tokens": 20532,
+                  "cached_input_tokens": 0,
+                  "cache_write_input_tokens": 0,
+                  "output_tokens": 5,
+                  "reasoning_output_tokens": 0
+                },
+                "transport_fallback": false
+              },
+              {
+                "status": "completed",
+                "exit_code": 0,
+                "duration_ms": 11969,
+                "usage": {
+                  "input_tokens": 20420,
+                  "cached_input_tokens": 9984,
+                  "cache_write_input_tokens": 0,
+                  "output_tokens": 5,
+                  "reasoning_output_tokens": 0
+                },
+                "transport_fallback": false
+              },
+              {
+                "status": "completed",
+                "exit_code": 0,
+                "duration_ms": 8984,
+                "usage": {
+                  "input_tokens": 20532,
+                  "cached_input_tokens": 0,
+                  "cache_write_input_tokens": 0,
+                  "output_tokens": 5,
+                  "reasoning_output_tokens": 0
+                },
+                "transport_fallback": false
+              }
+            ]
+          }
+        ]
+      }
+    ]
+  }
+}

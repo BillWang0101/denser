@@ -1,20 +1,20 @@
 [build-system]
-requires = ["hatchling>=1.24"]
+requires = ["hatchling>=1.27"]
 build-backend = "hatchling.build"
 
 [project]
 name = "denser"
 version = "0.1.0-dev"
-description = "Find the signal density sweet spot for your LLM prompts, skills, and agent configs — with empirical proof."
+description = "Evidence-guided refactoring for version-controlled LLM instructions."
 readme = "README.md"
-license = { text = "Apache-2.0" }
+license = "Apache-2.0"
+license-files = ["LICENSE", "THIRD_PARTY_NOTICES.md"]
 authors = [{ name = "BillWang" }]
 requires-python = ">=3.10"
 keywords = ["llm", "prompt-engineering", "compression", "agents", "claude", "anthropic", "skills"]
 classifiers = [
     "Development Status :: 3 - Alpha",
     "Intended Audience :: Developers",
-    "License :: OSI Approved :: Apache Software License",
     "Programming Language :: Python :: 3",
     "Programming Language :: Python :: 3.10",
     "Programming Language :: Python :: 3.11",
@@ -52,29 +52,33 @@ openai = [
 denser = "denser.cli:main"
 
 [project.urls]
-Homepage = "https://github.com/BillWang0101/denser"
-Repository = "https://github.com/BillWang0101/denser"
-Issues = "https://github.com/BillWang0101/denser/issues"
-Documentation = "https://github.com/BillWang0101/denser/tree/main/docs"
+Homepage = "https://github.com/Evostructs/denser"
+Repository = "https://github.com/Evostructs/denser"
+Issues = "https://github.com/Evostructs/denser/issues"
+Documentation = "https://github.com/Evostructs/denser/tree/main/docs"
 
 [tool.hatch.build.targets.wheel]
 packages = ["denser"]
+
+[tool.hatch.build.targets.sdist]
+exclude = ["/handoff*.md"]
 
 [tool.ruff]
 line-length = 100
 target-version = "py310"
 
 [tool.ruff.lint]
-select = ["E", "F", "I", "N", "W", "UP", "B", "SIM", "PL"]
+select = ["E", "F", "I", "N", "W", "UP", "B", "SIM", "PL", "D102", "D103"]
 ignore = [
     "E501",    # line-length — handled by formatter
     "PLR0913", # too many arguments — keyword-only APIs are intentional
+    "PLR0917", # Click command handlers receive options as positional parameters
     "PLR2004", # magic-value-comparison — fine in tests and thresholded code
     "PLC0415", # import-not-at-top — deferred imports for optional deps are deliberate
 ]
 
 [tool.ruff.lint.per-file-ignores]
-"tests/**/*.py" = ["PLR", "SIM"]  # tests are allowed to be explicit
+"tests/**/*.py" = ["PLR", "SIM", "D102", "D103"]  # tests are allowed to be explicit
 
 [tool.pytest.ini_options]
 testpaths = ["tests"]
