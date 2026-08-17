@@ -466,8 +466,12 @@ Particularly useful:
 
 ## Acknowledgements
 
-Development and validation of this release were supported by
-[OpenAI Codex](https://openai.com/codex/).
+- **Bill Wang ([@Evostructs](https://github.com/Evostructs))** — project creator
+  and maintainer.
+- [OpenAI Codex](https://openai.com/codex/) — development and validation support
+  for this release.
+- [Claude](https://claude.com/product/overview) — development support for
+  earlier releases.
 
 ---
 
