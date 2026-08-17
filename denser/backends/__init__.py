@@ -8,13 +8,19 @@ backends.
 
 from denser.backends.base import Backend, BackendError
 from denser.backends.claude import ClaudeBackend
-from denser.backends.codex_cli import CodexCliBackend, CodexCliCallMetadata, CodexCliUsage
+from denser.backends.codex_cli import (
+    CODEX_CAPABILITY_PROFILES,
+    CodexCliBackend,
+    CodexCliCallMetadata,
+    CodexCliUsage,
+)
 from denser.backends.openai_compat import OpenAICompatibleBackend, SiliconFlowBackend
 
 __all__ = [
     "Backend",
     "BackendError",
     "ClaudeBackend",
+    "CODEX_CAPABILITY_PROFILES",
     "CodexCliBackend",
     "CodexCliCallMetadata",
     "CodexCliUsage",

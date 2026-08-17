@@ -1,4 +1,4 @@
-"""Evidence-guided refactoring for version-controlled LLM instructions."""
+"""Behavior-fidelity audits for version-controlled LLM context."""
 
 # Load a `.env` file from the current working directory if python-dotenv is
 # installed. This is the recommended way to pass API keys to denser without
@@ -11,6 +11,12 @@ try:
 except ImportError:  # pragma: no cover
     pass
 
+from denser.audit import (
+    AUDIT_REPORT_SCHEMA_VERSION,
+    AuditDecision,
+    ContextAuditReport,
+    audit_context,
+)
 from denser.compress import CompressionResult, compress
 from denser.curve import DensityCurve, DensityPoint, curve
 from denser.eval import (
@@ -79,10 +85,12 @@ from denser.verification import (
     verify,
 )
 
-__version__ = "0.1.0.dev0"
+__version__ = "0.2.0a1"
 
 __all__ = [
+    "AUDIT_REPORT_SCHEMA_VERSION",
     "AnthropicTokenCounter",
+    "AuditDecision",
     "BehaviorTaskResult",
     "CandidateKind",
     "CaseResult",
@@ -91,6 +99,7 @@ __all__ = [
     "ContractCategory",
     "ContractItem",
     "ContractItemResult",
+    "ContextAuditReport",
     "DensityCurve",
     "DensityPoint",
     "EVIDENCE_SCHEMA_VERSION",
@@ -132,6 +141,7 @@ __all__ = [
     "VerificationStatus",
     "compare",
     "compare_replay",
+    "audit_context",
     "compress",
     "curve",
     "evaluate",

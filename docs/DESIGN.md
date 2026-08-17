@@ -5,17 +5,22 @@ the product claims in the original four-week launch plan.
 
 ## Product promise
 
-denser refactors versioned LLM instruction assets into the shortest candidate
-that still passes their behavior tests, with a reviewable diff and evidence for
-every removed rule.
+denser audits whether a versioned LLM context change preserves required
+behavior, and whether the workload used for that conclusion can detect a
+known-bad change.
 
-Shorter text is not automatically better. The original is always a valid
-candidate, and `do not change` is a valid result when evidence is insufficient.
+The proposed variant may be a rewrite, selective-load result, manually produced
+summary, or exported runtime-compaction snapshot. denser does not need to
+produce the variant. It provides the evidence layer that decides whether the
+observed behavior stayed stable.
+
+Shorter text is not automatically better. Equal baseline/variant scores are
+also not automatically evidence: without a sensitive negative control, the
+result remains inconclusive.
 
 ## Scope
 
-The first stable release focuses on static, version-controlled instruction
-assets:
+The first stable release focuses on textual, reviewable context snapshots:
 
 - system and developer instructions;
 - skills and triggerable procedures;
@@ -24,25 +29,48 @@ assets:
 - persistent memory rules;
 - one-shot implementation or research briefs.
 
-Runtime conversation compaction, RAG document pruning, hidden-vector
-compression, and model KV-cache optimization are separate problem spaces and
-are out of scope for the first stable release.
+The first release can audit before/after text exported by another compactor,
+but it does not implement a provider's runtime conversation compaction. Hidden
+vectors, model KV-cache optimization, and inaccessible host/system prefixes
+remain out of scope. RAG and task-conditioned loading may be audited once their
+selected textual context is captured reproducibly.
 
 ## Core workflow
 
-The public workflow should remain small:
+The public workflow should remain small, with `audit` as the deep interface:
 
-1. `inspect` decides whether an asset is safe and worthwhile to refactor, and
-   builds a preservation contract.
-2. `optimize` produces candidates, verifies them, and returns the shortest
-   passing candidate plus an evidence report.
-3. `verify` reruns the contract and behavior suite after the asset, model, or
-   workload changes.
+1. Define behavior cases for the baseline and a known-bad negative control that
+   should fail at least one case.
+2. `audit` replays the baseline, proposed variant, and negative control. It
+   reports `preserved` only when the variant matches every covered baseline
+   outcome and the workload catches the negative control.
+3. Rerun `audit` after the context, model, runtime configuration, or workload
+   changes. Compare provider-reported full input usage, not only file length.
 
-Existing `compress`, `eval`, and `curve` entry points remain experimental while
-this workflow is implemented.
+`inspect` can build a preservation contract. `optimize` and `compress` can
+propose variants. `replay` is the lower-level execution runner. `eval` and
+`curve` remain experimental. None of these candidate-generation paths can
+substitute for an audit verdict.
 
-Current implementation status: `inspect`, `verify`, and multi-candidate
+Current implementation status: `audit_context` and `denser audit` are available
+as report schema `denser.context-audit/v1`. They consolidate paired replay,
+case-level regression detection, negative-control sensitivity, asset-only token
+estimates, and provider-reported end-to-end input totals. A variant improvement
+is sent to review rather than silently classified as preservation; operational
+errors and undetected controls fail closed as inconclusive.
+
+The Codex CLI adapter also exposes a narrowly scoped `text-only` capability
+profile. It is for pre-bundled text decisions only and removes unused tool and
+extension context. In a seeded randomized audit with three trials per case,
+both profiles passed every covered case across 84 calls, with no operational
+errors or transport fallbacks. The two workloads reduced provider-reported
+input per call by 10.55% and 10.60%. This is the first result to clear the
+project's two-scenario, 10% end-to-end gate; it does not apply to coding or
+other tasks that require those capabilities. The first strict run caught one
+missing output-contract behavior, which was fixed as the versioned
+`text-only/v1` wrapper before rerunning the complete audit.
+
+The supporting `inspect`, `verify`, and multi-candidate
 `optimize` are available. `verify` can consume caller-supplied behavior tasks
 that explicitly name the contract items they cover. `optimize` reuses one
 original behavior baseline across candidates and emits a versioned evidence
@@ -91,7 +119,7 @@ An uncovered high-risk obligation is not eligible for automatic removal.
 
 ## Verification model
 
-Verification has three layers:
+Verification has four layers:
 
 1. **Structural checks** validate protected literals, schemas, references, and
    other deterministic invariants. The current built-in fixtures belong here.
@@ -100,18 +128,22 @@ Verification has three layers:
 3. **Holdout and adversarial checks** cover near-miss triggers, conflicting
    rules, exceptional paths, and prompt injection that candidate generation did
    not see.
+4. **Sensitivity controls** run a known-bad context mutation. If the workload
+   cannot detect that mutation, observed baseline/variant parity is
+   inconclusive.
 
 Deterministic assertions take priority over model judges. Model errors are
 reported separately from content failures. Candidate selection and final
 reporting use different cases to reduce overfitting.
 
-## Candidate selection
+## Variant selection
 
 denser does not assume that quality is a concave function of compression ratio.
 It records observed candidates and selects only among candidates that pass all
-hard gates. The default recommendation is the shortest passing candidate, with
-a Pareto set when length, behavior, latency, cost, readability, or diff size
-trade off.
+hard gates. Candidate generation may prefer a shorter variant, but `audit`
+considers behavior evidence first and accepts variants that were produced by
+other systems. A future selector may expose a Pareto set when active context,
+behavior, latency, cost, readability, or diff size trade off.
 
 The Signal Density Curve remains an experimental visualization of observed
 points. A quadratic fit is descriptive only and is never proof of a universal
@@ -119,9 +151,9 @@ sweet spot.
 
 ## Evidence report
 
-Every optimization should eventually return:
+Every audit should eventually return:
 
-- the original, recommended candidate, and alternatives;
+- the baseline, proposed variant, and negative-control identities;
 - a preservation contract;
 - a diff;
 - a ledger marking each source unit as kept, merged, rewritten, externalized,
@@ -130,6 +162,10 @@ Every optimization should eventually return:
 - model, tokenizer/counting method, settings, cost, latency, and timestamp;
 - operational errors and uncovered risks;
 - enough provenance to reproduce or roll back the result.
+
+Asset-only estimates and provider-reported full input usage must remain
+separate fields. Missing runtime usage is reported as unavailable, never
+replaced silently with a local estimate.
 
 ## Evidence policy
 
@@ -168,7 +204,25 @@ Prompt-cache savings and active-context length are reported separately.
 - separate model/service errors from quality failures;
 - build a licensed pilot corpus before making cross-type claims.
 
-### Phase 3: open-source validation
+### Phase 3: context behavior audit
+
+- consolidate replay, negative-control sensitivity, and token measurements
+  behind `audit_context` and `denser audit`;
+- fail closed when a control is absent, undetected, or affected by operational
+  errors;
+- keep asset-only length and provider-reported full input as separate metrics;
+- add long-horizon cases that cross a real runtime-compaction event.
+
+### Phase 4: selective loading and compaction fidelity
+
+- capture reproducible before/after textual context snapshots from real agent
+  runtimes without duplicating their compaction implementation;
+- test permissions, user decisions, unfinished work, and failure recovery after
+  compaction;
+- compare whole-context rewriting with task-conditioned loading;
+- require meaningful end-to-end savings before making cost or latency claims.
+
+### Phase 5: open-source validation
 
 - publish small, reproducible releases;
 - add local, pytest, promptfoo, and provider adapters where two real uses justify
@@ -176,7 +230,7 @@ Prompt-cache savings and active-context length are reported separately.
 - recruit external projects and prioritize reported failures over demo counts;
 - document reproducible case studies and contribution provenance.
 
-### Phase 4: Codex and OpenAI case study
+### Completed pilot: Codex and OpenAI project instructions
 
 - support `AGENTS.md` and Codex-style project instructions (synthetic and
   licensed upstream replay pilots committed; nested discovery remains);

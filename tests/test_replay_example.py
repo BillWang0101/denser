@@ -23,6 +23,11 @@ PYTHON_POLICY_CASE_DIR = (
     / "project_instructions"
     / "02_openai_python_version_policy"
 )
+PROJECT_INSTRUCTIONS_DIR = CASE_DIR.parent
+
+
+def _normalized_text_sha256(path: Path) -> str:
+    return hashlib.sha256(path.read_text(encoding="utf-8").encode("utf-8")).hexdigest()
 
 
 def test_replay_suite_covers_every_contract_item_and_boundary_category() -> None:
@@ -368,3 +373,89 @@ def test_deepseek_v4_replay_audit_is_bound_sanitized_and_honest() -> None:
     assert len(label_reports) == 2
     assert all(report["instruction_sha256"] == original_sha256 for report in label_reports)
     assert all(report["instruction_sha256"] != counterfactual_sha256 for report in label_reports)
+
+
+def test_codex_text_only_profile_audit_is_bound_and_clears_gate() -> None:
+    repo_root = Path(__file__).resolve().parents[1]
+    audit = json.loads(
+        (PROJECT_INSTRUCTIONS_DIR / "codex-text-only-profile-audit.2026-08-17.json").read_text(
+            encoding="utf-8"
+        )
+    )
+
+    assert audit["schema_version"] == "denser.codex-capability-profile-audit/v1"
+    assert audit["source_hash_method"] == "utf8-lf-v1"
+    assert audit["passed"] is True
+    assert len(audit["scenarios"]) == 2
+    for scenario in audit["scenarios"]:
+        for source_name in ("asset", "suite"):
+            source = scenario[source_name]
+            assert _normalized_text_sha256(repo_root / source["path"]) == source["sha256"]
+        baseline = scenario["baseline"]
+        assert _normalized_text_sha256(repo_root / baseline["report"]) == baseline["report_sha256"]
+        variant = scenario["variant"]
+        assert baseline["passed_calls"] == baseline["calls"]
+        assert baseline["operational_errors"] == 0
+        assert variant["completed_calls"] == variant["calls"]
+        assert variant["passed_calls"] == variant["calls"]
+        assert variant["operational_errors"] == 0
+        assert len(scenario["cases"]) == variant["calls"]
+        assert all(case["passed"] for case in scenario["cases"])
+        assert sum(case["input_tokens"] for case in scenario["cases"]) == variant["input_tokens"]
+        baseline_per_call = baseline["input_tokens"] / baseline["calls"]
+        variant_per_call = variant["input_tokens"] / variant["calls"]
+        reduction = (baseline_per_call - variant_per_call) / baseline_per_call
+        assert abs(baseline_per_call - baseline["input_tokens_per_call"]) < 1e-9
+        assert abs(variant_per_call - variant["input_tokens_per_call"]) < 1e-9
+        assert abs(reduction - scenario["input_token_reduction_fraction"]) < 1e-12
+        assert reduction >= 0.10
+        assert scenario["quality_delta"] == 0.0
+
+
+def test_paired_codex_profile_audit_is_complete_and_clears_gate() -> None:
+    repo_root = Path(__file__).resolve().parents[1]
+    audit = json.loads(
+        (
+            PROJECT_INSTRUCTIONS_DIR
+            / "codex-text-only-profile-audit.paired-3x-final.2026-08-17.json"
+        ).read_text(encoding="utf-8")
+    )
+
+    assert audit["schema_version"] == "denser.codex-capability-profile-audit/v2"
+    assert audit["source_hash_method"] == "utf8-lf-v1"
+    assert audit["passed"] is True
+    assert audit["schedule"] == {
+        "seed": 20260817,
+        "trials_per_case": 3,
+        "workers": 8,
+        "randomized_submission_order": True,
+        "total_calls": 84,
+    }
+    assert audit["runtime"]["text_only_profile_instruction_version"] == "text-only/v1"
+    assert len(audit["scenarios"]) == 2
+
+    total_calls = 0
+    for scenario in audit["scenarios"]:
+        for source_name in ("asset", "suite"):
+            source = scenario[source_name]
+            assert _normalized_text_sha256(repo_root / source["path"]) == source["sha256"]
+
+        for profile_name in ("standard", "text-only"):
+            calls = scenario["calls"][profile_name]
+            summary = scenario["profiles"][profile_name]
+            assert len(calls) == summary["calls"]
+            assert summary["completed_calls"] == summary["calls"]
+            assert summary["passed_calls"] == summary["calls"]
+            assert summary["operational_errors"] == 0
+            assert summary["transport_fallback_calls"] == 0
+            assert all(call["status"] == "completed" for call in calls)
+            assert all(call["passed"] is True for call in calls)
+            assert all(call["transport_fallback"] is False for call in calls)
+            assert sum(call["usage"]["input_tokens"] for call in calls) == summary["input_tokens"]
+            total_calls += len(calls)
+
+        assert scenario["input_token_reduction_fraction"] >= 0.10
+        assert scenario["quality_delta"] == 0.0
+        assert scenario["passed"] is True
+
+    assert total_calls == audit["schedule"]["total_calls"]

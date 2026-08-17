@@ -38,6 +38,8 @@ _RUNTIME_CONFIG_STRING_KEYS = (
     "reasoning_effort",
     "sandbox",
     "thinking_mode",
+    "capability_profile",
+    "profile_instruction_version",
 )
 _RUNTIME_CONFIG_BOOL_KEYS = (
     "ephemeral",
@@ -887,6 +889,63 @@ def replay(
     )["single"]
 
 
+def _replay_comparison_sides(
+    *,
+    original: str,
+    candidate: str,
+    additional_texts: dict[str, str] | None,
+    task_type: TaskType | str,
+    tasks: ReplaySuite | list[ReplayTask],
+    backend: Backend,
+    n_trials: int = 1,
+    seed: int = 0,
+    on_progress: Callable[[ReplayProgress], None] | None = None,
+) -> tuple[TaskType, dict[str, ReplayReport]]:
+    """Replay comparison sides in one randomized schedule."""
+    if not original or not original.strip():
+        raise ValueError("Cannot replay an empty original instruction asset")
+    if not candidate or not candidate.strip():
+        raise ValueError("Cannot replay an empty candidate instruction asset")
+    if n_trials < 1:
+        raise ValueError("n_trials must be >= 1")
+    extra = additional_texts or {}
+    if {"original", "candidate"}.intersection(extra):
+        raise ValueError("Additional replay side names cannot be original or candidate")
+    empty_sides = [name for name, text in extra.items() if not text or not text.strip()]
+    if empty_sides:
+        raise ValueError(f"Cannot replay an empty additional instruction asset: {empty_sides[0]}")
+
+    tt = task_type if isinstance(task_type, TaskType) else TaskType.parse(task_type)
+    replay_tasks, suite_sha256, suite_metadata = _prepare_suite(
+        tasks,
+        task_type=tt,
+        original=original,
+        candidate=candidate,
+    )
+    texts = {"original": original, "candidate": candidate, **extra}
+
+    schedule = [
+        _RunUnit(side, task_index, case_index, trial_index)
+        for task_index, task in enumerate(replay_tasks)
+        for case_index, _case in enumerate(task.cases)
+        for trial_index in range(1, n_trials + 1)
+        for side in texts
+    ]
+    random.Random(seed).shuffle(schedule)
+    reports = _execute_schedule(
+        texts=texts,
+        task_type=tt,
+        tasks=replay_tasks,
+        backend=backend,
+        n_trials=n_trials,
+        schedule=schedule,
+        suite_sha256=suite_sha256,
+        suite_metadata=suite_metadata,
+        on_progress=on_progress,
+    )
+    return tt, reports
+
+
 def compare_replay(
     *,
     original: str,
@@ -899,37 +958,15 @@ def compare_replay(
     on_progress: Callable[[ReplayProgress], None] | None = None,
 ) -> ReplayComparisonReport:
     """Replay original and candidate with a paired, randomized call order."""
-    if not original or not original.strip():
-        raise ValueError("Cannot replay an empty original instruction asset")
-    if not candidate or not candidate.strip():
-        raise ValueError("Cannot replay an empty candidate instruction asset")
-    if n_trials < 1:
-        raise ValueError("n_trials must be >= 1")
-    tt = task_type if isinstance(task_type, TaskType) else TaskType.parse(task_type)
-    replay_tasks, suite_sha256, suite_metadata = _prepare_suite(
-        tasks,
-        task_type=tt,
+    tt, reports = _replay_comparison_sides(
         original=original,
         candidate=candidate,
-    )
-
-    schedule = [
-        _RunUnit(side, task_index, case_index, trial_index)
-        for task_index, task in enumerate(replay_tasks)
-        for case_index, _case in enumerate(task.cases)
-        for trial_index in range(1, n_trials + 1)
-        for side in ("original", "candidate")
-    ]
-    random.Random(seed).shuffle(schedule)
-    reports = _execute_schedule(
-        texts={"original": original, "candidate": candidate},
-        task_type=tt,
-        tasks=replay_tasks,
+        additional_texts=None,
+        task_type=task_type,
+        tasks=tasks,
         backend=backend,
         n_trials=n_trials,
-        schedule=schedule,
-        suite_sha256=suite_sha256,
-        suite_metadata=suite_metadata,
+        seed=seed,
         on_progress=on_progress,
     )
     return ReplayComparisonReport(

@@ -25,6 +25,44 @@ DEFAULT_TIMEOUT_SECONDS = 180.0
 VERSION_QUERY_TIMEOUT_SECONDS = 10.0
 WINDOWS_COMMAND_LINE_LIMIT = 30_000
 
+CODEX_CAPABILITY_PROFILES = ("standard", "text-only")
+TEXT_ONLY_PROFILE_INSTRUCTION_VERSION = "text-only/v1"
+_TEXT_ONLY_PROFILE_INSTRUCTIONS = (
+    "Text-only profile: all required input is already present in the user request. "
+    "Do not request files, tools, network access, or additional context. "
+    "Follow the output contract below exactly."
+)
+_STANDARD_DISABLED_FEATURES = (
+    "apps",
+    "memories",
+    "multi_agent",
+)
+_TEXT_ONLY_DISABLED_FEATURES = (
+    *_STANDARD_DISABLED_FEATURES,
+    "plugins",
+    "skill_search",
+    "goals",
+    "personality",
+    "tool_suggest",
+    "browser_use",
+    "computer_use",
+    "image_generation",
+    "in_app_browser",
+    "view_image",
+    "shell_tool",
+    "shell_snapshot",
+    "hooks",
+    "workspace_dependencies",
+    "guardian_approval",
+    "auth_elicitation",
+    "tool_call_mcp_elicitation",
+    "code_mode_host",
+)
+_DISABLED_FEATURES_BY_PROFILE = {
+    "standard": _STANDARD_DISABLED_FEATURES,
+    "text-only": _TEXT_ONLY_DISABLED_FEATURES,
+}
+
 
 @dataclass(frozen=True)
 class CodexCliUsage:
@@ -199,6 +237,7 @@ class CodexCliBackend(Backend):
         reasoning_effort: str = "medium",
         timeout_seconds: float = DEFAULT_TIMEOUT_SECONDS,
         respect_system_proxy: bool = False,
+        capability_profile: str = "standard",
     ) -> None:
         path = Path(executable).expanduser().resolve() if executable is not None else None
         if path is None:
@@ -215,12 +254,19 @@ class CodexCliBackend(Backend):
             raise BackendError(f"Unsupported Codex reasoning effort: {reasoning_effort}")
         if timeout_seconds <= 0:
             raise BackendError("Codex CLI timeout must be greater than zero")
+        if capability_profile not in _DISABLED_FEATURES_BY_PROFILE:
+            choices = ", ".join(CODEX_CAPABILITY_PROFILES)
+            raise BackendError(
+                f"Unsupported Codex capability profile: {capability_profile}; choose {choices}"
+            )
 
         self._executable = path
         self._model = model
         self._reasoning_effort = reasoning_effort
         self._timeout_seconds = timeout_seconds
         self._respect_system_proxy = respect_system_proxy
+        self._capability_profile = capability_profile
+        self._disabled_features = _DISABLED_FEATURES_BY_PROFILE[capability_profile]
         self._cli_version: str | None = None
         self._cli_version_checked = False
         self._last_call_metadata: CodexCliCallMetadata | None = None
@@ -248,7 +294,13 @@ class CodexCliBackend(Backend):
             "sandbox": "read-only",
             "ignore_user_config": True,
             "respect_system_proxy": self._respect_system_proxy,
-            "disabled_features": ["apps", "memories", "multi_agent"],
+            "capability_profile": self._capability_profile,
+            "profile_instruction_version": (
+                TEXT_ONLY_PROFILE_INSTRUCTION_VERSION
+                if self._capability_profile == "text-only"
+                else None
+            ),
+            "disabled_features": list(self._disabled_features),
         }
 
     @property
@@ -283,7 +335,10 @@ class CodexCliBackend(Backend):
         return self._cli_version
 
     def _build_command(self, system: str) -> list[str]:
-        developer_value = json.dumps(system, ensure_ascii=False)
+        developer_instructions = system
+        if self._capability_profile == "text-only":
+            developer_instructions = f"{_TEXT_ONLY_PROFILE_INSTRUCTIONS}\n\n{system}"
+        developer_value = json.dumps(developer_instructions, ensure_ascii=False)
         config_argument = f"developer_instructions={developer_value}"
         if os.name == "nt" and len(config_argument) >= WINDOWS_COMMAND_LINE_LIMIT:
             raise BackendError(
@@ -300,14 +355,10 @@ class CodexCliBackend(Backend):
         ]
         if self._respect_system_proxy:
             command.extend(("--enable", "respect_system_proxy"))
+        for feature in self._disabled_features:
+            command.extend(("--disable", feature))
         command.extend(
             (
-                "--disable",
-                "apps",
-                "--disable",
-                "memories",
-                "--disable",
-                "multi_agent",
                 "--model",
                 self._model,
                 "--color",
@@ -408,6 +459,8 @@ class CodexCliBackend(Backend):
 
 
 __all__ = [
+    "CODEX_CAPABILITY_PROFILES",
+    "TEXT_ONLY_PROFILE_INSTRUCTION_VERSION",
     "CodexCliBackend",
     "CodexCliCallMetadata",
     "CodexCliUsage",

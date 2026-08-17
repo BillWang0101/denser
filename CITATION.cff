@@ -4,14 +4,14 @@ authors:
   - family-names: Wang
     given-names: Bill
     alias: BillWang
-title: "denser: Evidence-Guided Refactoring for LLM Instructions"
-version: 0.1.0
-date-released: 2026-04-14
+title: "denser: Behavior-Fidelity Audits for Version-Controlled LLM Context"
+version: 0.2.0-alpha.1
+date-released: 2026-08-18
 url: "https://github.com/Evostructs/denser"
 license: Apache-2.0
 keywords:
   - large-language-models
-  - prompt-engineering
-  - prompt-compression
+  - context-optimization
+  - regression-testing
   - agents
   - behavior-evaluation
