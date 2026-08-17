@@ -4,6 +4,32 @@ All notable changes to this project are documented here. The format follows [Kee
 
 ## [Unreleased]
 
+## [0.2.0-alpha.1] — 2026-08-18
+
+### Added — context behavior audit
+- Added `denser audit` and the `audit_context` Python interface for comparing a
+  baseline with any rewritten, selectively loaded, or externally compacted
+  textual context snapshot.
+- A positive verdict now requires exact covered-case parity plus a detected
+  regression in a caller-supplied known-bad negative control. Equal scores
+  without a sensitive control are reported as inconclusive.
+- Audit reports separate local asset-length estimates from provider-reported
+  full input usage, so file compression is not presented as end-to-end savings.
+- Added an explicit Codex CLI `text-only` capability profile for pre-bundled
+  tasks that need no tools, files, network, plugins, apps, skills, or memory.
+  A seeded, randomized, three-trial audit completed all 84 paired-profile calls
+  without operational errors or transport fallbacks. Both profiles passed all
+  covered cases while `text-only` reduced provider-reported input per call by
+  10.55% and 10.60% across the two workloads.
+- Added a reproducible capability-profile benchmark and a public per-call
+  evidence report. An initial strict run exposed one missing output-contract
+  behavior; `text-only/v1` fixes that boundary and the full audit was rerun.
+
+### Changed — behavior-fidelity pivot
+- Repositioned denser from a compression-first tool to an evidence layer for
+  context changes. Existing compression and density commands remain available
+  as experimental candidate-generation tools.
+
 ### Added — deterministic behavior replay
 - Added `denser replay` and a Python replay API that run instruction assets as
   system instructions against explicit workload prompts.

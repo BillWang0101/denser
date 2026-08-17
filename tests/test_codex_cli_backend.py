@@ -62,6 +62,7 @@ def test_codex_cli_parses_final_message_and_sanitized_metadata(
         model="gpt-test",
         reasoning_effort="low",
         respect_system_proxy=True,
+        capability_profile="text-only",
     )
 
     output = backend.complete(system="SYSTEM RULE", user="Preview it", max_tokens=16)
@@ -78,10 +79,16 @@ def test_codex_cli_parses_final_message_and_sanitized_metadata(
         "--ignore-user-config",
     ]
     assert "respect_system_proxy" in command
+    for feature in ("plugins", "skill_search", "shell_tool", "hooks"):
+        feature_index = command.index(feature)
+        assert command[feature_index - 1] == "--disable"
     assert captured["input"] == "Preview it"
     config = command[command.index("-c") + 1]
     assert isinstance(config, str)
-    assert json.loads(config.removeprefix("developer_instructions=")) == "SYSTEM RULE"
+    injected = json.loads(config.removeprefix("developer_instructions="))
+    assert injected.endswith("\n\nSYSTEM RULE")
+    assert "all required input is already present" in injected
+    assert "Do not request files, tools, network access" in injected
     metadata = backend.last_call_metadata
     assert metadata is not None
     assert metadata["status"] == "completed"
@@ -187,12 +194,21 @@ def test_codex_cli_runtime_config_is_reproducible_and_sanitized(
         "sandbox": "read-only",
         "ignore_user_config": True,
         "respect_system_proxy": True,
+        "capability_profile": "standard",
+        "profile_instruction_version": None,
         "disabled_features": ["apps", "memories", "multi_agent"],
     }
     assert backend.runtime_config["codex_cli_version"] == "0.147.0"
     assert calls == 1
     assert str(cli) not in json.dumps(backend.runtime_config)
     assert "do-not-record" not in json.dumps(backend.runtime_config)
+
+
+def test_codex_cli_rejects_unknown_capability_profile(tmp_path: Path) -> None:
+    cli = _cli_file(tmp_path)
+
+    with pytest.raises(BackendError, match="Unsupported Codex capability profile"):
+        CodexCliBackend(executable=cli, capability_profile="everything")
 
 
 @pytest.mark.parametrize(

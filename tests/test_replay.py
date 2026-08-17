@@ -54,6 +54,7 @@ class _ConfiguredRoutingBackend(_RoutingBackend):
             "model": "routing-v1",
             "timeout_seconds": 12,
             "ephemeral": True,
+            "capability_profile": "text-only",
             "disabled_features": ("apps",),
             "api_key": "must-not-be-recorded",
             "executable": "C:/Users/private/tool.exe",
@@ -274,6 +275,7 @@ class TestLoadReplayTasks:
             "model": "routing-v1",
             "timeout_seconds": 12,
             "ephemeral": True,
+            "capability_profile": "text-only",
             "disabled_features": ["apps"],
         }
         assert report.to_dict()["runtime_config"] == expected
@@ -454,6 +456,8 @@ class TestReplayCli:
         assert result.exit_code == 0, result.output
         assert "codex-cli" in result.output
         assert "--openai-thinking-mode" in result.output
+        assert "--codex-capability-profile" in result.output
+        assert "text-only" in result.output
 
     def test_compares_files_and_writes_json(self, tmp_path, monkeypatch) -> None:
         original = tmp_path / "AGENTS.md"

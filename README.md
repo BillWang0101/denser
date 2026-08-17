@@ -1,6 +1,6 @@
 # denser
 
-> Refactor LLM instructions into shorter candidates, then verify what they still do.
+> Prove which LLM context can be removed or rewritten without changing required behavior.
 
 [![License: Apache 2.0](https://img.shields.io/badge/License-Apache%202.0-blue.svg)](LICENSE)
 [![Python 3.10+](https://img.shields.io/badge/python-3.10+-blue.svg)](https://www.python.org/downloads/)
@@ -10,36 +10,55 @@
 ![Experimental density sweep across instruction roles](docs/assets/hero.png)
 
 > [!IMPORTANT]
-> denser is an alpha research prototype. The current built-in fixtures perform
-> structural checks; they do not prove behavior preservation for an arbitrary
-> instruction asset. Asset-specific deterministic behavior replay is available,
-> but its evidence applies only to the exact workload and execution model used.
+> denser is an alpha research prototype. It does not replace a model provider's
+> runtime compaction. It audits a baseline and a proposed context variant against
+> asset-specific behavior cases, and requires a known-bad negative control before
+> reporting observed preservation. Evidence applies only to the exact workload,
+> execution model, and runtime configuration used.
 > See [`docs/DESIGN.md`](docs/DESIGN.md) for the evidence standard and the active
 > implementation plan.
 
 ---
 
-## 🔁 Featured: denser-compress compresses itself
+## Featured: measurable Codex input reduction for text-only tasks
 
-denser ships with a Claude Code skill called `denser-compress`. As the first public demo, we compressed that skill's own `SKILL.md` using the denser methodology.
+The first result that clears denser's end-to-end bar comes from capability
+selection, not prose compression. For replay tasks that need no files, shell,
+network, plugins, apps, skills, or memory, the Codex CLI adapter can use an
+explicit `text-only` profile and omit those unused capabilities from the model
+input. `standard` remains the default.
 
-| | Estimated tokens | Density | Exploratory range |
+With Codex CLI 0.147.0, `gpt-5.6-sol`, and medium reasoning:
+
+| Workload | Quality | Full input per call | Reduction |
 |---|---:|---:|---:|
-| Case-study source snapshot (`verbose.md`) | **1249** | 1.00 | — |
-| Case-study candidate snapshot (`dense.md`) | **526** | **0.42** | 0.30 – 0.45 ✓ |
+| Release-operation decisions | 27/27 in each profile | 20,294.11 → 18,154.00 | 10.55% |
+| Automation permission routing | 15/15 in each profile | 20,619.00 → 18,434.00 | 10.60% |
 
-**This hand-reviewed demo is 58% shorter by denser's local estimator.** It
-preserves the categories in the current checklist, but it has not yet been
-validated by an asset-specific behavior suite.
+This clears the predeclared rule of at least two real scenarios with at least
+10% provider-reported full-input reduction and no observed quality loss. The
+final run made 84 authenticated calls in seeded randomized order, with three
+trials per case, zero operational errors, and zero transport fallbacks. It is
+not a general coding mode: tasks that need tools must use `standard`.
 
-Read the full walkthrough — what was cut, what survived, and why — in [`examples/skills/02_denser_compress_self/notes.md`](examples/skills/02_denser_compress_self/notes.md). The methodology applied is documented in [`docs/METHODOLOGY.md`](docs/METHODOLOGY.md).
+The first strict run caught one regression: without tools, one case asked for
+more context instead of following its fixed output contract. The `text-only/v1`
+wrapper now states that all required input is already present, and the complete
+84-call audit was rerun rather than patching the single failure. This is the
+kind of false confidence denser is designed to expose.
 
-The example demonstrates the rewrite workflow; it is not a general performance
-claim.
+The earlier 10.3%-shorter instruction rewrite reduced full Codex input by only
+about 0.25%. That negative result remains important: rewriting a small file is
+not enough when the larger cost is unused runtime context.
+
+See the [case study and reproduction
+guide](docs/CODEX_TEXT_ONLY_CASE_STUDY.md), plus the complete per-call outputs,
+token counts, source hashes, runtime settings, and limitations in the
+[`paired three-trial audit`](examples/project_instructions/codex-text-only-profile-audit.paired-3x-final.2026-08-17.json).
 
 ---
 
-## The Problem
+## The problem
 
 In the agent era, the same text gets loaded into an LLM **every turn**:
 
@@ -48,20 +67,28 @@ In the agent era, the same text gets loaded into an LLM **every turn**:
 - Tool descriptions parsed thousands of times per session
 - Memory entries competing for a finite context budget
 
-Verbose instructions cost tokens and can make important rules harder to locate.
-Whether shortening helps depends on the asset, workload, execution model, and
-prompt-cache behavior.
+Codex and other agent runtimes can already compact growing conversation history.
+That solves a capacity problem, but it does not prove which requirements,
+permissions, decisions, or unfinished work survived a context change. For Codex,
+automatic history compaction is an explicit runtime feature with a configurable
+threshold; see the
+[official configuration reference](https://learn.chatgpt.com/docs/config-file/config-reference).
 
-Existing work already covers token pruning, structured prompt optimization,
-prompt evaluation, and runtime context management. denser takes a narrower
-path: version-controlled instruction assets, role-aware rewrite guidance, and a
-reviewable path toward behavior regression testing.
+denser focuses on the missing evidence layer: compare a baseline with a rewritten,
+selectively loaded, or externally compacted text snapshot; replay realistic
+behavior cases; verify that a known-bad control is caught; and report actual
+end-to-end input usage separately from asset-only length.
 
 ---
 
 ## What denser does
 
 ```bash
+denser audit AGENTS.md AGENTS.variant.md --type claude_md \
+  --suite replay.holdout.json \
+  --negative-control AGENTS.negative-control.md \
+  --backend codex-cli --model gpt-5.6-sol --n-trials 3
+
 denser inspect --type skill my_skill.md
 denser optimize --type skill my_skill.md \
   --out my_skill.optimized.md \
@@ -69,18 +96,20 @@ denser optimize --type skill my_skill.md \
 denser compress --type skill my_skill.md
 denser verify --type skill my_skill.md my_skill.dense.md
 denser replay --type claude_md AGENTS.md --suite replay.json \
-  --compare-to AGENTS.dense.md --backend codex-cli \
-  --model gpt-5.6-sol --codex-reasoning-effort medium
+  --compare-to AGENTS.variant.md --backend codex-cli
+
+# Only for tasks that need no tools, files, network, plugins, skills, or memory
+denser replay --type claude_md AGENTS.md --suite replay.json \
+  --backend codex-cli --codex-capability-profile text-only
 ```
 
-```
-━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━
-  my_skill.md  →  my_skill.dense.md
-  182 tokens   →  61 tokens   (-66%)
-━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━
-```
+`audit` is the primary interface. It runs paired baseline/variant replay,
+compares every covered case, checks whether a known-bad negative control causes
+a regression, and reports both asset-only estimates and provider-reported full
+input usage. Equal scores without a detected negative control are
+`inconclusive`, not proof of preservation.
 
-`inspect` first performs an offline scan and produces a source-linked
+`inspect` performs an offline scan and produces a source-linked
 preservation contract: triggers, exclusions, hard constraints, safety and
 permission rules, output obligations, failure paths, and protected literals.
 It makes no model or network calls. `optimize` gives the contract to the
@@ -89,19 +118,46 @@ shortest passing option; the original always remains a candidate. It never
 overwrites the source or an existing output file. `verify` rejects missing
 metadata and protected literals, and leaves changed obligations at `review`
 until they have deterministic or explicitly mapped behavior evidence.
-`replay` executes realistic requests with the instruction asset in the backend's
+`replay` is the lower-level runner. It executes realistic requests with the instruction asset in the backend's
 system-instruction position, scores outputs with deterministic rules, and
 randomizes paired original/candidate call order. The CLI reports each completed
 call with total progress, asset side, case, and trial; use `--no-progress` for
-quiet runs. `compress` and `eval` remain
-lower-level experimental entry points. A candidate should not replace its
-source until it passes an asset-specific behavior suite.
+quiet runs. `compress`, `optimize`, `eval`, and `curve` remain candidate-generation
+or research tools. A shorter candidate is not a result until `audit` can produce
+sensitive behavior evidence for it.
 
 ---
 
 ## Three differentiators
 
-### 1. Role-aware rewriting
+### 1. Sensitivity before certification
+
+A baseline and variant can receive identical scores because they behave the
+same, or because the workload is too weak to notice the difference. `audit`
+requires a known-bad negative control to regress before it returns
+`preserved`. Without that control, the result remains `inconclusive`.
+
+### 2. Deterministic, reproducible behavior replay
+
+Replay suites exercise real triggers, near misses, permission boundaries,
+failure paths, and adversarial requests. Outputs are checked with explicit
+exact, contains, or regular-expression rules; operational errors remain
+separate from content failures. Paired baseline/variant calls use a recorded,
+randomized order.
+
+### 3. Honest end-to-end measurement
+
+Reports keep two denominators separate:
+
+- local asset estimates show how much the edited file changed;
+- provider-reported input totals show what changed across the complete run.
+
+This prevents a 10% file reduction from being presented as a 10% runtime or
+cost reduction when the edited file is only a small part of the full context.
+
+## Optional candidate generation
+
+### Role-aware rewriting
 
 Different instruction assets have different failure modes. denser currently
 ships six rewrite profiles. Their density ranges are exploratory generation
@@ -116,7 +172,7 @@ defaults, not measured optima:
 | `claude_md` | project conventions, non-obvious invariants | API docs, auto-discoverable structure | 0.35 – 0.50 |
 | `one_shot_doc` | the actionable instruction | background context that's implicit | 0.40 – 0.60 |
 
-### 2. Structural checks and behavior tasks
+### Structural checks and lower-level replay
 
 Compare an original and candidate with a deterministic suite written for that
 asset:
@@ -137,6 +193,10 @@ denser replay --type claude_md AGENTS.md --suite replay.json \
 - The Codex CLI adapter uses an independent authenticated CLI, an ephemeral
   read-only turn, and records sanitized per-call status, latency, and token
   usage without copying local authentication or raw diagnostics into reports.
+- Its optional `text-only` capability profile removes unused tool and extension
+  context for pre-bundled text tasks. It is not a substitute for `standard`
+  when the workload needs files, commands, network access, plugins, apps,
+  skills, or memory.
 - Replay report `v3` introduced a sanitized top-level runtime configuration:
   backend kind, model, Codex CLI version, reasoning effort, timeout, isolation
   flags, system-proxy choice, and disabled features. Executable paths, account
@@ -158,7 +218,7 @@ independent process authors the holdout.
 Replay JSON contains raw model outputs. Store it with the same access controls
 as the instruction asset and workload prompts.
 
-### 3. Experimental density sweep
+### Experimental density sweep
 
 `denser curve` samples candidates at several target densities and plots the
 observed scores. The relationship is not assumed to be concave: it may be
@@ -191,13 +251,12 @@ See [`docs/DESIGN.md`](docs/DESIGN.md) for the active evidence standard and
 
 ---
 
-## Why static instruction assets
+## Why reviewable context snapshots
 
 Skills, system/developer instructions, tool descriptions, project rules, and
-memory policies are reused and often version controlled. That makes them
-reviewable and testable in a way that transient chat history is not. Prompt
-caching and runtime compaction can reduce some operational costs, but they do
-not show whether a changed instruction still triggers and behaves correctly.
+memory policies are reused and often version controlled. Exported before/after
+history summaries can also become reviewable snapshots. These artifacts make
+behavior changes reproducible in a way that an opaque runtime event is not.
 
 ---
 
@@ -230,6 +289,32 @@ pip install -e ".[dev]"
 ---
 
 ## Quickstart
+
+### Audit a context variant
+
+```python
+from denser import audit_context, load_replay_suite
+
+suite = load_replay_suite("replay.holdout.json")
+report = audit_context(
+    baseline=baseline_text,
+    variant=variant_text,
+    negative_control=known_bad_text,
+    task_type="claude_md",
+    tasks=suite,
+    backend=execution_backend,
+    n_trials=3,
+    seed=20260817,
+)
+
+print(report.decision.value)
+print(report.observed_input_reduction_pct)
+```
+
+`preserved` means the variant matched every covered baseline case and the same
+suite caught the known-bad control. `regressed` means the variant lost covered
+behavior. Improvements are sent to `review`; missing or insensitive controls
+and operational failures are `inconclusive`.
 
 ### Inspect and verify offline
 
@@ -372,7 +457,7 @@ SiliconFlowBackend(model="zai-org/GLM-4.6")
 # Generic Chat Completions-compatible endpoint
 OpenAICompatibleBackend(base_url="https://api.openai.com/v1", model="gpt-4o")
 
-# Authenticated local Codex CLI; available to `denser replay` only
+# Authenticated local Codex CLI; available to `denser audit` and `denser replay`
 CodexCliBackend(model="gpt-5.6-sol", reasoning_effort="medium")
 ```
 
@@ -399,10 +484,11 @@ supports the compatible `thinking` field. The default remains
 
 ## Benchmarks
 
-No general performance benchmark is published yet. The repository currently
-contains ten before/after examples, including two `AGENTS.md` cases. The second
-uses a candidate-frozen, chronologically blind holdout, but the public examples
-as a whole are not an independent evaluation dataset.
+No general context-optimization benchmark is published yet. The repository
+currently contains ten before/after examples, including two `AGENTS.md` cases.
+The second uses a candidate-frozen, chronologically blind holdout and material
+negative controls, but the public examples as a whole are not an independent
+evaluation dataset.
 
 The runner in [`benchmarks/`](benchmarks/) can execute the current corpus with a
 live backend. Results are publishable only when raw output, model/settings,
@@ -442,8 +528,9 @@ The `denser-compress` skill runs inside Claude Code's authenticated session — 
 - **Phase 0** — align claims, terminology, integrations, and metadata with the committed evidence
 - **Phase 1** — preservation contract, source mapping, multi-candidate optimization, and evidence report
 - **Phase 2** — deterministic replay and one candidate-frozen holdout are available; broader external workloads remain
-- **Phase 3** — external pilot projects, reproducible releases, and evaluation adapters
-- **Phase 4** — synthetic and licensed `AGENTS.md` pilots are committed; nested Codex discovery and a current OpenAI-native adapter remain
+- **Phase 3** — context audit with negative-control sensitivity and honest end-to-end token measurement is available
+- **Phase 4** — audit real selective-loading and runtime-compaction snapshots across long-horizon tasks
+- **Phase 5** — external pilot projects, reproducible releases, and evaluation adapters
 
 See [`docs/DESIGN.md`](docs/DESIGN.md) for scope, evidence rules, and delivery
 gates. [`PROJECT_PLAN.md`](PROJECT_PLAN.md) is retained as the historical launch
@@ -459,6 +546,8 @@ Particularly useful:
 
 - Submit a realistic instruction asset with provenance and redistribution terms
 - Add positive, negative, exceptional, or adversarial behavior cases
+- Add a known-bad negative control that proves a replay suite is sensitive
+- Capture a reproducible before/after context snapshot across runtime compaction
 - Report a candidate that passed a structural check but failed in real use
 - Reproduce an observation with committed model settings and raw results
 
@@ -482,7 +571,7 @@ If you use `denser` in research or writing, please cite:
 ```bibtex
 @software{wang2026denser,
   author = {Wang, Bill},
-  title = {denser: Evidence-Guided Refactoring for LLM Instructions},
+  title = {denser: Behavior-Fidelity Audits for Version-Controlled LLM Context},
   year = {2026},
   url = {https://github.com/Evostructs/denser}
 }

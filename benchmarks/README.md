@@ -4,6 +4,24 @@ Runs the small bundled example corpus for development. This is not yet a
 publishable behavior benchmark: the default fixtures are structural checks and
 the corpus has eight worked examples.
 
+## Paired Codex capability-profile audit
+
+The repository's strongest end-to-end token claim is reproduced by running the
+same frozen behavior cases under Codex CLI `standard` and `text-only` profiles.
+Calls are submitted in a seeded randomized order, with three trials per case by
+default. The script refuses to overwrite an existing report.
+
+```bash
+python benchmarks/codex_profile_audit.py \
+  --trials 3 --workers 8 --seed 20260817 --respect-system-proxy \
+  --output build/codex-profile-audit.json
+```
+
+This performs 84 authenticated Codex calls. Use `text-only` only for workloads
+that need no files, commands, network, plugins, apps, skills, or memory. The
+published run and exact interpretation are documented in
+[`docs/CODEX_TEXT_ONLY_CASE_STUDY.md`](../docs/CODEX_TEXT_ONLY_CASE_STUDY.md).
+
 ## What it does
 
 1. Iterates over all curated example pairs in `examples/`
