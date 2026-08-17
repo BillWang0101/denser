@@ -1,6 +1,7 @@
-# Compression Methodology
+# Candidate Rewrite Methodology
 
-> How denser actually decides what to cut.
+> Optional guidance for proposing a context variant. It is not the product's
+> audit decision and cannot establish behavior preservation by itself.
 
 > **Alpha note:** this is rewrite guidance, not proof of behavior preservation.
 > A candidate is acceptable only when it passes the asset's real behavior

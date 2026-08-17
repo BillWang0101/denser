@@ -3,6 +3,7 @@
 Entry point registered via pyproject.toml as `denser`.
 
 Commands:
+- `denser audit` — audit behavior parity and replay-suite sensitivity
 - `denser inspect` — build an offline preservation contract
 - `denser verify` — verify a candidate against its source contract
 - `denser optimize` — generate and select verified candidates
@@ -26,7 +27,10 @@ from rich.panel import Panel
 from rich.table import Table
 
 from denser import __version__
+from denser.audit import AuditDecision, ContextAuditReport
+from denser.audit import audit_context as audit_context_fn
 from denser.backends import (
+    CODEX_CAPABILITY_PROFILES,
     Backend,
     BackendError,
     ClaudeBackend,
@@ -65,6 +69,7 @@ def _build_backend(
     codex_reasoning_effort: str = "medium",
     codex_respect_system_proxy: bool = False,
     openai_thinking_mode: str = "provider-default",
+    codex_capability_profile: str = "standard",
 ) -> Backend:
     """Construct a backend from CLI arguments."""
     if kind == "claude":
@@ -91,6 +96,7 @@ def _build_backend(
             reasoning_effort=codex_reasoning_effort,
             timeout_seconds=codex_timeout,
             respect_system_proxy=codex_respect_system_proxy,
+            capability_profile=codex_capability_profile,
         )
     raise BackendError(f"Unknown backend: {kind}")
 
@@ -109,7 +115,7 @@ def _make_console_output_loss_tolerant() -> None:
 @click.group()
 @click.version_option(version=__version__, prog_name="denser")
 def main() -> None:
-    """denser: evidence-guided refactoring for LLM instructions."""
+    """denser: behavior-fidelity audits for LLM context changes."""
     _make_console_output_loss_tolerant()
 
 
@@ -711,6 +717,231 @@ def _print_comparison_report(
     )
 
 
+@main.command("audit")
+@click.argument("baseline_file", type=click.Path(exists=True, dir_okay=False, path_type=Path))
+@click.argument("variant_file", type=click.Path(exists=True, dir_okay=False, path_type=Path))
+@click.option(
+    "--suite",
+    "suite_file",
+    type=click.Path(exists=True, dir_okay=False, path_type=Path),
+    required=True,
+    help="UTF-8 JSON file containing asset-specific replay cases.",
+)
+@click.option(
+    "--negative-control",
+    type=click.Path(exists=True, dir_okay=False, path_type=Path),
+    default=None,
+    help="Known-bad context variant used to prove that the replay suite is sensitive.",
+)
+@click.option(
+    "--type",
+    "task_type",
+    type=click.Choice([t.value for t in TaskType], case_sensitive=False),
+    required=True,
+)
+@click.option(
+    "--backend",
+    type=click.Choice(REPLAY_BACKEND_CHOICES, case_sensitive=False),
+    default="claude",
+    show_default=True,
+)
+@click.option("--base-url", default=None, help="Base URL for openai-compat backend.")
+@click.option("--model", default=None, help="Execution model id; defaults depend on backend.")
+@click.option(
+    "--openai-thinking-mode",
+    type=click.Choice(["provider-default", "enabled", "disabled"]),
+    default="provider-default",
+    show_default=True,
+    help="Reasoning mode for compatible providers that accept extra_body.thinking.",
+)
+@click.option(
+    "--codex-cli-path",
+    type=click.Path(exists=True, dir_okay=False, path_type=Path),
+    default=None,
+    envvar="DENSER_CODEX_CLI",
+    help="Independent Codex CLI executable; never use the desktop WindowsApps binary.",
+)
+@click.option(
+    "--codex-timeout",
+    type=click.FloatRange(min=1.0),
+    default=180.0,
+    show_default=True,
+    help="Per-call timeout in seconds for the codex-cli backend.",
+)
+@click.option(
+    "--codex-reasoning-effort",
+    type=click.Choice(["none", "low", "medium", "high", "xhigh", "max"]),
+    default="medium",
+    show_default=True,
+)
+@click.option(
+    "--codex-respect-system-proxy/--no-codex-respect-system-proxy",
+    default=False,
+    help="Enable Codex CLI's experimental Windows system-proxy support.",
+)
+@click.option(
+    "--codex-capability-profile",
+    type=click.Choice(CODEX_CAPABILITY_PROFILES),
+    default="standard",
+    show_default=True,
+    help="Use text-only only when the task needs no files, commands, network, plugins, or skills.",
+)
+@click.option("--n-trials", type=click.IntRange(min=1), default=1, show_default=True)
+@click.option(
+    "--seed",
+    type=int,
+    default=0,
+    show_default=True,
+    help="Reproducible call-order seed for the paired baseline/variant replay.",
+)
+@click.option(
+    "--progress/--no-progress",
+    default=True,
+    show_default=True,
+    help="Print each completed replay call and the total call count.",
+)
+@click.option(
+    "--json-out",
+    type=click.Path(dir_okay=False, path_type=Path),
+    default=None,
+    help="Write the versioned audit report to a new JSON file.",
+)
+def audit_cmd(
+    baseline_file: Path,
+    variant_file: Path,
+    suite_file: Path,
+    negative_control: Path | None,
+    task_type: str,
+    backend: str,
+    base_url: str | None,
+    model: str | None,
+    openai_thinking_mode: str,
+    codex_cli_path: Path | None,
+    codex_timeout: float,
+    codex_reasoning_effort: str,
+    codex_respect_system_proxy: bool,
+    codex_capability_profile: str,
+    n_trials: int,
+    seed: int,
+    progress: bool,
+    json_out: Path | None,
+) -> None:
+    """Audit whether VARIANT_FILE preserves BASELINE_FILE behavior."""
+    if json_out is not None:
+        _validate_new_output_paths(baseline_file, json_out, None)
+        protected_inputs = [variant_file, suite_file, negative_control]
+        if any(
+            path is not None and json_out.resolve() == path.resolve() for path in protected_inputs
+        ):
+            raise click.ClickException("Refusing to overwrite an audit input file.")
+
+    try:
+        baseline = baseline_file.read_text(encoding="utf-8")
+        variant = variant_file.read_text(encoding="utf-8")
+        control_text = (
+            None if negative_control is None else negative_control.read_text(encoding="utf-8")
+        )
+        suite = load_replay_suite(suite_file)
+        backend_obj = _build_backend(
+            backend,
+            model=model,
+            base_url=base_url,
+            openai_thinking_mode=openai_thinking_mode,
+            codex_cli_path=codex_cli_path,
+            codex_timeout=codex_timeout,
+            codex_reasoning_effort=codex_reasoning_effort,
+            codex_respect_system_proxy=codex_respect_system_proxy,
+            codex_capability_profile=codex_capability_profile,
+        )
+        progress_callback = _print_replay_progress if progress else None
+        report = audit_context_fn(
+            baseline=baseline,
+            variant=variant,
+            negative_control=control_text,
+            task_type=task_type,
+            tasks=suite,
+            backend=backend_obj,
+            n_trials=n_trials,
+            seed=seed,
+            on_progress=progress_callback,
+        )
+    except (BackendError, UnicodeError, ValueError) as exc:
+        raise click.ClickException(str(exc)) from exc
+
+    _print_context_audit(report, baseline_file.name, variant_file.name)
+    if json_out is not None:
+        json_out.write_text(
+            json.dumps(report.to_dict(), indent=2, ensure_ascii=False) + "\n",
+            encoding="utf-8",
+        )
+        console.print(f"Wrote audit JSON -> {json_out}")
+
+    exit_code = {
+        AuditDecision.PRESERVED: 0,
+        AuditDecision.REGRESSED: 2,
+        AuditDecision.REVIEW: 3,
+        AuditDecision.INCONCLUSIVE: 3,
+    }[report.decision]
+    if exit_code:
+        raise click.exceptions.Exit(exit_code)
+
+
+def _print_context_audit(
+    report: ContextAuditReport,
+    baseline_label: str,
+    variant_label: str,
+) -> None:
+    table = Table(title="[bold]context behavior audit[/bold]")
+    table.add_column("Task")
+    table.add_column(baseline_label, justify="right")
+    table.add_column(variant_label, justify="right")
+    table.add_column("Delta", justify="right")
+    for baseline, variant in zip(
+        report.comparison.original.task_results,
+        report.comparison.candidate.task_results,
+        strict=True,
+    ):
+        delta = variant.overall_pass_rate - baseline.overall_pass_rate
+        table.add_row(
+            baseline.task_name,
+            f"{baseline.overall_pass_rate:.2%}",
+            f"{variant.overall_pass_rate:.2%}",
+            f"{delta:+.2%}",
+        )
+    console.print(table)
+
+    control_status = {
+        None: "not run",
+        True: "detected",
+        False: "not detected",
+    }[report.negative_control_detected]
+    observed = report.observed_input_reduction_pct
+    observed_summary = (
+        "unavailable"
+        if observed is None
+        else (
+            f"{report.baseline_input_tokens} -> {report.variant_input_tokens} "
+            f"({observed:+.2%} reduction)"
+        )
+    )
+    decision_style = {
+        AuditDecision.PRESERVED: "green",
+        AuditDecision.REGRESSED: "red",
+        AuditDecision.REVIEW: "yellow",
+        AuditDecision.INCONCLUSIVE: "yellow",
+    }[report.decision]
+    summary = (
+        f"Decision: [{decision_style}]{report.decision.value}[/{decision_style}]\n"
+        f"Reason: {escape(report.decision_reason)}\n"
+        f"Asset estimate: {report.baseline_estimated_tokens} -> "
+        f"{report.variant_estimated_tokens} "
+        f"({report.estimated_token_reduction_pct:+.2%} reduction)\n"
+        f"Provider-reported full input: {observed_summary}\n"
+        f"Negative control: {control_status}"
+    )
+    console.print(Panel.fit(summary, title="Audit verdict"))
+
+
 @main.command("replay")
 @click.argument("input_file", type=click.Path(exists=True, dir_okay=False, path_type=Path))
 @click.option(
@@ -772,6 +1003,13 @@ def _print_comparison_report(
     default=False,
     help="Enable Codex CLI's experimental Windows system-proxy support.",
 )
+@click.option(
+    "--codex-capability-profile",
+    type=click.Choice(CODEX_CAPABILITY_PROFILES),
+    default="standard",
+    show_default=True,
+    help="Use text-only only when the task needs no files, commands, network, plugins, or skills.",
+)
 @click.option("--n-trials", type=click.IntRange(min=1), default=1, show_default=True)
 @click.option(
     "--seed",
@@ -805,6 +1043,7 @@ def replay_cmd(
     codex_timeout: float,
     codex_reasoning_effort: str,
     codex_respect_system_proxy: bool,
+    codex_capability_profile: str,
     n_trials: int,
     seed: int,
     progress: bool,
@@ -831,6 +1070,7 @@ def replay_cmd(
             codex_reasoning_effort=codex_reasoning_effort,
             codex_respect_system_proxy=codex_respect_system_proxy,
             openai_thinking_mode=openai_thinking_mode,
+            codex_capability_profile=codex_capability_profile,
         )
         original = input_file.read_text(encoding="utf-8")
         progress_callback = _print_replay_progress if progress else None
@@ -888,8 +1128,8 @@ def replay_cmd(
 def _print_replay_progress(progress: ReplayProgress) -> None:
     console.print(
         f"Replay progress {progress.completed_calls}/{progress.total_calls}: "
-        f"{escape(progress.side)} · {escape(progress.task_name)}/{escape(progress.case_name)} "
-        f"· trial {progress.trial_index}/{progress.n_trials}"
+        f"{escape(progress.side)} | {escape(progress.task_name)}/{escape(progress.case_name)} "
+        f"| trial {progress.trial_index}/{progress.n_trials}"
     )
 
 
