@@ -4,7 +4,8 @@
 
 **Original**: `denser/skills/denser-compress/SKILL.md` (133 lines, **1249 tokens**, 751 words)
 **Compressed**: `dense.md` (50 lines, **526 tokens**, ~280 words)
-**Density ratio**: **0.42** (skill sweet spot: 0.30 – 0.45 — inside the range, near midpoint)
+**Density ratio**: **0.42** (inside the exploratory skill generation range
+0.30 – 0.45; this is not a measured behavior optimum)
 **Token savings**: **58%**
 **Task type**: `skill`
 
@@ -96,7 +97,9 @@ File in memory/ directory?             → memory_entry
 ...
 ```
 
-**Methodology applied**: Layer 2 move 3 — the nested tree was showing the *reasoning path* to a human. An LLM doesn't reason through decision trees; it pattern-matches. Flat `condition → output` is semantically equivalent and compresses 2:1.
+**Methodology applied**: Layer 2 move 3 — the flat `condition → output` form
+retains the visible branches in less space. Structural review found no missing
+branch, but this example has no runtime behavior suite proving equivalence.
 
 ---
 
@@ -165,7 +168,8 @@ An entire section removed by finding its content redundantly said elsewhere.
 
 ## Where we stopped, and why
 
-The compressed version sits at **density 0.42**, near the midpoint of the `skill` sweet spot (0.30 – 0.45, midpoint 0.375). Could we compress further?
+The compressed version sits at **density 0.42**, inside the exploratory `skill`
+generation range (0.30–0.45). Could we compress further?
 
 **Possible candidates for further cuts**:
 - Decision Tree could become a 1-line comma-separated list (~50 more tokens saved)
@@ -183,11 +187,15 @@ Under pressure to compress further, we would violate at least one Layer 4 stoppi
 
 1. **The taxonomy alone isn't enough.** Rules like "preserve trigger conditions" and "strip motivational preamble" are necessary but not sufficient — every compression involves case-by-case judgment. The methodology encodes that judgment into reproducible moves.
 
-2. **Self-application is a meaningful test.** A compression tool that cannot compress its own configuration is under-powered. denser can — inside the sweet spot, with zero pass-rate loss verified against the skill-type golden tasks.
+2. **Self-application is a useful worked example.** The candidate passed the
+   bundled structural fixtures. Those checks do not establish zero behavior
+   loss; an asset-specific trigger and execution suite is still required.
 
 3. **The biggest wins come from Layer 2 moves 1 and 2** — stripping meta commentary and de-duplicating across sections. Together they accounted for ~40% of this compression's savings.
 
-4. **Layer 4 (when to stop) is where the methodology becomes art.** Rules tell you when to cut. Stopping rules tell you when to stop cutting. A well-behaved compression lands inside the sweet spot without trying to minimize density.
+4. **Layer 4 (when to stop) requires evidence.** A target range is only a
+   generation hint; stop before an unsupported removal and let behavior tests
+   decide whether a candidate is acceptable.
 
 ---
 
@@ -201,4 +209,6 @@ bash denser/skills/install.sh
 # "Compress this skill at ~/.claude/skills/denser-compress/SKILL.md"
 ```
 
-The Claude Code skill will produce a compressed version following the same workflow and (assuming correct methodology application) arrive at a similar density. Any LLM-backed compression has variance, but the preserve/strip categorical decisions should match 100%.
+The Claude Code skill follows the same workflow, but model-backed rewriting has
+variance. Density and preserve/strip decisions may differ and require review;
+no fixed match rate is claimed.

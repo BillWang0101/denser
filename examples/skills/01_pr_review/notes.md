@@ -3,9 +3,9 @@
 **Original**: 303 words (~400 tokens)
 **Compressed**: 71 words (~95 tokens)
 **Density**: 0.24 (76% savings)
-**Task-type sweet spot for `skill`**: 0.30 – 0.45
+**Exploratory generation range for `skill`**: 0.30 – 0.45
 
-This compression is slightly below the typical sweet spot because the
+This candidate is below the working range because the
 original is especially wordy — much of it is meta-commentary about the
 skill's purpose and philosophy rather than actionable rules. Aggressive
 stripping is justified.

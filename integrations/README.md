@@ -4,7 +4,9 @@ Drop-in integrations for common developer workflows. Each subdirectory target is
 
 ## Pre-commit hook
 
-Block commits that introduce overly-verbose LLM input files (skills, `CLAUDE.md`, system prompts, memory entries, tool descriptions).
+Print an advisory size review for recognized LLM instruction files (skills,
+`CLAUDE.md`, system prompts, memory entries, and tool descriptions). The hook
+never blocks a commit because a file is long.
 
 ### Installation (Unix / macOS)
 
@@ -12,7 +14,7 @@ From a git repo where you want the check:
 
 ```bash
 # Pull denser's hook into this repo
-curl -sSL https://raw.githubusercontent.com/BillWang0101/denser/main/integrations/pre-commit-hook.sh \
+curl -sSL https://raw.githubusercontent.com/Evostructs/denser/main/integrations/pre-commit-hook.sh \
     -o .git/hooks/pre-commit
 chmod +x .git/hooks/pre-commit
 ```
@@ -34,8 +36,9 @@ On every `git commit`, the hook:
 
 1. Lists files staged for this commit
 2. Filters to LLM-input-shaped paths (see regex in hook scripts)
-3. Runs `python -m denser.precommit <files>` to check tokens against each file's task-type sweet-spot ceiling
-4. Blocks the commit if any file is over its ceiling by ≥10%
+3. Runs `python -m denser.precommit <files>` to estimate each recognized file's size
+4. Prints a review suggestion when a file exceeds an alpha reference size
+5. Returns success; length alone is never treated as a behavior failure
 
 ### Task-type inference
 
@@ -52,20 +55,23 @@ The hook infers task type from path, not content:
 
 Inference is deliberately narrow — we'd rather miss than false-positive.
 
-### Token ceilings
+### Advisory reference sizes
 
-File sizes above these typical ceilings (with a 10% margin before blocking) trigger the check:
+File sizes at or above these values trigger a review message:
 
-| Task type | Ceiling (tokens) | Blocking threshold |
-|---|---:|---:|
-| `skill` | 800 | 880 |
-| `system_prompt` | 600 | 660 |
-| `tool_description` | 300 | 330 |
-| `memory_entry` | 250 | 275 |
-| `claude_md` | 1000 | 1100 |
-| `one_shot_doc` | 1500 | 1650 |
+| Task type | Review reference (estimated tokens) |
+|---|---:|
+| `skill` | 800 |
+| `system_prompt` | 600 |
+| `tool_description` | 300 |
+| `memory_entry` | 250 |
+| `claude_md` | 1000 |
+| `one_shot_doc` | 1500 |
 
-Ceilings come from the observed distribution in `examples/` and the sweet-spot ranges in the taxonomy. They are not hard-coded to your project — override via environment variable `DENSER_PRECOMMIT_CEILING_<TYPE>` (roadmap).
+These are conservative review prompts for the alpha integration. The bundled
+corpus is too small to establish optimal lengths, and a longer file may be
+entirely correct. Future behavior gates will rely on project-specific contracts
+and tests rather than global size limits.
 
 ### Bypass
 
@@ -78,21 +84,15 @@ SKIP_DENSER=1 git commit -m "legitimate large config"
 ```
 $ git commit -m "update skill"
 OK:      skills/pr-review.md (412 tokens, type=skill)
-WARN:    skills/new-skill.md (850 tokens, type=skill; consider compressing, typical ceiling 800)
-BLOCK:   skills/monolith.md (1340 tokens, type=skill; >= 880 block threshold)
-         Run: denser compress --type skill skills/monolith.md
-
-denser: one or more files exceed their task type's sweet-spot ceiling.
-        Fix with `denser compress --type <type> <path>` and re-stage,
-        or set SKIP_DENSER=1 for this commit if the size is intentional.
+REVIEW:  skills/new-skill.md (850 estimated tokens, type=skill; advisory reference 800, commit allowed)
+REVIEW:  skills/monolith.md (1340 estimated tokens, type=skill; advisory reference 800, commit allowed)
 ```
 
 ### Why no API call here
 
 The pre-commit path is hot — it runs on every commit. An API-based check
 would add seconds of latency and require configuring an API key per repo.
-This hook uses only local token estimation to catch "obvious drift" fast.
+This hook uses only local token estimation to make size growth visible.
 
-For task-pass-rate validation (the real measure of "is this compression
-good"), use `denser eval` outside the hook path — in CI, in a nightly batch,
-or manually before major refactors.
+For quality validation, use asset-specific behavior tests. The built-in
+`denser eval` fixtures currently provide structural checks only.

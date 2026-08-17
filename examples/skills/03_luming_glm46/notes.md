@@ -3,7 +3,7 @@
 > The first non-Claude, non-English, non-self-generated compression case in the
 > denser benchmark suite. GLM-4.6 via SiliconFlow compressed a 1432-token
 > Chinese academic-persona skill to 627 tokens, landing **inside the skill
-> sweet spot** with no prompt tuning.
+> exploratory generation range** with no prompt tuning.
 
 ---
 
@@ -24,11 +24,13 @@
 | Backend | `SiliconFlowBackend("zai-org/GLM-4.6")` |
 | Original tokens | 1432 |
 | Compressed tokens | 627 |
-| Density | **0.438** — inside sweet spot (0.30 – 0.45) |
+| Density | **0.438** — inside the exploratory range (0.30 – 0.45) |
 | Savings | **56%** |
 | Latency | 101s |
 
-The backend recommendation from [`docs/CROSS_MODEL_NOTES.md`](../../../docs/CROSS_MODEL_NOTES.md) — "GLM-4.6 is the only open-source model naturally inside the skill sweet spot" — is independently confirmed on this real-world input.
+This second input is consistent with the earlier single-input observation that
+GLM-4.6 can follow the target-length instruction. It does not independently
+confirm a general backend recommendation or behavior-preserving optimum.
 
 ---
 
@@ -62,15 +64,23 @@ A compression that's instructionally valid but changes the input's language is a
 
 ---
 
-## What this case study proves
+## What this case study observes
 
-1. **GLM-4.6 via SiliconFlow is a genuinely usable open-source backend** for skill compression in v0.1. It naturally respects the skill sweet spot, preserves structural load-bearing content, and produces output that would plausibly work as a replacement skill at runtime.
+1. **GLM-4.6 via SiliconFlow produced a candidate inside the working range on
+   this input.** Structural review found important content, but no
+   asset-specific behavior suite established that it is a runtime replacement.
 
-2. **denser's methodology transfers across languages**. The taxonomy's preserve/strip categories (Layer 2 moves) apply identically to Chinese input. The compression rationale bullets produced by GLM itself list the same move categories as the self-compression case: strip motivational preamble, condense enumerations, remove reference materials, etc.
+2. **The same review categories were usable on this Chinese input.** The model's
+   rationale referenced several moves also used in the self-compression case.
+   One example does not establish transfer across languages.
 
-3. **The 61–101s latency of GLM-4.6 is the real cost**. At this speed, interactive-use denser via GLM-4.6 is viable for rare "compress when written" flows but not for high-frequency batch use. Claude Opus 4.6 at ~20s is better for production; GLM-4.6 is better for "I don't have an Anthropic API key".
+3. **Observed latency varied by backend and run.** The recorded GLM-4.6 runs
+   took 61–101 seconds and one Claude run took about 20 seconds. These isolated
+   measurements are insufficient for a production or cost recommendation.
 
-4. **Unexpected behaviors happen at cross-model boundaries**. Denser v0.1's prompts are tuned on Claude; when applied to other models, interactions emerge (like the English translation observed here). This is direct empirical evidence for the v0.3 workstream on per-model prompt variants.
+4. **Unexpected behavior appeared across models.** The English translation in
+   this run motivates controlled cross-model testing; a single observation is
+   not evidence for a general backend ranking.
 
 ---
 
@@ -86,7 +96,7 @@ from pathlib import Path
 text = Path('~/.claude/skills/luming/SKILL.md').expanduser().read_text(encoding='utf-8')
 result = compress(text, task_type='skill', backend=SiliconFlowBackend(model='zai-org/GLM-4.6'))
 print(result.compressed)
-print(f'Density: {result.actual_density:.3f} (target 0.375, sweet spot 0.30-0.45)')
+print(f'Density: {result.actual_density:.3f} (target 0.375, exploratory range 0.30-0.45)')
 "
 ```
 

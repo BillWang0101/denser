@@ -1,4 +1,9 @@
-# denser — Internal Shipping Plan
+# denser — Original Launch Plan
+
+> **Status (August 2026): historical.** This file records the initial four-week
+> launch hypothesis. Some benchmark counts and product claims below were plans,
+> not completed evidence. The active design, evidence policy, and delivery
+> phases are maintained in [`docs/DESIGN.md`](docs/DESIGN.md).
 
 > **Goal**: Ship a flagship-quality open-source project to GitHub within 4 weeks, positioned as *the* tool for finding the signal density sweet spot of LLM inputs across task types.
 >

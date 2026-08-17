@@ -1,13 +1,15 @@
-# denser benchmarks
+# denser development runner
 
-Reproducible benchmark suite for the signal density curve framework.
+Runs the small bundled example corpus for development. This is not yet a
+publishable behavior benchmark: the default fixtures are structural checks and
+the corpus has eight worked examples.
 
 ## What it does
 
 1. Iterates over all curated example pairs in `examples/`
 2. For each pair:
    - Compresses the `verbose.md` using denser + Claude Opus 4.6
-   - Evaluates both `verbose.md` (original) and the compressed output on that task type's golden tasks
+   - Evaluates both `verbose.md` (original) and the candidate on built-in structural checks
    - Reports pass-rate delta + token savings
 3. Aggregates per-task-type statistics for the README table
 
@@ -21,14 +23,14 @@ Reproducible benchmark suite for the signal density curve framework.
 ```bash
 python benchmarks/run.py                    # all task types
 python benchmarks/run.py --type skill       # one task type
-python benchmarks/run.py --n-trials 30      # production-grade judge noise mitigation
+python benchmarks/run.py --n-trials 3       # repeat judge calls (not an equivalence test)
 python benchmarks/run.py --out results.json # persist results
 ```
 
 ## Expected wall time
 
 - `--n-trials 1` (CI smoke): ~2-5 minutes for the full corpus
-- `--n-trials 30` (production): ~30-90 minutes for the full corpus
+- Higher trial counts multiply runtime but do not create asset-specific behavior coverage
 
 ## Cost
 
@@ -38,14 +40,12 @@ Rough API bill per run at default `--n-trials 1`:
 
 Per-run total: typically < $1 at v0.1 corpus size.
 
-## What to look for
+## How to interpret output
 
-A healthy benchmark run produces:
-- **Avg savings** ≥ 40% across task types (compression is doing real work)
-- **Pass-rate delta** within ±3% of zero (compression preserves task performance)
-- **No example** with delta < -10% (no catastrophic compression failures)
-
-Anomalies — significantly negative deltas on a specific pair — are the most valuable signal. They indicate the compression strategy for that task type is under-specified or the input has unusual structure.
+Use the output to debug candidate generation and fixture plumbing. Savings and
+built-in pass-rate deltas must not be presented as average behavior results.
+The most valuable additions are realistic positive, negative, exceptional, and
+adversarial cases for a specific asset, together with provenance and raw output.
 
 ## Contributing benchmark results
 

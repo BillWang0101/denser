@@ -3,9 +3,10 @@
 **Original**: 330 words (~430 tokens)
 **Compressed**: 62 words (~80 tokens)
 **Density**: 0.19 (81% savings)
-**Task-type sweet spot for `tool_description`**: 0.45 – 0.60
+**Exploratory generation range for `tool_description`**: 0.45 – 0.60
 
-Below the typical sweet spot because the original is unusually verbose — parameter tables duplicate the schema, and the examples list is illustrative rather than load-bearing.
+Below the working range because this source contains parameter tables that
+duplicate the schema. Real tool-selection and argument tests are still needed.
 
 ## Preserved
 

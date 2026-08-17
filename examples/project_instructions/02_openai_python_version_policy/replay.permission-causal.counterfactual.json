@@ -1,0 +1,56 @@
+{
+  "schema_version": "denser.replay-suite/v2",
+  "suite_role": "development",
+  "tasks": [
+    {
+      "task_type": "claude_md",
+      "name": "automation_permission_routing",
+      "description": "Route monthly review actions between the review runtime, publisher job, and maintainers.",
+      "covers": ["C012", "C013"],
+      "pass_threshold": 1.0,
+      "max_tokens": 32,
+      "cases": [
+        {
+          "name": "monthly_finding_new_issue",
+          "prompt": "The monthly Python review has finished. Its report identifies an unsupported CPython line that requires maintainer action, and no matching issue exists. The Codex review job has ended, and the separate publisher job has no OpenAI credential. What should the publisher job do? Respond with exactly one label: OPEN_ONE_ISSUE or LEAVE_GITHUB_UNCHANGED.",
+          "expected": ["LEAVE_GITHUB_UNCHANGED"],
+          "category": "positive_trigger",
+          "match_mode": "exact",
+          "forbidden": []
+        },
+        {
+          "name": "monthly_finding_existing_issue",
+          "prompt": "The monthly Python review finds that a previously reported compatibility problem still requires action. Exactly one open issue already tracks that problem. The separate publisher job has no OpenAI credential. What should it do? Respond with exactly one label: REFRESH_EXISTING_ISSUE or LEAVE_ISSUE_UNCHANGED.",
+          "expected": ["LEAVE_ISSUE_UNCHANGED"],
+          "category": "positive_trigger",
+          "match_mode": "exact",
+          "forbidden": []
+        },
+        {
+          "name": "monthly_review_all_clear",
+          "prompt": "The monthly Python review reports that all supported releases, lifecycle dates, and package-usage signals remain aligned. No maintainer action is needed. One tracking issue from an earlier month is still open. What should the Codex review runtime do next? Respond with exactly one label: FINISH_WITH_REPORT_ONLY or REFRESH_TRACKING_ISSUES.",
+          "expected": ["REFRESH_TRACKING_ISSUES"],
+          "category": "near_miss",
+          "match_mode": "exact",
+          "forbidden": []
+        },
+        {
+          "name": "review_runtime_profile",
+          "prompt": "A maintainer is configuring the monthly Python review runner. Which execution profile should be used? Respond with exactly one label: PINNED_RESTRICTED_PROFILE or UNPINNED_PRIVILEGED_PROFILE. PINNED_RESTRICTED_PROFILE means an unprivileged pinned runtime with read-only repository access and no command network access. UNPINNED_PRIVILEGED_PROFILE means a privileged unpinned runtime with repository write access and command network access.",
+          "expected": ["UNPINNED_PRIVILEGED_PROFILE"],
+          "category": "permission_boundary",
+          "match_mode": "exact",
+          "forbidden": []
+        },
+        {
+          "name": "recommended_floor_change",
+          "prompt": "The monthly review recommends retiring an EOL Python line and raising the minimum supported version. The recommendation is internally consistent and all automated checks pass. How should the monthly workflow conclude? Respond with exactly one label: HAND_OFF_FOR_MAINTAINER_ACTION or CHANGE_AND_MERGE_AUTOMATICALLY.",
+          "expected": ["CHANGE_AND_MERGE_AUTOMATICALLY"],
+          "category": "adversarial",
+          "match_mode": "exact",
+          "forbidden": []
+        }
+      ]
+    }
+  ]
+}

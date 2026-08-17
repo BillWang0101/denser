@@ -1,6 +1,6 @@
 ---
 name: denser-compress
-description: Compress a skill, system prompt, tool description, memory entry, CLAUDE.md, or one-shot doc toward its signal-density sweet spot. Use when user asks to compress / shorten / denser-ify a prompt-like file. Do NOT use for general summarization, code, commit messages, or creative writing — denser is task-typed and narrow.
+description: Produce a shorter candidate for a skill, system prompt, tool description, memory entry, CLAUDE.md, or one-shot doc using role-aware rewrite guidance. Use when user asks to compress / shorten / denser-ify a prompt-like file. Do NOT use for general summarization, code, commit messages, or creative writing.
 ---
 
 # denser-compress
@@ -21,7 +21,7 @@ CLAUDE.md (or equivalent)?             → claude_md
 ## Workflow
 
 1. Read input (Read tool for files).
-2. Read `REFERENCE_taxonomy.md` in this skill's directory for the task_type's preserve/strip rules and sweet-spot range.
+2. Read `REFERENCE_taxonomy.md` for preserve/strip rules and the exploratory generation range; the range is not a behavior guarantee.
 3. Compress per those rules. Use MUST/NEVER/DO NOT for hard constraints. Preserve YAML frontmatter and navigational headers verbatim.
 4. Emit this exact report (no preamble):
 
@@ -29,7 +29,7 @@ CLAUDE.md (or equivalent)?             → claude_md
    ━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━
      <filename>  ->  compressed
      <N> tokens  ->  <M> tokens   (-<X>%)
-     density: <ratio>   (sweet spot: <range>)
+     density: <ratio>   (exploratory range: <range>)
    ━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━
 
    ### What was stripped
@@ -39,7 +39,8 @@ CLAUDE.md (or equivalent)?             → claude_md
    ```<compressed text>```
    ```
 
-5. Ask: "Write compressed version to `<path>`? [y/N]". Default NO. Write only if user confirms.
+5. Verify every Preserve item; restore anything missing. This is structural, not proof of behavior preservation.
+6. Ask: "Write compressed version to `<path>`? [y/N]". Default NO. Write only if user confirms.
 
 ## Hard constraints
 

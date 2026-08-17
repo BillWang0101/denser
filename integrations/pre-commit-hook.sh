@@ -10,9 +10,8 @@
 # What it does:
 #   - Collects files staged for the current commit that look like LLM inputs
 #     (skills/*.md, memory/*.md, CLAUDE.md, tools/*.md, *system_prompt*).
-#   - Invokes `python -m denser.precommit` to check each against its task
-#     type's sweet-spot token ceiling.
-#   - Blocks the commit if any file is over the ceiling by >10%.
+#   - Invokes `python -m denser.precommit` to estimate each recognized file.
+#   - Prints advisory review messages. Length alone never blocks a commit.
 #
 # Bypass: `SKIP_DENSER=1 git commit ...` (for legitimate large configs).
 set -euo pipefail
@@ -34,7 +33,7 @@ fi
 
 if ! python -c "import denser" 2>/dev/null; then
     echo "denser: Python package not installed; skipping density check."
-    echo "        Install with: pip install denser"
+    echo "        Install from: https://github.com/Evostructs/denser"
     exit 0
 fi
 

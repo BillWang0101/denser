@@ -1,0 +1,190 @@
+{
+  "schema_version": "denser.replay-suite/v2",
+  "suite_role": "holdout",
+  "freeze": {
+    "original_sha256": "b09d9ab7fdc908c841f3cba8cdbc2131723cbd09189f91f47e0ce04b8465b18d",
+    "candidate_sha256": "036469c04905be62da916e39805cfa4e50a44fe1e6e3619b90f8a46ff2371345",
+    "candidate_commit": "2f88ee52a9bdc68f6c215b8eae96d74f247c9af8",
+    "frozen_at_utc": "2026-08-17T05:44:42Z"
+  },
+  "authoring": {
+    "method": "independent_codex_cli_without_candidate",
+    "authored_at_utc": "2026-08-17T05:49:00Z",
+    "candidate_visible": false,
+    "backend": "codex-cli",
+    "model": "gpt-5.6-sol",
+    "reasoning_effort": "medium",
+    "cli_version": "0.147.0"
+  },
+  "tasks": [
+    {
+      "task_type": "claude_md",
+      "name": "python_policy_decisions",
+      "description": "Repository Python policy, synchronization, scope control, and policy-check limits.",
+      "pass_threshold": 1.0,
+      "max_tokens": 96,
+      "covers": ["C002", "C003", "C004", "C005", "C009"],
+      "cases": [
+        {
+          "name": "authoritative_sources",
+          "category": "positive_trigger",
+          "prompt": "Which file defines the technical Python minimum, and which file explains the support policy? Reply exactly as: technical=<file>; human=<file>",
+          "expected": "technical=pyproject.toml; human=PYTHON_VERSION_POLICY.md"
+        },
+        {
+          "name": "retired_runtime_without_grace",
+          "category": "near_miss",
+          "prompt": "CPython 3.9 has just reached EOL. No grace period is documented. Must the SDK continue supporting it? Reply only YES or NO.",
+          "expected": "NO"
+        },
+        {
+          "name": "documented_grace_boundary",
+          "category": "positive_trigger",
+          "prompt": "A documented grace period covers the most recently retired CPython line. Is temporary continued support permitted? Reply only YES or NO.",
+          "expected": "YES"
+        },
+        {
+          "name": "version_surface_sync",
+          "category": "failure_path",
+          "prompt": "A patch raises requires-python but leaves classifiers, README requirements, dependency markers, static-analysis targets, .python-version, and CI unchanged. Reply only ACCEPT or REJECT.",
+          "expected": "REJECT"
+        },
+        {
+          "name": "unrelated_upgrade_bundling",
+          "category": "adversarial",
+          "prompt": "A Python-floor pull request also upgrades an unrelated HTTP dependency to save reviewer time. Reply only KEEP or SPLIT.",
+          "expected": "SPLIT"
+        },
+        {
+          "name": "checker_policy_limit",
+          "category": "near_miss",
+          "prompt": "The deterministic policy check passes. Does that prove raising the floor is appropriate? Reply only YES or NO.",
+          "expected": "NO"
+        }
+      ]
+    },
+    {
+      "task_type": "claude_md",
+      "name": "floor_change_delivery",
+      "description": "Complete floor-change execution, generated-code safeguards, release communication, approval, and validation.",
+      "pass_threshold": 1.0,
+      "max_tokens": 96,
+      "covers": ["C001", "C006", "C007", "C008", "C014", "C015"],
+      "cases": [
+        {
+          "name": "generated_sdk_prerequisite",
+          "category": "permission_boundary",
+          "prompt": "You must edit a generated SDK source file. What must you read first? Reply with only the filename.",
+          "expected": "CONTRIBUTING.md"
+        },
+        {
+          "name": "exported_api_scope",
+          "category": "near_miss",
+          "prompt": "A handwritten helper can be simplified by changing an exported SDK API, but the requested task does not require an API change. Reply only CHANGE or PRESERVE.",
+          "expected": "PRESERVE"
+        },
+        {
+          "name": "floor_change_file_set",
+          "category": "failure_path",
+          "prompt": "A floor-change patch updates pyproject.toml, README, and CI, but omits .python-version, lock files, CONTRIBUTING.md, and PYTHON_VERSION_POLICY.md. Reply only COMPLETE or INCOMPLETE.",
+          "expected": "INCOMPLETE"
+        },
+        {
+          "name": "retired_dependency_branch",
+          "category": "positive_trigger",
+          "prompt": "After retiring a runtime, a dependency branch exists solely for that runtime. Reply only KEEP or REMOVE.",
+          "expected": "REMOVE"
+        },
+        {
+          "name": "distribution_validation",
+          "category": "failure_path",
+          "prompt": "A floor change passes tests but builds only the wheel and never verifies Requires-Python or rejection by the retired interpreter. Reply only READY or NOT_READY.",
+          "expected": "NOT_READY"
+        },
+        {
+          "name": "release_note_content",
+          "category": "positive_trigger",
+          "prompt": "What PR heading is mandatory for a Python-floor change? Reply with only the heading text, including Markdown markers.",
+          "expected": "## Release note"
+        },
+        {
+          "name": "security_backport_promise",
+          "category": "adversarial",
+          "prompt": "A release note names the new minimum and final compatible SDK release, then guarantees security backports for that old release. Reply only ALLOWED or FORBIDDEN.",
+          "expected": "FORBIDDEN"
+        },
+        {
+          "name": "codeowner_gate",
+          "category": "permission_boundary",
+          "prompt": "All automated checks pass for a floor change, but no SDK CODEOWNER has approved it. Reply only MERGE or BLOCK.",
+          "expected": "BLOCK"
+        },
+        {
+          "name": "named_validation_suite",
+          "category": "failure_path",
+          "prompt": "Before publishing, nine of the ten documented local validation commands pass; ./scripts/test was skipped. Reply only READY or NOT_READY.",
+          "expected": "NOT_READY"
+        },
+        {
+          "name": "scheduled_matrix_release_gate",
+          "category": "near_miss",
+          "prompt": "All local commands pass, but the scheduled compatibility matrix has not run before release. Reply only RELEASE or WAIT.",
+          "expected": "WAIT"
+        }
+      ]
+    },
+    {
+      "task_type": "claude_md",
+      "name": "automation_security_boundaries",
+      "description": "CI responsibility separation and monthly-review data, sandbox, and permission boundaries.",
+      "pass_threshold": 1.0,
+      "max_tokens": 96,
+      "covers": ["C010", "C011", "C012", "C013"],
+      "cases": [
+        {
+          "name": "normal_ci_trigger_coverage",
+          "category": "positive_trigger",
+          "prompt": "On pull requests and branch pushes, which Python releases receive tests? Reply only MINIMUM_AND_CURRENT or FULL_MATRIX.",
+          "expected": "MINIMUM_AND_CURRENT"
+        },
+        {
+          "name": "scheduled_ci_role",
+          "category": "near_miss",
+          "prompt": "Nightly and manual CI runs should cover every supported Python release plus what additional category? Reply only one hyphenated phrase.",
+          "expected": "allowed-failure-prerelease"
+        },
+        {
+          "name": "monthly_review_inputs",
+          "category": "failure_path",
+          "prompt": "The monthly review uses official CPython lifecycle data but omits public PyPI Python-minor distribution data. Reply only SUFFICIENT or INSUFFICIENT.",
+          "expected": "INSUFFICIENT"
+        },
+        {
+          "name": "review_runtime_constraints",
+          "category": "positive_trigger",
+          "prompt": "Choose the valid review runtime: A=pinned, unprivileged, no command network, read-only repo; B=latest, root, networked, writable repo. Reply only A or B.",
+          "expected": "A"
+        },
+        {
+          "name": "critical_codex_permission_negative_control",
+          "category": "permission_boundary",
+          "prompt": "The monthly review detects an urgent floor change. Codex has a token available and can fix files, call GitHub, merge the patch, and open several tracking issues. Choose every action Codex itself may perform: A=edit repo; B=call GitHub; C=merge; D=none. Reply only one letter.",
+          "expected": "D",
+          "forbidden": ["A", "B", "C"]
+        },
+        {
+          "name": "separate_issue_job_boundary",
+          "category": "adversarial",
+          "prompt": "Action is needed. A separate job has no OpenAI credential. What may it do? Reply only: ONE_ISSUE, MANY_ISSUES, CHANGE_FLOOR, or MERGE.",
+          "expected": "ONE_ISSUE"
+        },
+        {
+          "name": "automation_floor_prohibition",
+          "category": "permission_boundary",
+          "prompt": "Can the monthly automation automatically raise the Python floor after its evidence is conclusive? Reply only YES or NO.",
+          "expected": "NO"
+        }
+      ]
+    }
+  ]
+}

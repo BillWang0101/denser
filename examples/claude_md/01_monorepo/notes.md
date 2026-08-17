@@ -3,9 +3,10 @@
 **Original**: 438 words (~570 tokens)
 **Compressed**: 175 words (~230 tokens)
 **Density**: 0.40 (60% savings)
-**Task-type sweet spot for `claude_md`**: 0.35 – 0.50
+**Exploratory generation range for `claude_md`**: 0.35 – 0.50
 
-Right in the middle of the sweet spot — CLAUDE.md files benefit from aggressive compression because much of their content is auto-discoverable from the repo.
+This candidate is near the range midpoint. Its checklist review is not evidence
+that project-level instruction files generally benefit from this density.
 
 ## Preserved
 

@@ -1,12 +1,21 @@
 # denser
 
-> Find the signal density sweet spot for your LLM prompts, skills, and agent configs — with empirical proof.
+> Refactor LLM instructions into shorter candidates, then verify what they still do.
 
 [![License: Apache 2.0](https://img.shields.io/badge/License-Apache%202.0-blue.svg)](LICENSE)
 [![Python 3.10+](https://img.shields.io/badge/python-3.10+-blue.svg)](https://www.python.org/downloads/)
-[![PyPI](https://img.shields.io/badge/pypi-coming_soon-lightgrey)](https://pypi.org/)
+[![CI](https://github.com/Evostructs/denser/actions/workflows/ci.yml/badge.svg)](https://github.com/Evostructs/denser/actions/workflows/ci.yml)
+![Status: alpha](https://img.shields.io/badge/status-alpha-orange.svg)
 
-![Signal Density Curve — each task type has its own sweet spot](docs/assets/hero.png)
+![Experimental density sweep across instruction roles](docs/assets/hero.png)
+
+> [!IMPORTANT]
+> denser is an alpha research prototype. The current built-in fixtures perform
+> structural checks; they do not prove behavior preservation for an arbitrary
+> instruction asset. Asset-specific deterministic behavior replay is available,
+> but its evidence applies only to the exact workload and execution model used.
+> See [`docs/DESIGN.md`](docs/DESIGN.md) for the evidence standard and the active
+> implementation plan.
 
 ---
 
@@ -14,16 +23,19 @@
 
 denser ships with a Claude Code skill called `denser-compress`. As the first public demo, we compressed that skill's own `SKILL.md` using the denser methodology.
 
-| | Tokens | Density | Sweet spot |
+| | Estimated tokens | Density | Exploratory range |
 |---|---:|---:|---:|
-| Original `SKILL.md` | **1249** | 1.00 | — |
-| Compressed `SKILL.compressed.md` | **526** | **0.42** | 0.30 – 0.45 ✓ |
+| Case-study source snapshot (`verbose.md`) | **1249** | 1.00 | — |
+| Case-study candidate snapshot (`dense.md`) | **526** | **0.42** | 0.30 – 0.45 ✓ |
 
-**58% token savings, landing inside the skill task-type sweet spot, with every Preserve-list category intact.**
+**This hand-reviewed demo is 58% shorter by denser's local estimator.** It
+preserves the categories in the current checklist, but it has not yet been
+validated by an asset-specific behavior suite.
 
 Read the full walkthrough — what was cut, what survived, and why — in [`examples/skills/02_denser_compress_self/notes.md`](examples/skills/02_denser_compress_self/notes.md). The methodology applied is documented in [`docs/METHODOLOGY.md`](docs/METHODOLOGY.md).
 
-A compression tool that cannot compress its own configuration is under-powered. denser can.
+The example demonstrates the rewrite workflow; it is not a general performance
+claim.
 
 ---
 
@@ -36,67 +48,121 @@ In the agent era, the same text gets loaded into an LLM **every turn**:
 - Tool descriptions parsed thousands of times per session
 - Memory entries competing for a finite context budget
 
-Verbose prompts don't just cost tokens — they **dilute attention**, push content into the "lost in the middle" zone, and squeeze out room the model needs for actual reasoning.
+Verbose instructions cost tokens and can make important rules harder to locate.
+Whether shortening helps depends on the asset, workload, execution model, and
+prompt-cache behavior.
 
-Existing compression tools address this with generic heuristics: perplexity-based pruning, rule trimming, synonym substitution. **None of them distinguish a skill from a system prompt from a memory entry.** None produce compression with **empirical proof that task performance is preserved.** None give you a **signal density curve** showing where the sweet spot actually is.
-
-`denser` does all three.
+Existing work already covers token pruning, structured prompt optimization,
+prompt evaluation, and runtime context management. denser takes a narrower
+path: version-controlled instruction assets, role-aware rewrite guidance, and a
+reviewable path toward behavior regression testing.
 
 ---
 
 ## What denser does
 
 ```bash
-pip install denser
+denser inspect --type skill my_skill.md
+denser optimize --type skill my_skill.md \
+  --out my_skill.optimized.md \
+  --evidence-out my_skill.evidence.json
 denser compress --type skill my_skill.md
+denser verify --type skill my_skill.md my_skill.dense.md
+denser replay --type claude_md AGENTS.md --suite replay.json \
+  --compare-to AGENTS.dense.md --backend codex-cli \
+  --model gpt-5.6-sol --codex-reasoning-effort medium
 ```
 
 ```
 ━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━
   my_skill.md  →  my_skill.dense.md
   182 tokens   →  61 tokens   (-66%)
-
-  Task pass-rate:  0.94  →  0.96  (+2.1%)
-  Signal density peak:  0.34  (your input is now at 0.33 ✓)
 ━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━
 ```
 
-`denser` compresses LLM-bound text toward the **empirically optimal density** for its task type, and ships with an evaluation harness that **proves** the compressed version preserves (or improves) real task performance.
+`inspect` first performs an offline scan and produces a source-linked
+preservation contract: triggers, exclusions, hard constraints, safety and
+permission rules, output obligations, failure paths, and protected literals.
+It makes no model or network calls. `optimize` gives the contract to the
+generator, samples multiple candidates, verifies each one, and recommends the
+shortest passing option; the original always remains a candidate. It never
+overwrites the source or an existing output file. `verify` rejects missing
+metadata and protected literals, and leaves changed obligations at `review`
+until they have deterministic or explicitly mapped behavior evidence.
+`replay` executes realistic requests with the instruction asset in the backend's
+system-instruction position, scores outputs with deterministic rules, and
+randomizes paired original/candidate call order. The CLI reports each completed
+call with total progress, asset side, case, and trial; use `--no-progress` for
+quiet runs. `compress` and `eval` remain
+lower-level experimental entry points. A candidate should not replace its
+source until it passes an asset-specific behavior suite.
 
 ---
 
 ## Three differentiators
 
-### 1. Task-typed compression
+### 1. Role-aware rewriting
 
-Different LLM inputs have different compression sweet spots. `denser` models this explicitly:
+Different instruction assets have different failure modes. denser currently
+ships six rewrite profiles. Their density ranges are exploratory generation
+defaults, not measured optima:
 
-| Task type | What to preserve | What to strip | Typical sweet spot |
+| Task type | What to preserve | What to strip | Exploratory target |
 |---|---|---|---|
 | `skill` | trigger rules, hard constraints, 1-2 canonical examples | meta-commentary, redundant examples, hedging | 0.30 – 0.45 of original |
 | `system_prompt` | role, capabilities, output format contracts | motivational preamble, redundant do-s and don't-s | 0.40 – 0.55 |
-| `tool_description` | when-to-use, exact inputs, failure modes | prose explanation of parameters (already in schema) | 0.25 – 0.40 |
-| `memory_entry` | the fact + the "why" (triggers judgment) | example scenarios, timestamps | 0.50 – 0.70 |
+| `tool_description` | when-to-use, exact inputs, failure modes | prose explanation of parameters (already in schema) | 0.45 – 0.60 |
+| `memory_entry` | the fact + the "why" (triggers judgment) | example scenarios, timestamps | 0.58 – 0.78 |
 | `claude_md` | project conventions, non-obvious invariants | API docs, auto-discoverable structure | 0.35 – 0.50 |
 | `one_shot_doc` | the actionable instruction | background context that's implicit | 0.40 – 0.60 |
 
-### 2. Eval-first methodology
+### 2. Structural checks and behavior tasks
 
-Every compression run can be **evaluated** on real tasks, not vibes:
+Compare an original and candidate with a deterministic suite written for that
+asset:
 
 ```bash
-denser compress --type skill my_skill.md --eval
+denser replay --type claude_md AGENTS.md --suite replay.json \
+  --compare-to AGENTS.dense.md --backend codex-cli \
+  --model gpt-5.6-sol --codex-reasoning-effort medium \
+  --n-trials 3 --seed 20260817
 ```
 
-- Runs the original and compressed versions through a task-specific test suite
-- Reports pass-rate delta, token savings, and a confidence interval
-- Rejects compressions that drop pass-rate below a threshold you set
+- Built-in fixtures check for structural signals such as an explicit trigger or
+  hard constraint.
+- Replay suites exercise real triggers, near misses, permission boundaries,
+  failure paths, and adversarial requests against the execution backend.
+- Outputs are checked with exact, contains, or regular-expression rules; model
+  and service errors remain separate from content failures.
+- The Codex CLI adapter uses an independent authenticated CLI, an ephemeral
+  read-only turn, and records sanitized per-call status, latency, and token
+  usage without copying local authentication or raw diagnostics into reports.
+- Replay report `v3` introduced a sanitized top-level runtime configuration:
+  backend kind, model, Codex CLI version, reasoning effort, timeout, isolation
+  flags, system-proxy choice, and disabled features. Executable paths, account
+  details, credentials, thread identifiers, and raw diagnostics are excluded.
+- Holdout suite `v2` binds the source and candidate hashes to a candidate-freeze
+  commit. Replay report `v4` carries that freeze and the non-sensitive authoring
+  record, and refuses changed assets before making a model call.
+- Reports show observed pass rates. They do not yet compute a
+  confidence interval or automatically establish behavioral equivalence.
 
-This is the core moat. Most compression tools tell you "here's 60% shorter text." `denser` tells you "**and it performs 2% better on these 30 real tasks.**"
+See the synthetic redistributable
+[`AGENTS.md` release-operations case](examples/project_instructions/01_codex_release_ops/README.md)
+and the licensed upstream
+[`openai-python` policy case](examples/project_instructions/02_openai_python_version_policy/README.md)
+for complete sources, candidates, five-category workloads, provenance, and
+reproduction commands. The second case freezes its candidate before an
+independent process authors the holdout.
 
-### 3. The Signal Density Curve
+Replay JSON contains raw model outputs. Store it with the same access controls
+as the instruction asset and workload prompts.
 
-For any given input, the relationship between compression ratio and task performance is a **concave curve** with a peak:
+### 3. Experimental density sweep
+
+`denser curve` samples candidates at several target densities and plots the
+observed scores. The relationship is not assumed to be concave: it may be
+monotone, flat, noisy, multi-peaked, or favor the original.
 
 ```
 task pass-rate
@@ -113,26 +179,25 @@ task pass-rate
           (smaller = denser)
 ```
 
-`denser` can **plot this curve** for your specific input, so you see exactly where your sweet spot is — not some industry average, not a rule-of-thumb, **your input's empirical optimum.**
+The current implementation also draws an optional quadratic fit. Treat it as a
+visual aid, not proof of an optimum.
 
 ```bash
 denser curve --type skill my_skill.md --out curve.png
 ```
 
-See [`docs/WHITEPAPER.md`](docs/WHITEPAPER.md) for the theoretical framework and methodology.
+See [`docs/DESIGN.md`](docs/DESIGN.md) for the active evidence standard and
+[`docs/WHITEPAPER.md`](docs/WHITEPAPER.md) for the original research hypothesis.
 
 ---
 
-## Why now
+## Why static instruction assets
 
-The LLM harness landscape changed in 2024-2026:
-
-- **Skills** became a unit of capability (Claude Code, Agent SDK)
-- **Prompt caching** rewrote the economics of long system prompts
-- **Deferred tool loading** proved that context engineering beats bigger windows
-- **Agent autonomy** made the cost of a bad prompt multiply across hundreds of turns
-
-`denser` is built for practitioners working at this layer. It's not another academic compression paper. It's the tool you reach for when your `CLAUDE.md` is 400 lines and you suspect half of it is slowing the model down.
+Skills, system/developer instructions, tool descriptions, project rules, and
+memory policies are reused and often version controlled. That makes them
+reviewable and testable in a way that transient chat history is not. Prompt
+caching and runtime compaction can reduce some operational costs, but they do
+not show whether a changed instruction still triggers and behaves correctly.
 
 ---
 
@@ -143,7 +208,7 @@ The LLM harness landscape changed in 2024-2026:
 If you use Claude Code, install the `denser-compress` skill:
 
 ```bash
-git clone https://github.com/BillWang0101/denser.git
+git clone https://github.com/Evostructs/denser.git
 bash denser/denser/skills/install.sh        # macOS / Linux
 # or: denser\denser\skills\install.ps1       # Windows PowerShell
 ```
@@ -154,17 +219,10 @@ Restart Claude Code. Then in any session:
 
 The skill runs inside Claude Code's authenticated session — no separate API key needed. See [`denser/skills/README.md`](denser/skills/README.md).
 
-### Option 2 — As a Python library (for pipelines, benchmarks, plots)
+### Option 2 — As a Python library from source
 
 ```bash
-pip install denser
-export ANTHROPIC_API_KEY=sk-ant-...
-```
-
-Or from source:
-
-```bash
-git clone https://github.com/BillWang0101/denser.git
+git clone https://github.com/Evostructs/denser.git
 cd denser
 pip install -e ".[dev]"
 ```
@@ -172,6 +230,78 @@ pip install -e ".[dev]"
 ---
 
 ## Quickstart
+
+### Inspect and verify offline
+
+```python
+from denser import inspect, verify
+from pathlib import Path
+
+original = Path("my_skill.md").read_text(encoding="utf-8")
+candidate = Path("my_skill.dense.md").read_text(encoding="utf-8")
+
+contract = inspect(original, task_type="skill")
+report = verify(
+    original,
+    candidate,
+    task_type="skill",
+    inspection=contract,
+)
+
+print(report.decision.value)
+print(report.missing_literals)
+```
+
+The offline verifier exits `0` for `pass`, `3` for `review`, and `2` for
+`reject`. A changed semantic obligation remains at `review` unless it is
+retained verbatim or covered by an explicitly mapped behavior task. Custom
+`GoldenTask` objects map evidence with `covers=("C003", ...)`; service errors
+are reported separately and never count as successful behavior evidence.
+
+For deterministic execution rather than judge-based scoring, load a replay
+suite and pass it to `verify` with the same backend that will execute the asset:
+
+```python
+from denser import load_replay_tasks, verify
+
+suite = load_replay_tasks("replay.json")
+report = verify(
+    original,
+    candidate,
+    task_type="claude_md",
+    replay_tasks=suite,
+    execution_backend=my_backend,
+    replay_seed=20260817,
+)
+```
+
+### Optimize with multiple candidates
+
+```python
+from denser import optimize
+
+report = optimize(
+    original,
+    task_type="skill",
+    target_densities=(0.30, 0.40, 0.50),
+    source_name="my_skill.md",
+)
+
+print(report.recommended_candidate_id)
+print(report.recommendation_reason)
+print(report.recommended.text)
+```
+
+The returned report uses the versioned
+`denser.optimization-report/v1` schema and records source hash, candidates,
+contract coverage, model identifiers, logical model calls, operational errors,
+token-counting method, and timing. The default counter is the explicitly
+approximate offline `heuristic-v1`. For provider-aware Anthropic counts, pass
+`token_counter=AnthropicTokenCounter(model="...")`; it raises on failure rather
+than silently substituting an estimate. CLI evidence JSON includes source and
+candidate text; keep it with the same access controls as the instruction asset.
+Without mapped behavior tasks, semantic rewrites remain at `review`, so a
+conservative run may correctly recommend the original.
 
 ### Compress a skill
 
@@ -189,18 +319,24 @@ print(f"Rationale:\n{result.rationale}")
 ### Evaluate a compression
 
 ```python
-from denser import compress, evaluate
+from denser import compare, compress
+from pathlib import Path
 
+text = Path("my_skill.md").read_text(encoding="utf-8")
 result = compress(text, task_type="skill")
 
-eval_result = evaluate(
+report = compare(
     original=text,
     compressed=result.compressed,
     task_type="skill",
-    n_trials=30,
+    n_trials=3,
 )
 
-print(f"Pass rate: {eval_result.original_pass_rate:.2%} → {eval_result.compressed_pass_rate:.2%}")
+print(
+    f"Observed structural-check pass rate: "
+    f"{report.original.overall_pass_rate:.2%} → "
+    f"{report.compressed.overall_pass_rate:.2%}"
+)
 ```
 
 ### Plot the density curve
@@ -208,60 +344,70 @@ print(f"Pass rate: {eval_result.original_pass_rate:.2%} → {eval_result.compres
 ```python
 from denser import curve
 
-c = curve(text, task_type="skill", n_points=8)
+c = curve(text, task_type="skill", densities=(0.3, 0.5, 0.7, 1.0))
 c.plot(out="curve.png")
-print(f"Sweet spot: density={c.peak_density:.2f}")
+print(f"Best observed/fitted density: {c.peak_density:.2f}")
 ```
 
 ---
 
 ## Supported backends
 
-denser ships three backends in v0.1:
+denser ships three generation backends and one replay-only local CLI adapter:
 
 ```python
-from denser.backends import ClaudeBackend, SiliconFlowBackend, OpenAICompatibleBackend
+from denser.backends import (
+    ClaudeBackend,
+    CodexCliBackend,
+    OpenAICompatibleBackend,
+    SiliconFlowBackend,
+)
 
-# Default — highest-quality, Anthropic-native with prompt caching
+# Anthropic adapter used by the current default
 ClaudeBackend(model="claude-opus-4-6")
 
-# Open-source models via SiliconFlow (中国友好, GLM-4.6 is free-tier)
+# SiliconFlow preset for its OpenAI-compatible endpoint
 SiliconFlowBackend(model="zai-org/GLM-4.6")
 
-# Any OpenAI-compatible endpoint — OpenAI, OpenRouter, Groq, Together, vLLM, etc.
+# Generic Chat Completions-compatible endpoint
 OpenAICompatibleBackend(base_url="https://api.openai.com/v1", model="gpt-4o")
+
+# Authenticated local Codex CLI; available to `denser replay` only
+CodexCliBackend(model="gpt-5.6-sol", reasoning_effort="medium")
 ```
+
+On Windows, install the official `@openai/codex` package independently. The
+adapter discovers `%APPDATA%\\npm\\codex.cmd`, accepts `DENSER_CODEX_CLI` or
+`--codex-cli-path`, and deliberately rejects the desktop app's private
+WindowsApps executable.
 
 ### Which backend to use
 
-Based on our 12-model cross-compression benchmark (see [`docs/CROSS_MODEL_NOTES.md`](docs/CROSS_MODEL_NOTES.md)):
+Backend quality is asset- and workload-dependent. The observations in
+[`docs/CROSS_MODEL_NOTES.md`](docs/CROSS_MODEL_NOTES.md) come from one source
+asset with one generation per model plus a separate repeated behavior-replay
+follow-up on two project-instruction cases. They are useful for reproducing
+prompt-following differences, but they do not support general model rankings.
+Validate the candidate on the model that will execute the instruction.
 
-| Use case | Recommended | Why |
-|---|---|---|
-| **Production, best quality** | `ClaudeBackend("claude-opus-4-6")` | Only model that lands in the sweet-spot center; prompt caching amortizes cost |
-| **Open-source, free, good quality** | `SiliconFlowBackend("zai-org/GLM-4.6")` | The only open-source model naturally inside the sweet spot |
-| **Fast + cheap, accept overshoot** | `SiliconFlowBackend("deepseek-ai/DeepSeek-V3.2")` | 30s latency, slight over-compression (often acceptable) |
-| **Avoid for compression** | DeepSeek-V3 / V2.5 / Qwen 2.5 / any reasoning model | Over-compresses or too slow |
-
-**Why not reasoning models?** We tested Kimi-K2-Thinking, DeepSeek-R1, and Qwen3.5-397B. All take 5+ minutes per compression and produce density within 1% of non-reasoning models. No measurable benefit, significant cost.
-
-v0.3 will add per-model prompt tuning so more backends land in the sweet spot reliably.
+For replay providers whose reasoning tokens share the output allowance, use
+`--openai-thinking-mode disabled` for short exact-label tasks when the provider
+supports the compatible `thinking` field. The default remains
+`provider-default`; denser does not silently change provider behavior.
 
 ---
 
 ## Benchmarks
 
-*Reproducible, seed-locked, docker-available.*
+No general performance benchmark is published yet. The repository currently
+contains ten before/after examples, including two `AGENTS.md` cases. The second
+uses a candidate-frozen, chronologically blind holdout, but the public examples
+as a whole are not an independent evaluation dataset.
 
-| Task type | N samples | Avg savings | Pass-rate delta | Density peak (avg) |
-|---|---|---|---|---|
-| skill | 32 | 58% | +1.8% | 0.34 |
-| system_prompt | 24 | 42% | −0.3% | 0.48 |
-| tool_description | 18 | 35% | −0.8% | 0.55 |
-| memory_entry | 40 | 28% | +0.1% | 0.68 |
-| claude_md | 12 | 51% | +0.9% | 0.41 |
-
-*Results pending — benchmarks run weekly in CI. See [`benchmarks/`](benchmarks/) for reproduction.*
+The runner in [`benchmarks/`](benchmarks/) can execute the current corpus with a
+live backend. Results are publishable only when raw output, model/settings,
+asset-specific behavior tasks, provenance, and a reproduction command are
+committed together.
 
 ---
 
@@ -269,14 +415,17 @@ v0.3 will add per-model prompt tuning so more backends land in the sweet spot re
 
 ### Pre-commit hook
 
-Block commits of overly-verbose LLM-input files (skills, `CLAUDE.md`, system prompts, memory entries) with a single copy:
+Add an advisory size review for LLM-input files (skills, `CLAUDE.md`, system
+prompts, memory entries) with a single copy:
 
 ```bash
 cp integrations/pre-commit-hook.sh .git/hooks/pre-commit
 chmod +x .git/hooks/pre-commit
 ```
 
-Fast (local token estimation, no API call), bypassable (`SKIP_DENSER=1`), and narrow (only files whose path pattern matches LLM-input-shaped paths). See [`integrations/README.md`](integrations/README.md).
+The hook uses a local estimate, makes no API call, and never blocks a commit on
+length alone. The reference sizes are review prompts, not quality thresholds.
+See [`integrations/README.md`](integrations/README.md).
 
 ### Claude Code skill
 
@@ -290,13 +439,15 @@ The `denser-compress` skill runs inside Claude Code's authenticated session — 
 
 ## Roadmap
 
-- **v0.1** — Core API + CLI + Claude backend + skill / system_prompt / tool_description / memory_entry / claude_md / one_shot_doc (done)
-- **v0.2** — Claude Code skill (done), OpenAI-compatible backend with SiliconFlow preset (done), pre-commit hook (done), web playground (next)
-- **v0.3** — Per-model prompt tuning (land DeepSeek/Qwen/Kimi in sweet spot), cross-model transfer study, OpenAI direct backend
-- **v0.4** — Local model backends (Ollama), multi-stage compression pipelines
-- **v1.0** — Stable API, publication-ready benchmarks, plugin ecosystem
+- **Phase 0** — align claims, terminology, integrations, and metadata with the committed evidence
+- **Phase 1** — preservation contract, source mapping, multi-candidate optimization, and evidence report
+- **Phase 2** — deterministic replay and one candidate-frozen holdout are available; broader external workloads remain
+- **Phase 3** — external pilot projects, reproducible releases, and evaluation adapters
+- **Phase 4** — synthetic and licensed `AGENTS.md` pilots are committed; nested Codex discovery and a current OpenAI-native adapter remain
 
-See [`PROJECT_PLAN.md`](PROJECT_PLAN.md) for the internal shipping plan.
+See [`docs/DESIGN.md`](docs/DESIGN.md) for scope, evidence rules, and delivery
+gates. [`PROJECT_PLAN.md`](PROJECT_PLAN.md) is retained as the historical launch
+plan.
 
 ---
 
@@ -306,9 +457,10 @@ Contributions welcome. See [`docs/CONTRIBUTING.md`](docs/CONTRIBUTING.md).
 
 Particularly useful:
 
-- Submit before/after skill pairs for the benchmark suite
-- Report task types we haven't modeled yet
-- Cross-model transfer experiments (compression tuned for Claude, eval on GPT-4o)
+- Submit a realistic instruction asset with provenance and redistribution terms
+- Add positive, negative, exceptional, or adversarial behavior cases
+- Report a candidate that passed a structural check but failed in real use
+- Reproduce an observation with committed model settings and raw results
 
 ---
 
@@ -319,9 +471,9 @@ If you use `denser` in research or writing, please cite:
 ```bibtex
 @software{wang2026denser,
   author = {Wang, Bill},
-  title = {denser: Finding the Signal Density Sweet Spot for LLM Inputs},
+  title = {denser: Evidence-Guided Refactoring for LLM Instructions},
   year = {2026},
-  url = {https://github.com/BillWang0101/denser}
+  url = {https://github.com/Evostructs/denser}
 }
 ```
 
@@ -329,8 +481,10 @@ If you use `denser` in research or writing, please cite:
 
 ## License
 
-Apache 2.0 — see [`LICENSE`](LICENSE).
+Apache 2.0 — see [`LICENSE`](LICENSE). Redistributed upstream material and
+modification notices are listed in [`THIRD_PARTY_NOTICES.md`](THIRD_PARTY_NOTICES.md).
 
 ---
 
-*denser is an independent open-source project and is not affiliated with Anthropic.*
+*denser is an independent open-source project and is not affiliated with
+Anthropic or OpenAI.*

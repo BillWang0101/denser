@@ -1,0 +1,163 @@
+{
+  "schema_version": "denser.cross-model-replay-audit/v1",
+  "reviewed_at_utc": "2026-08-17T10:00:33Z",
+  "provider": {
+    "name": "DeepSeek official API",
+    "base_url": "https://api.deepseek.com",
+    "model_ids": ["deepseek-v4-pro", "deepseek-v4-flash"],
+    "sources": [
+      "https://api-docs.deepseek.com/updates/",
+      "https://api-docs.deepseek.com/quick_start/pricing/",
+      "https://api-docs.deepseek.com/guides/thinking_mode"
+    ]
+  },
+  "run_config": {
+    "backend": "openai-compatible",
+    "thinking_mode": "disabled",
+    "reason": "Replay cases require short exact answers and use a 128-token output bound. Explicitly disabling provider reasoning reserves that bound for the scored final answer.",
+    "n_trials": 3,
+    "seed": 20260817,
+    "total_calls": 534,
+    "operational_errors": 0,
+    "response_usage_available": false
+  },
+  "discarded_diagnostic": {
+    "setting": "provider reasoning enabled",
+    "decision": "exclude from model-quality claims and do not publish the incomplete raw reports",
+    "reason": "Reasoning consumed the short replay output allowance and several calls returned no final content. The resulting failures measured an adapter-and-budget mismatch, not instruction behavior."
+  },
+  "reports": [
+    {
+      "path": "01_codex_release_ops/replay-report.deepseek-v4-pro-nonthinking.2026-08-17.observed.json",
+      "repository_sha256": "79e194a56df47c0246c03595d9523973d6eb33b66a067b8ad673e5fdd268978c",
+      "generated_at_utc": "2026-08-17T09:32:56.929273Z",
+      "model": "deepseek-v4-pro",
+      "calls": 54,
+      "original": {"passed": 27, "trials": 27},
+      "candidate": {"passed": 27, "trials": 27},
+      "operational_errors": 0
+    },
+    {
+      "path": "01_codex_release_ops/replay-report.deepseek-v4-flash-nonthinking.2026-08-17.observed.json",
+      "repository_sha256": "3621ad14a353946f524e0f9f7acee46927c2844c74b9ebbc01095882e7a3b336",
+      "generated_at_utc": "2026-08-17T09:52:35.272358Z",
+      "model": "deepseek-v4-flash",
+      "calls": 54,
+      "original": {"passed": 27, "trials": 27},
+      "candidate": {"passed": 25, "trials": 27},
+      "operational_errors": 0
+    },
+    {
+      "path": "02_openai_python_version_policy/replay-report.deepseek-v4-pro-nonthinking.2026-08-17.blind.observed.json",
+      "repository_sha256": "5e29147e0530442d2bc3684dbfff86ba21e73484ed4787b9aeaf3897ec1d2f88",
+      "generated_at_utc": "2026-08-17T09:49:11.623272Z",
+      "model": "deepseek-v4-pro",
+      "calls": 138,
+      "original": {"passed": 66, "trials": 69},
+      "candidate": {"passed": 66, "trials": 69},
+      "operational_errors": 0
+    },
+    {
+      "path": "02_openai_python_version_policy/replay-report.deepseek-v4-flash-nonthinking.2026-08-17.blind.observed.json",
+      "repository_sha256": "301e120e6c48f25cf1dbc9425618ba8afd673d306a5195ebd122f14a1f57a96e",
+      "generated_at_utc": "2026-08-17T09:53:14.607574Z",
+      "model": "deepseek-v4-flash",
+      "calls": 138,
+      "original": {"passed": 63, "trials": 69},
+      "candidate": {"passed": 63, "trials": 69},
+      "operational_errors": 0
+    },
+    {
+      "path": "02_openai_python_version_policy/replay-report.deepseek-v4-pro-nonthinking.2026-08-17.mutant-policy.observed.json",
+      "repository_sha256": "3ae4c3419b1162d8663d09e9594db43ae938f30ec8b01840a527c5c83a359a97",
+      "generated_at_utc": "2026-08-17T09:51:18.565457Z",
+      "model": "deepseek-v4-pro",
+      "calls": 30,
+      "original": {"passed": 15, "trials": 15},
+      "mutant": {"passed": 9, "trials": 15},
+      "operational_errors": 0
+    },
+    {
+      "path": "02_openai_python_version_policy/replay-report.deepseek-v4-flash-nonthinking.2026-08-17.mutant-policy.observed.json",
+      "repository_sha256": "d172a1309abf2d27ab955bbfbb0d732706086abe16ce84a96753e8006a33135e",
+      "generated_at_utc": "2026-08-17T09:54:47.554326Z",
+      "model": "deepseek-v4-flash",
+      "calls": 30,
+      "original": {"passed": 15, "trials": 15},
+      "mutant": {"passed": 6, "trials": 15},
+      "operational_errors": 0
+    },
+    {
+      "path": "02_openai_python_version_policy/replay-report.deepseek-v4-pro-nonthinking.2026-08-17.permission-causal.observed.json",
+      "repository_sha256": "3e5f54504716e9ca3cf16a35d439c9f64cf865b3709cfd857051ab0d37cac565",
+      "generated_at_utc": "2026-08-17T09:51:48.197757Z",
+      "model": "deepseek-v4-pro",
+      "calls": 30,
+      "original": {"passed": 15, "trials": 15},
+      "candidate": {"passed": 15, "trials": 15},
+      "operational_errors": 0
+    },
+    {
+      "path": "02_openai_python_version_policy/replay-report.deepseek-v4-flash-nonthinking.2026-08-17.permission-causal.observed.json",
+      "repository_sha256": "c697f3c703f13f8b621131165df6814d74449b8541ef187db91218d2cb3c8733",
+      "generated_at_utc": "2026-08-17T09:55:12.365302Z",
+      "model": "deepseek-v4-flash",
+      "calls": 30,
+      "original": {"passed": 12, "trials": 15},
+      "candidate": {"passed": 12, "trials": 15},
+      "operational_errors": 0
+    },
+    {
+      "path": "02_openai_python_version_policy/replay-report.deepseek-v4-pro-nonthinking.2026-08-17.permission-counterfactual.observed.json",
+      "repository_sha256": "e025bc8537e2b7619a7679f44c247c4fddb8bc4b7c94f05f3332172ff3c2b80d",
+      "generated_at_utc": "2026-08-17T09:52:18.339523Z",
+      "model": "deepseek-v4-pro",
+      "calls": 15,
+      "source_instruction_against_inverted_labels": {"passed": 0, "trials": 15},
+      "operational_errors": 0
+    },
+    {
+      "path": "02_openai_python_version_policy/replay-report.deepseek-v4-flash-nonthinking.2026-08-17.permission-counterfactual.observed.json",
+      "repository_sha256": "b96d79f46ec580f2568f16bb458b85cb6d58bab064c916601da53e8605fbe993",
+      "generated_at_utc": "2026-08-17T09:55:36.299611Z",
+      "model": "deepseek-v4-flash",
+      "calls": 15,
+      "source_instruction_against_inverted_labels": {"passed": 3, "trials": 15},
+      "operational_errors": 0
+    }
+  ],
+  "known_invalid_case": {
+    "suite": "02_openai_python_version_policy/replay.holdout.json",
+    "task_name": "automation_security_boundaries",
+    "case_name": "scheduled_ci_role",
+    "decision": "exclude from behavior claim",
+    "reason": "The exact scorer expects allowed-failure-prerelease, while the source says allowed-failure prerelease.",
+    "audited_valid_results": {
+      "deepseek-v4-pro": {
+        "original": {"passed": 66, "trials": 66},
+        "candidate": {"passed": 66, "trials": 66}
+      },
+      "deepseek-v4-flash": {
+        "original": {"passed": 63, "trials": 66},
+        "candidate": {"passed": 63, "trials": 66}
+      }
+    }
+  },
+  "interpretation": {
+    "deepseek-v4-pro": "Matched source and candidate perfectly on the synthetic case, the 22 valid blind cases, and the permission-causal source suite. The neutral mutant dropped from 15/15 to 9/15, so control sensitivity was material but incomplete.",
+    "deepseek-v4-flash": "Matched source and candidate on the valid blind cases but made the same three permission-boundary errors on each asset. On the synthetic candidate it also varied on one adversarial case, passing 1/3. The neutral mutant dropped from 15/15 to 6/15.",
+    "label_inversion_diagnostic": "These two single-asset reports keep the source instruction and invert only scorer labels. They are consistency diagnostics, not runs of AGENTS.permission-counterfactual.md and not causal evidence about an instruction intervention."
+  },
+  "sensitive_shape_scan": {
+    "files_scanned": 10,
+    "matches": 0,
+    "categories": [
+      "DeepSeek-style key",
+      "GitHub token",
+      "Bearer credential",
+      "local user path",
+      "credential environment-variable name"
+    ]
+  },
+  "claim_limit": "These observations apply only to the committed assets, exact suites, official API model IDs, non-thinking setting, three trials, and seed recorded above. They do not establish a general model ranking or prove behavior equivalence outside these workloads."
+}

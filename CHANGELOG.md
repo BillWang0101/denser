@@ -4,6 +4,48 @@ All notable changes to this project are documented here. The format follows [Kee
 
 ## [Unreleased]
 
+### Added — deterministic behavior replay
+- Added `denser replay` and a Python replay API that run instruction assets as
+  system instructions against explicit workload prompts.
+- Added exact, contains, and regular-expression output matchers, paired
+  reproducibly randomized original/candidate calls, and separate operational
+  error accounting.
+- Integrated replay-task evidence with preservation-contract verification.
+- Added a redistributable Codex-style `AGENTS.md` release-operations pilot with
+  positive, near-miss, failure, permission, and adversarial cases.
+- Added a replay-only backend for an independently installed, authenticated
+  Codex CLI. It runs ephemeral read-only turns and records sanitized status,
+  latency, transport-fallback, and token-usage evidence in replay report `v2`.
+- Added an allowlisted, non-sensitive runtime-configuration snapshot to single
+  and comparison replay reports, upgrading the report schema to `v3`. Existing
+  backends without the optional property remain compatible.
+- Added replay suite `v2` holdout metadata with normalized source/candidate
+  hashes, a candidate-freeze commit, and a non-sensitive authoring record.
+  Replay report `v4` preserves that evidence and blocks changed frozen assets
+  before backend execution.
+- Added an Apache-2.0 `openai-python` `AGENTS.md` case whose candidate was frozen
+  before an independent Codex CLI process authored a 23-case holdout suite.
+  Post-run audit retained 22 valid cases, excluded one incorrect exact matcher,
+  and recorded both successful and failed negative-control designs.
+- Added per-call replay progress with completed/total counts, asset side, case,
+  and trial; CLI progress can be disabled with `--no-progress`.
+- Added a candidate-frozen, source-only permission-causal holdout plus an
+  independently reviewed neutral counterfactual. The source and candidate each
+  passed 15/15; four of five counterfactual cases fully flipped, while one
+  bounded issue-refresh case remained unstable and is reported as a limitation.
+
+### Changed — credibility reset
+- Reframed denser around evidence-guided instruction refactoring and added
+  `docs/DESIGN.md` as the active product/evidence plan.
+- Labeled built-in eval fixtures as structural checks rather than proof of
+  behavior preservation.
+- Reclassified density ranges and the quadratic curve as exploratory.
+- Removed uncommitted benchmark numbers and general backend rankings from the
+  README.
+- Made the pre-commit integration advisory; file length alone no longer blocks
+  a commit.
+- Updated repository links from `BillWang0101/denser` to `Evostructs/denser`.
+
 ### Added (v0.2 pre-release)
 - **Claude Code skill `denser-compress`** — runs inside Claude Code's authenticated
   session, no API key needed. Installs to `~/.claude/skills/denser-compress/`
@@ -20,8 +62,9 @@ All notable changes to this project are documented here. The format follows [Kee
   rather than ad-hoc rules.
 - **Self-compression case study** — `examples/skills/02_denser_compress_self/`
   shows denser's own Claude Code skill compressing itself using the methodology:
-  1249 → 526 tokens (-58%, density 0.42, inside the `skill` sweet spot). Full
-  section-by-section walkthrough in `notes.md`, featured on the README landing.
+  1249 → 526 estimated tokens (-58%, density 0.42, inside the exploratory
+  `skill` generation range). This is a hand-reviewed structural example, not an
+  asset-specific behavior result.
 
 - **`OpenAICompatibleBackend` + `SiliconFlowBackend`** — denser now supports any
   OpenAI-compatible API: OpenAI, SiliconFlow, OpenRouter, Groq, Together, vLLM,
@@ -33,27 +76,24 @@ All notable changes to this project are documented here. The format follows [Kee
   history).
 - **CLI `--backend`** flag: choose `claude` (default), `siliconflow`, or
   `openai-compat` (with `--base-url` + `--model`).
-- **`docs/CROSS_MODEL_NOTES.md`** — empirical benchmark of 12 models on the
-  self-compression task. Finding: only Claude Opus 4.6 and GLM-4.6 naturally
-  land in the `skill` sweet spot (0.30-0.45) with the default prompt;
-  newer/larger models trend conservative; older/smaller models over-compress;
-  reasoning models add latency without accuracy benefit.
-- **README**: backend-choice guidance and "why not reasoning models" rationale
-  derived from the cross-model data.
+- **`docs/CROSS_MODEL_NOTES.md`** — single-input exploratory observations from
+  12 model runs on the self-compression task. Length and latency varied, but the
+  run did not establish behavior preservation or a general model ranking.
+- **README**: backend-choice guidance now requires validation on the model and
+  workload that will execute the instruction.
 
-- **Pre-commit hook** (`integrations/pre-commit-hook.sh` + `.ps1`) — blocks
-  commits of LLM-input files that exceed their task type's sweet-spot token
-  ceiling by ≥10%. Fast (local estimator, no API call), bypassable
-  (`SKIP_DENSER=1`). Infers task type from path. See `integrations/README.md`.
+- **Pre-commit hook** (`integrations/pre-commit-hook.sh` + `.ps1`) — prints an
+  advisory review suggestion for recognized LLM-input files above a heuristic
+  reference size. It uses a local estimate, makes no API call, and never blocks
+  a commit because of length alone.
 - **`denser.precommit` module** — the hook's Python implementation, also
   invokable directly: `python -m denser.precommit <files...>`.
 - **Second case study** — `examples/skills/03_luming_glm46/` — a real
   Chinese-language Claude Code skill (`~/.claude/skills/luming/SKILL.md`,
   1432 tokens) compressed with GLM-4.6 via SiliconFlow to 627 tokens
-  (density 0.438, inside sweet spot, 56% savings). Validates the v0.1
-  backend recommendation on a real-world non-self-authored skill, and
-  surfaces one unexpected behavior (GLM translates Chinese instructions
-  to English during compression) worth a v0.3 `preserve_language` flag.
+  (density 0.438, inside the exploratory range, 56% estimated savings). This
+  second observation does not validate a general backend recommendation or a
+  runtime-safe replacement; it also records an unexpected language change.
 
 ### Planned for v0.2 (remaining)
 - Web playground

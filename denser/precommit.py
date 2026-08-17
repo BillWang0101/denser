@@ -1,11 +1,10 @@
-"""Pre-commit hook helper — blocks overly-verbose LLM input files from committing.
+"""Advisory pre-commit helper for reviewing large LLM instruction files.
 
 Design
 ------
-Fast: no API calls. Uses the token estimator + taxonomy density bounds to
-decide whether a file is "probably too verbose for its task type". This is a
-cheap heuristic that catches gross drift; it does not replace `denser eval`
-which verifies task pass-rate.
+Fast: no API calls. Uses a local token estimate to identify files that may be
+worth reviewing. Length alone is not a quality signal, so this helper never
+blocks a commit and does not claim that a reference size is an optimum.
 
 Intended wiring: a shell script at `.git/hooks/pre-commit` or a
 `pre-commit-hooks` entry that invokes:
@@ -13,9 +12,7 @@ Intended wiring: a shell script at `.git/hooks/pre-commit` or a
     python -m denser.precommit <file1> <file2> ...
 
 Exit codes:
-    0  — all files under sweet-spot upper bound (or inferred as non-LLM-text)
-    1  — at least one file exceeds its task type's sweet-spot upper bound by
-         the configured margin; commit is blocked
+    0  — advisory scan completed (including when review suggestions are found)
     2  — invocation error (bad args, dep missing)
 
 Skip: set `SKIP_DENSER=1` in the environment to bypass the check.
@@ -35,8 +32,9 @@ import argparse
 import os
 import sys
 from pathlib import Path
+from typing import Any
 
-from denser.taxonomy import SPECS, TaskType
+from denser.taxonomy import TaskType
 from denser.tokens import estimate_tokens
 
 
@@ -61,20 +59,19 @@ def infer_task_type(path: Path) -> TaskType | None:
 def check_file(  # noqa: PLR0911 — verdict branches are clearer as separate returns
     path: Path,
     *,
-    margin: float = 0.10,
     min_tokens: int = 100,
-) -> tuple[str, dict]:
-    """Check whether a file likely needs compression.
+) -> tuple[str, dict[str, Any]]:
+    """Estimate whether a file may be worth a human size review.
 
     Returns (verdict, info) where verdict is one of:
-        "ok"       — within bounds or margin; commit OK
-        "warn"     — above sweet-spot upper bound but below blocking threshold
-        "block"    — exceeds sweet-spot upper bound + margin; should block commit
+        "ok"       — below the advisory reference size
+        "warn"     — at or above the advisory reference size; commit still OK
         "skip"     — task type could not be inferred (not our concern)
         "too_small"— under min_tokens; skip (compression value low)
         "missing"  — file does not exist
 
-    info is a dict with keys: tokens, task_type, upper, threshold.
+    The reference sizes are conservative alpha heuristics, not measured quality
+    thresholds. `info` includes tokens, task_type, and reference_size.
     """
     if not path.exists():
         return "missing", {"path": str(path)}
@@ -91,41 +88,32 @@ def check_file(  # noqa: PLR0911 — verdict branches are clearer as separate re
     if tokens < min_tokens:
         return "too_small", {"path": str(path), "tokens": tokens, "task_type": task_type.value}
 
-    spec = SPECS[task_type]
-    # Check observed token density: we don't know the "original" for an
-    # already-committed file, so we approximate by saying "a file of type X
-    # with >N tokens is probably verbose".
-    # Heuristic: threshold_tokens = upper_density_bound × some_reference_length.
-    # But without a reference, we use a typical "good" size for each type as
-    # a fallback ceiling. These come from the examples/ corpus.
-    typical_ceiling = {
-        TaskType.SKILL: 800,  # 2x the self-compressed SKILL.md (526)
+    # These values only decide when to print a review suggestion. They are not
+    # derived quality thresholds: the bundled corpus is too small for that.
+    advisory_reference = {
+        TaskType.SKILL: 800,
         TaskType.SYSTEM_PROMPT: 600,
         TaskType.TOOL_DESCRIPTION: 300,
         TaskType.MEMORY_ENTRY: 250,
         TaskType.CLAUDE_MD: 1000,
         TaskType.ONE_SHOT_DOC: 1500,
     }
-    upper = typical_ceiling.get(task_type, 1000)
-    threshold = int(upper * (1 + margin))
+    reference_size = advisory_reference.get(task_type, 1000)
 
     info = {
         "path": str(path),
         "tokens": tokens,
         "task_type": task_type.value,
-        "upper": upper,
-        "threshold": threshold,
-        "density_range": spec.density_range,
+        "reference_size": reference_size,
     }
 
-    if tokens >= threshold:
-        return "block", info
-    if tokens >= upper:
+    if tokens >= reference_size:
         return "warn", info
     return "ok", info
 
 
-def format_result(verdict: str, info: dict) -> str:
+def format_result(verdict: str, info: dict[str, Any]) -> str:
+    """Format one advisory file-check result for terminal output."""
     path = info.get("path", "?")
     if verdict == "missing":
         return f"MISSING: {path}"
@@ -136,23 +124,20 @@ def format_result(verdict: str, info: dict) -> str:
         return f"OK:      {path} ({info['tokens']} tokens, type={info['task_type']})"
     if verdict == "warn":
         return (
-            f"WARN:    {path} ({info['tokens']} tokens, type={info['task_type']}; "
-            f"consider compressing, typical ceiling {info['upper']})"
+            f"REVIEW:  {path} ({info['tokens']} estimated tokens, "
+            f"type={info['task_type']}; advisory reference "
+            f"{info['reference_size']}, commit allowed)"
         )
-    # block
-    return (
-        f"BLOCK:   {path} ({info['tokens']} tokens, type={info['task_type']}; "
-        f">= {info['threshold']} block threshold)\n"
-        f"         Run: denser compress --type {info['task_type']} {path}"
-    )
+    raise ValueError(f"Unknown pre-commit verdict: {verdict}")
 
 
 def main(argv: list[str] | None = None) -> int:
+    """Run the advisory pre-commit scanner and return its process exit code."""
     parser = argparse.ArgumentParser(
         prog="python -m denser.precommit",
         description=(
-            "Block commits of LLM-input files that drift past their task type's "
-            "sweet-spot token ceiling. Set SKIP_DENSER=1 to bypass."
+            "Advisory size review for recognized LLM instruction files. "
+            "Length suggestions never block a commit."
         ),
     )
     parser.add_argument(
@@ -160,12 +145,6 @@ def main(argv: list[str] | None = None) -> int:
         nargs="*",
         type=Path,
         help="Files to check (usually passed by git pre-commit hook).",
-    )
-    parser.add_argument(
-        "--margin",
-        type=float,
-        default=0.10,
-        help="Fraction over the upper ceiling that still passes with a warning (default 0.10 = 10%%).",
     )
     parser.add_argument(
         "--min-tokens",
@@ -183,20 +162,9 @@ def main(argv: list[str] | None = None) -> int:
         print("no files given; nothing to check")
         return 0
 
-    any_block = False
     for path in args.paths:
-        verdict, info = check_file(path, margin=args.margin, min_tokens=args.min_tokens)
+        verdict, info = check_file(path, min_tokens=args.min_tokens)
         print(format_result(verdict, info))
-        if verdict == "block":
-            any_block = True
-
-    if any_block:
-        print(
-            "\ndenser: one or more files exceed their task type's sweet-spot ceiling.\n"
-            "        Fix with `denser compress --type <type> <path>` and re-stage,\n"
-            "        or set SKIP_DENSER=1 for this commit if the size is intentional."
-        )
-        return 1
     return 0
 
 

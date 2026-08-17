@@ -1,11 +1,12 @@
-"""Reproducible benchmark runner.
+"""Development runner for the small bundled example corpus.
 
 Iterates over `examples/<task_type>/<slug>/` directories. For each pair:
   1. Compress `verbose.md` via denser (Opus 4.6)
-  2. Evaluate both original and compressed via the eval harness (Haiku 4.5 judge)
+  2. Evaluate both original and candidate with built-in structural checks
   3. Record savings + pass-rate delta
 
 Results aggregate per task type and are printed to stdout (or written to JSON).
+They are diagnostic observations, not a behavior-preservation benchmark.
 """
 
 from __future__ import annotations
@@ -81,6 +82,7 @@ def run_pair(
     judge: ClaudeBackend,
     n_trials: int,
 ) -> PairResult:
+    """Compress and evaluate one benchmark pair."""
     verbose = (slug_dir / "verbose.md").read_text(encoding="utf-8")
 
     logger.info("Compressing %s/%s ...", tt.value, slug_dir.name)
@@ -112,6 +114,7 @@ def run_pair(
 
 
 def aggregate(results: list[PairResult]) -> dict[str, dict[str, float | int]]:
+    """Aggregate benchmark results by task type."""
     by_type: dict[str, list[PairResult]] = {}
     for r in results:
         by_type.setdefault(r.task_type, []).append(r)
@@ -130,6 +133,7 @@ def aggregate(results: list[PairResult]) -> dict[str, dict[str, float | int]]:
 
 
 def print_summary(results: list[PairResult], agg: dict) -> None:
+    """Print per-pair and aggregate benchmark results."""
     print("\n" + "=" * 78)
     print(" Per-pair results")
     print("=" * 78)
@@ -158,6 +162,7 @@ def print_summary(results: list[PairResult], agg: dict) -> None:
 
 
 def main() -> int:
+    """Run the benchmark command and return its process exit code."""
     parser = argparse.ArgumentParser(description="Run denser benchmarks.")
     parser.add_argument(
         "--type",

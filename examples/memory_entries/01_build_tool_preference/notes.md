@@ -3,9 +3,10 @@
 **Original**: 253 words (~330 tokens)
 **Compressed**: 83 words (~110 tokens)
 **Density**: 0.33 (67% savings)
-**Task-type sweet spot for `memory_entry`**: 0.58 – 0.78
+**Exploratory generation range for `memory_entry`**: 0.58 – 0.78
 
-Below typical sweet spot because the original has substantial reminiscence framing ("I recall that a while ago...") that's purely narrative. Memory entries benefit from structure even more than skills.
+Below the working range because the source has substantial reminiscence framing.
+Recall and non-application behavior still require asset-specific tests.
 
 ## Preserved
 

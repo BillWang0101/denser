@@ -1,0 +1,97 @@
+{
+  "schema_version": "denser.replay-audit/v1",
+  "reviewed_at_utc": "2026-08-17T06:58:40Z",
+  "source_report": {
+    "path": "replay-report.codex-gpt-5.6-sol-medium.2026-08-17.blind.json",
+    "repository_sha256": "971e9b6b8f212ce8f858f5b8e12cc139d402b781616658b0b9b5596c3b51e9de",
+    "original_windows_working_copy_sha256": "7097e9729fe7c6a98d58490cedf5931502233f61e0dede16182d0e8320bff088",
+    "immutable": true
+  },
+  "pre_registered_result": {
+    "cases": 23,
+    "trials_per_case": 3,
+    "original_passed_observations": 67,
+    "candidate_passed_observations": 67,
+    "observations_per_side": 69,
+    "original_operational_errors": 0,
+    "candidate_operational_errors": 0,
+    "original_transport_fallbacks": 1,
+    "candidate_transport_fallbacks": 0,
+    "empty_outputs": 0
+  },
+  "invalid_cases": [
+    {
+      "task_name": "automation_security_boundaries",
+      "case_name": "scheduled_ci_role",
+      "decision": "exclude_from_behavior_claim",
+      "reason": "The exact scorer expected allowed-failure-prerelease, but the source says allowed-failure prerelease. Both assets returned the source-faithful spacing in two of three trials.",
+      "original_outputs": [
+        "allowed-failure-prerelease",
+        "allowed-failure prerelease",
+        "allowed-failure prerelease"
+      ],
+      "candidate_outputs": [
+        "allowed-failure-prerelease",
+        "allowed-failure prerelease",
+        "allowed-failure prerelease"
+      ]
+    }
+  ],
+  "audited_valid_result": {
+    "valid_cases": 22,
+    "trials_per_case": 3,
+    "original_passed_observations": 66,
+    "candidate_passed_observations": 66,
+    "observations_per_side": 66,
+    "delta": 0.0
+  },
+  "usage": {
+    "original": {
+      "input_tokens": 1411899,
+      "cached_input_tokens": 634112,
+      "output_tokens": 475,
+      "reasoning_output_tokens": 0
+    },
+    "candidate": {
+      "input_tokens": 1408400,
+      "cached_input_tokens": 480000,
+      "output_tokens": 475,
+      "reasoning_output_tokens": 0
+    },
+    "candidate_input_token_difference": -3499,
+    "candidate_input_token_difference_pct": -0.2478
+  },
+  "negative_controls": [
+    {
+      "name": "permission_inversion_with_disclosed_control_identity",
+      "report_path": "replay-report.codex-gpt-5.6-sol-medium.2026-08-17.negative-control.json",
+      "repository_sha256": "f6c5b40012e345a114f0e678c8aed45785c34e7aaca88854acac68e2eebbadca",
+      "original_windows_working_copy_sha256": "ebc25433894c6a9a9de070d8311bee70a3f2814d241137e72f6f18c0f16da30a",
+      "original_passed_observations": 6,
+      "mutant_passed_observations": 6,
+      "observations_per_side": 6,
+      "interpretation": "Not detected. Model safety priors and the disclosed negative-control identity can mask an inverted high-level permission rule."
+    },
+    {
+      "name": "project_policy_inversion_with_disclosed_control_identity",
+      "report_path": "replay-report.codex-gpt-5.6-sol-medium.2026-08-17.negative-control-policy.json",
+      "repository_sha256": "16b6eeda5e0e59c164dd63824e8fd32c0bb0bd3c5598829254a78a4dd18d6f98",
+      "original_windows_working_copy_sha256": "a2597a084cda8c42df69468878271080404f76043a51d66f62f8a70ae088cec6",
+      "original_passed_observations": 15,
+      "mutant_passed_observations": 15,
+      "observations_per_side": 15,
+      "interpretation": "Invalid control design. The system text disclosed that it was intentionally broken and named the public upstream asset, giving the model reasons to resist or reconstruct the intended policy."
+    },
+    {
+      "name": "neutral_project_policy_mutant",
+      "report_path": "replay-report.codex-gpt-5.6-sol-medium.2026-08-17.mutant-policy.json",
+      "repository_sha256": "930530d3f1da481a45acb9396ec5ab517e5b87946be4911438dbf866c8b148c7",
+      "original_windows_working_copy_sha256": "5363a908442581d1f9e592f01173808390042469a114729ab73ce7352c35d2c1",
+      "original_passed_observations": 15,
+      "mutant_passed_observations": 0,
+      "observations_per_side": 15,
+      "interpretation": "Detected. With only a neutral modification notice, all five project-specific policy inversions failed in all three trials."
+    }
+  ],
+  "claim_limit": "After excluding one demonstrably invalid exact-match case, the original and frozen candidate were both 66/66 on 22 valid cases under this fixed model and runtime. This does not establish general behavior equivalence, and the permission-inversion control shows a remaining blind spot."
+}

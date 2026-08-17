@@ -1,9 +1,9 @@
 ---
 name: denser-compress
 description: |
-  Compress a skill, system prompt, tool description, memory entry, CLAUDE.md,
-  or one-shot doc toward its signal-density sweet spot — with preservation
-  of load-bearing content. Use when the user asks to compress / shorten /
+  Produce a shorter candidate for a skill, system prompt, tool description,
+  memory entry, CLAUDE.md, or one-shot doc using role-aware rewrite guidance
+  and preservation analysis. Use when the user asks to compress / shorten /
   denser-ify / reduce a prompt-like file or inline text. Do NOT use for
   general text summarization; denser is role-aware and task-typed. Also do
   NOT use for code refactoring, commit message shortening, or natural-
@@ -51,18 +51,20 @@ Does it persist across a session?
 1. **Read** the input text (use the Read tool if it's a file).
 
 2. **Read `REFERENCE_taxonomy.md`** from this skill's directory (alongside
-   this SKILL.md file). It contains the preserve / strip rules and
-   sweet-spot density range for each task_type.
+   this SKILL.md file). It contains the preserve / strip rules and an
+   exploratory density range for each task_type. The range is a generation
+   hint, not a behavior guarantee.
 
 3. **Count tokens** (rough estimate is fine: `max(chars/4, words*1.3)`).
 
 4. **Compress** following the rules for the selected task_type:
    - Preserve every category in the task_type's Preserve list
    - Strip every category in the Strip list
-   - Aim for the midpoint of the task_type's sweet-spot density range
+   - Use the task_type midpoint only as a starting budget; stop before any
+     unsupported removal even if the candidate is longer
    - Prefer imperative mood for procedures
-   - Use MUST / NEVER / DO NOT for hard constraints (LLMs obey negatives
-     phrased this way more reliably than "please don't")
+   - Use MUST / NEVER / DO NOT only when the source constraint is equally
+     absolute; do not strengthen a preference or qualified prohibition
    - Preserve structural headers the LLM uses to navigate (keep
      `# Conventions`, `# Steps`, etc.)
 
@@ -72,7 +74,7 @@ Does it persist across a session?
    ━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━
      <filename or "inline text">  ->  compressed
      <N> tokens  ->  <M> tokens   (-<X>%)
-     density: <ratio>   (task type sweet spot: <range>)
+     density: <ratio>   (exploratory range: <range>)
    ━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━
 
    ### What was stripped
@@ -86,10 +88,14 @@ Does it persist across a session?
    ```
    ```
 
-6. **Ask**: "Write compressed version to `<path>` (overwriting original)?
+6. **Risk check**: verify every Preserve item and restore anything missing.
+   This is structural. Do not claim behavior preservation unless realistic,
+   asset-specific behavior cases pass.
+
+7. **Ask**: "Write compressed version to `<path>` (overwriting original)?
    [y/N]". Default is NO. Only write if user says yes.
 
-7. If the user approves, use the Write tool to overwrite the original file.
+8. If the user approves, use the Write tool to overwrite the original file.
    If they decline, do nothing further — the compressed text was shown,
    they can copy-paste if they want.
 

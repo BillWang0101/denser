@@ -60,6 +60,7 @@ Thumbs.db
 
 # denser runtime artifacts
 *.dense.md
+!examples/project_instructions/**/AGENTS.dense.md
 benchmarks/results/
 benchmarks/**/bench_compressed.md
 eval_cache/
@@ -67,6 +68,9 @@ curve.png
 curve.json
 
 # Ad-hoc experiment scripts + their outputs (prefix _)
-_*.py
-_*.json
+_[!_]*.py
+_[!_]*.json
+
+# Local agent handoff notes are audit artifacts, not product files
+handoff*.md
 

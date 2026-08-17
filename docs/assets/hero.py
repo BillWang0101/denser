@@ -1,4 +1,4 @@
-"""Generate the README hero image — the Signal Density Curve concept illustration.
+"""Generate the README hero image — an experimental density-sweep illustration.
 
 This script is reproducible (fixed seeds, deterministic output). It produces
 `docs/assets/hero.png` which README.md references.
@@ -18,29 +18,30 @@ OUT_PATH = Path(__file__).parent / "hero.png"
 
 
 def _curve(x: np.ndarray, peak: float, height: float, width: float) -> np.ndarray:
-    """A concave curve peaked at `peak` with given height and width."""
+    """One possible non-universal shape used in the schematic."""
     return height * np.exp(-((x - peak) ** 2) / (2 * width**2))
 
 
 def main() -> None:
+    """Render the schematic density-curve hero image."""
     x = np.linspace(0.05, 1.05, 300)
 
-    # Three illustrative curves — different task types with different sweet spots.
-    # Values here are schematic, not measured.
+    # Three possible shapes. Values are schematic and deliberately not tied to
+    # task types or measured results.
     curves = [
-        {"label": "skill", "peak": 0.34, "height": 0.98, "width": 0.16, "color": "#e04b4b"},
         {
-            "label": "system_prompt",
-            "peak": 0.48,
-            "height": 0.96,
-            "width": 0.18,
+            "label": "interior best",
+            "values": _curve(x, 0.48, 0.96, 0.18),
+            "color": "#e04b4b",
+        },
+        {
+            "label": "original best",
+            "values": 0.58 + 0.36 * np.clip(x, 0, 1),
             "color": "#4b8ae0",
         },
         {
-            "label": "memory_entry",
-            "peak": 0.68,
-            "height": 0.92,
-            "width": 0.20,
+            "label": "flat / noisy",
+            "values": 0.78 + 0.035 * np.sin(25 * x) + 0.02 * x,
             "color": "#3ba374",
         },
     ]
@@ -50,24 +51,12 @@ def main() -> None:
     fig, ax = plt.subplots(figsize=(12.8, 6.4))
 
     for c in curves:
-        y = _curve(x, c["peak"], c["height"], c["width"])
-        ax.plot(x, y, linewidth=2.5, label=c["label"], color=c["color"])
-        # Mark the peak with a dotted vertical.
-        ax.axvline(c["peak"], color=c["color"], linestyle=":", alpha=0.5, linewidth=1)
-        ax.annotate(
-            f"ρ*={c['peak']:.2f}",
-            xy=(c["peak"], c["height"]),
-            xytext=(c["peak"], c["height"] + 0.04),
-            ha="center",
-            fontsize=10,
-            color=c["color"],
-            fontweight="bold",
-        )
+        ax.plot(x, c["values"], linewidth=2.5, label=c["label"], color=c["color"])
 
     ax.set_xlabel("compression ratio ρ  (compressed tokens / original)", fontsize=11)
-    ax.set_ylabel("task pass-rate", fontsize=11)
+    ax.set_ylabel("observed check score", fontsize=11)
     ax.set_title(
-        "Signal Density Curve — each task type has its own sweet spot",
+        "Experimental Density Sweep — possible shapes, not measured results",
         fontsize=13,
         pad=14,
     )
@@ -75,7 +64,7 @@ def main() -> None:
     ax.set_ylim(0, 1.15)
     ax.invert_xaxis()  # denser → smaller ρ on the right
     ax.grid(alpha=0.25)
-    ax.legend(title="task type", loc="lower left", frameon=True)
+    ax.legend(title="illustrative shape", loc="upper right", frameon=True)
 
     # Subtle shading for the "danger zones"
     ax.axvspan(0.0, 0.15, color="red", alpha=0.06, zorder=-1)
@@ -83,7 +72,7 @@ def main() -> None:
     ax.text(
         0.075,
         0.08,
-        "over-compressed\n(information loss)",
+        "higher information-loss risk",
         ha="center",
         va="center",
         fontsize=8.5,
@@ -93,7 +82,7 @@ def main() -> None:
     ax.text(
         0.99,
         0.08,
-        "uncompressed\n(attention dilution)",
+        "original candidate",
         ha="right",
         va="center",
         fontsize=8.5,

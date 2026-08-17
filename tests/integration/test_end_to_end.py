@@ -42,7 +42,8 @@ def test_live_compress_skill() -> None:
     # Compression should produce non-empty output well short of the original.
     assert result.compressed.strip()
     assert result.compressed_tokens < result.original_tokens
-    # Skill sweet spot is 0.30-0.45; allow generous margin (±0.2) to avoid
+    # Skill's exploratory target range is 0.30-0.45; allow a generous margin
+    # (±0.2) to avoid
     # test flakiness from model-day variance.
     assert 0.10 <= result.actual_density <= 0.70
 

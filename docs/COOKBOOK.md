@@ -15,7 +15,7 @@ If you're looking for concepts and theory, see [`WHITEPAPER.md`](WHITEPAPER.md).
 5. [Use a different backend model](#5-use-a-different-backend-model)
 6. [Write a custom golden task](#6-write-a-custom-golden-task)
 7. [Compress a verbose CLAUDE.md](#7-compress-a-verbose-claudemd)
-8. [Pre-commit hook for skill files](#8-pre-commit-hook-for-skill-files)
+8. [Advisory pre-commit review](#8-advisory-pre-commit-review-for-skill-files)
 9. [Integrate denser into a CI check](#9-integrate-denser-into-a-ci-check)
 10. [Troubleshooting](#10-troubleshooting)
 
@@ -64,20 +64,26 @@ for skill_file in skills_dir.glob("*.md"):
     print(f"{skill_file.name}: {result.savings_pct:.0%} saved")
 ```
 
-Prompt caching ensures the second and later calls are roughly half the cost of the first — the system prompt is stable across calls.
+The Claude adapter requests ephemeral system-prompt caching. Check
+provider-reported usage for actual eligibility and savings; neither is fixed by
+denser.
 
 ---
 
 ## 3. Evaluate a compression before keeping it
 
-`denser eval` runs golden tasks on both original and compressed, reports pass-rate delta.
+`denser eval` runs structural or caller-supplied checks on both original and
+compressed text and reports the observed pass-rate delta.
 
 ```bash
 denser compress --type skill my_skill.md --out my_skill.dense.md
 denser eval my_skill.md --type skill --compare-to my_skill.dense.md --n-trials 10
 ```
 
-The output table makes it obvious whether compression preserved (or improved) task performance. Keep the compressed version only if the delta is `>= -2%` or so.
+The bundled fixtures expose structural regressions but do not establish task
+performance. Adoption requires asset-specific behavior cases, no operational
+errors, and an explicit review of changed obligations; there is no generic
+safe delta threshold.
 
 **Python**:
 
@@ -100,14 +106,16 @@ else:
 
 ## 4. Plot the Signal Density Curve for your own input
 
-Finding the *empirical* sweet spot for a specific input:
+Exploring observed scores at several target densities:
 
 ```bash
-pip install denser[plot]
+pip install -e ".[plot]"
 denser curve my_skill.md --type skill --out curve.png --json-out curve.json
 ```
 
-`curve.png` shows the fitted concave curve with the peak marked. `curve.json` has the raw points for your own analysis.
+`curve.png` shows raw points and an optional descriptive quadratic fit.
+`curve.json` contains the raw observations. Do not infer concavity or a safe
+behavioral optimum without asset-specific tests and repeated measurements.
 
 **Python**:
 
@@ -126,6 +134,7 @@ print(f"Peak pass-rate: {c.peak_pass_rate:.2%}")
 
 # Then compress to the peak:
 from denser import compress
+
 result = compress(your_text, task_type="skill", target_density=c.peak_density)
 ```
 
@@ -170,7 +179,7 @@ task = GoldenTask(
     description="The skill should activate when the user mentions 'shipping' or 'delivery'.",
     task_prompt=(
         "Below is a skill. Given a user request, decide whether the skill "
-        "should activate.\n\nSkill:\n{input}\n\nRequest: \"{request}\"\n\n"
+        'should activate.\n\nSkill:\n{input}\n\nRequest: "{request}"\n\n'
         "Answer exactly one word: yes or no."
     ),
     test_cases=(
@@ -191,46 +200,49 @@ You can pass both built-in and custom tasks together by calling `load_golden_tas
 
 ## 7. Compress a verbose CLAUDE.md
 
-CLAUDE.md files accumulate cruft. denser is particularly effective on them:
+CLAUDE.md files can accumulate obsolete or repeated guidance. The following
+workflow produces a candidate for review:
 
 ```bash
 denser compress --type claude_md CLAUDE.md --density 0.4 --out CLAUDE.dense.md
 denser eval CLAUDE.md --type claude_md --compare-to CLAUDE.dense.md
 ```
 
-Example result on the `examples/claude_md/01_monorepo/` sample: 60% token savings with zero pass-rate regression.
+The committed `examples/claude_md/01_monorepo/` pair is 60% shorter by the
+local estimator and retains the signals checked by the bundled structural
+fixtures. It has no asset-specific behavior suite, so this is not proof of
+runtime equivalence.
 
-**Tip**: when compressing a CLAUDE.md, explicitly pass `--density 0.4` — the default (0.425 midpoint) is fine, but 0.4 pushes slightly harder which usually works well for accumulated-cruft files.
+**Tip**: `--density 0.4` is an exploratory generation target, not a validated
+optimum. Keep the source and require asset-specific behavior evidence before
+adopting the candidate.
 
 ---
 
-## 8. Pre-commit hook for skill files
+## 8. Advisory pre-commit review for skill files
 
-Make it impossible to commit an unnecessarily verbose skill:
+Add a non-blocking size review for recognized instruction files:
 
-`.git/hooks/pre-commit`:
+From a denser checkout, copy the supplied hook:
 
 ```bash
-#!/usr/bin/env bash
-set -e
-
-for file in $(git diff --cached --name-only --diff-filter=ACM | grep '^skills/.*\.md$'); do
-    tokens=$(python -c "from denser.tokens import estimate_tokens; import sys; print(estimate_tokens(open('$file').read()))")
-    if [ "$tokens" -gt 500 ]; then
-        echo "⚠️  $file is $tokens tokens. Consider: denser compress --type skill $file"
-        echo "   (Set SKIP_DENSER=1 to bypass.)"
-        [ -z "$SKIP_DENSER" ] && exit 1
-    fi
-done
+cp integrations/pre-commit-hook.sh .git/hooks/pre-commit
+chmod +x .git/hooks/pre-commit
 ```
 
-Stricter variant: run `denser eval` against the compressed form and fail if the delta is positive (meaning the committed version is worse than its compressed equivalent).
+It estimates size locally and prints review suggestions. Length alone never
+blocks a commit. A stricter repository gate should use project-owned behavior
+tests, not a generic token threshold.
 
 ---
 
 ## 9. Integrate denser into a CI check
 
-GitHub Actions example — fails the build if any skill under `skills/` has a signal density curve peak lower than its current density (meaning compression would improve it):
+Do not fail CI from a fitted density-curve peak: the curve is exploratory and
+does not prove improvement. Gate a rewrite with repository-owned behavior
+tests that encode the asset's triggers, boundaries, failure paths, and output
+contract. A minimal workflow can run those tests alongside denser's offline
+structural checks:
 
 ```yaml
 name: skill-density-check
@@ -241,29 +253,18 @@ jobs:
   check:
     runs-on: ubuntu-latest
     steps:
-      - uses: actions/checkout@v4
-      - uses: actions/setup-python@v5
+      - uses: actions/checkout@d23441a48e516b6c34aea4fa41551a30e30af803 # v6.1.0
+      - uses: actions/setup-python@ece7cb06caefa5fff74198d8649806c4678c61a1 # v6.3.0
         with:
           python-version: "3.12"
-      - run: pip install denser
-      - run: |
-          python -c "
-          from pathlib import Path
-          from denser import curve
-          import sys
-          failed = []
-          for f in Path('skills').glob('*.md'):
-              c = curve(f.read_text(), task_type='skill', n_trials=3)
-              if c.peak_density < 0.7:
-                  failed.append((f, c.peak_density))
-          if failed:
-              for f, d in failed:
-                  print(f'{f}: peak at ρ={d:.2f}, consider compressing')
-              sys.exit(1)
-          "
-        env:
-          ANTHROPIC_API_KEY: ${{ secrets.ANTHROPIC_API_KEY }}
+      - run: pip install -e ".[dev]"
+      - run: pytest -q tests/test_instruction_behavior.py
 ```
+
+`tests/test_instruction_behavior.py` is project-specific: keep it next to the
+instruction asset and make its expected outcomes explicit. If it calls a live
+model, record model settings and operational errors and run it as a controlled
+release check rather than assuming deterministic CI.
 
 This is intentionally gentle (only warns on clear over-compression opportunities). Adjust the threshold to match your team's tolerance.
 
@@ -280,7 +281,9 @@ denser tries to recover by preserving the raw response as compressed text. If th
 
 ### Eval pass rate is 0% on a well-formed text
 
-Check that `ANTHROPIC_API_KEY` is set for both compressor and judge. The judge defaults to Haiku and will silently return empty responses on auth failure. Run with `--n-trials 1` and inspect `report.task_results[0].case_results[0].judge_outputs` for diagnostic info.
+Check that `ANTHROPIC_API_KEY` is set for both compressor and judge. Backend
+failures are recorded as operational errors and do not count as passes. Run
+with `--n-trials 1` and inspect the sanitized error fields before retrying.
 
 ### Compression target density not being hit
 
@@ -288,14 +291,15 @@ denser respects *preserve* rules even when they push above the target density. F
 
 ### Repeated compressions of similar inputs are slow
 
-Prompt caching should reduce subsequent-call cost by ~50%. If it isn't:
-- Cache TTL is 5 minutes — make sure calls are batched within that window
-- Check logs for "cache_read_input_tokens: 0" (API response metadata). If zero, cache miss is happening.
+The Claude adapter requests ephemeral caching for the system prompt, but actual
+eligibility, retention, latency, and cost depend on current provider behavior.
+Inspect provider-reported usage rather than assuming a fixed savings rate or
+cache lifetime.
 
 ### "matplotlib required for plotting"
 
 ```bash
-pip install denser[plot]
+pip install -e ".[plot]"
 ```
 
 ### Running denser offline (no API calls)
