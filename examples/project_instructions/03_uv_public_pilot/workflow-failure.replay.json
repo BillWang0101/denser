@@ -1,0 +1,51 @@
+{
+  "schema_version": "denser.replay-suite/v1",
+  "tasks": [
+    {
+      "task_type": "claude_md",
+      "name": "uv_workflow_failure_snapshot",
+      "description": "Classify frozen, complete workflow evidence using uv's public decision rules.",
+      "pass_threshold": 1.0,
+      "max_tokens": 24,
+      "covers": ["UV-WORKFLOW-FLAKY", "UV-WORKFLOW-DETERMINISTIC", "UV-WORKFLOW-CREATE", "UV-WORKFLOW-DUPLICATE", "UV-WORKFLOW-IGNORE"],
+      "cases": [
+        {
+          "name": "transient_external_outage_without_mitigation",
+          "category": "near_miss",
+          "prompt": "Evidence snapshot: Every independent failure came from a short external network outage and can plausibly pass on retry without changing uv. There is no repository-side mitigation or actionable tracker to create. Classify the run.",
+          "expected": "FAILURE_KIND=flaky\nDECISION=ignore"
+        },
+        {
+          "name": "confirmed_untracked_test_flake",
+          "category": "positive_trigger",
+          "prompt": "Evidence snapshot: The only independent failure is a confirmed intermittent uv test. It can pass without a code change, but the repository should track and mitigate it. No existing issue or pull request covers it. Classify the run.",
+          "expected": "FAILURE_KIND=flaky\nDECISION=create"
+        },
+        {
+          "name": "confirmed_flake_already_tracked",
+          "category": "positive_trigger",
+          "prompt": "Evidence snapshot: The only independent failure is a confirmed intermittent test. Open issue astral-sh/uv-dev#420 already tracks exactly this failure. Classify the run.",
+          "expected": "FAILURE_KIND=flaky\nDECISION=duplicate"
+        },
+        {
+          "name": "expected_failure_caused_by_pull_request",
+          "category": "failure_path",
+          "prompt": "Evidence snapshot: The pull request introduces a compile error, so the failure requires changing the proposed code. This is the expected check result for the broken pull request, and there is no repository defect to track. Classify the run.",
+          "expected": "FAILURE_KIND=deterministic\nDECISION=ignore"
+        },
+        {
+          "name": "untracked_default_branch_repository_defect",
+          "category": "positive_trigger",
+          "prompt": "Evidence snapshot: A default-branch workflow fails because a checked-in uv configuration is invalid. A repository change is required. No existing issue or pull request tracks the defect. Classify the run.",
+          "expected": "FAILURE_KIND=deterministic\nDECISION=create"
+        },
+        {
+          "name": "mixed_transient_and_deterministic_failures",
+          "category": "adversarial",
+          "prompt": "Evidence snapshot: One independent failure is a temporary external rate limit. A second independent failure comes from a missing checked-in workflow setting and requires a repository configuration change. No existing tracker covers the actionable defect. Classify the overall run.",
+          "expected": "FAILURE_KIND=deterministic\nDECISION=create"
+        }
+      ]
+    }
+  ]
+}

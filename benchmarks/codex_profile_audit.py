@@ -41,7 +41,7 @@ class CallUnit:
     trial: int
 
 
-SCENARIOS = (
+DEFAULT_SCENARIOS = (
     Scenario(
         name="release_operations",
         asset=ROOT / "examples" / "project_instructions" / "01_codex_release_ops" / "AGENTS.md",
@@ -65,6 +65,48 @@ SCENARIOS = (
         ),
     ),
 )
+
+UV_PUBLIC_PILOT_SCENARIOS = (
+    Scenario(
+        name="uv_issue_triage_snapshot",
+        asset=(
+            ROOT
+            / "examples"
+            / "project_instructions"
+            / "03_uv_public_pilot"
+            / "issue-triage-rules.md"
+        ),
+        suite=(
+            ROOT
+            / "examples"
+            / "project_instructions"
+            / "03_uv_public_pilot"
+            / "issue-triage.replay.json"
+        ),
+    ),
+    Scenario(
+        name="uv_workflow_failure_snapshot",
+        asset=(
+            ROOT
+            / "examples"
+            / "project_instructions"
+            / "03_uv_public_pilot"
+            / "workflow-failure-rules.md"
+        ),
+        suite=(
+            ROOT
+            / "examples"
+            / "project_instructions"
+            / "03_uv_public_pilot"
+            / "workflow-failure.replay.json"
+        ),
+    ),
+)
+
+SCENARIO_SETS = {
+    "built-in": DEFAULT_SCENARIOS,
+    "uv-public-pilot": UV_PUBLIC_PILOT_SCENARIOS,
+}
 
 
 def _sha256(path: Path) -> str:
@@ -175,6 +217,7 @@ def _summarize(calls: list[dict[str, Any]]) -> dict[str, Any]:
 def _parse_args() -> argparse.Namespace:
     parser = argparse.ArgumentParser(description=__doc__)
     parser.add_argument("--model", default="gpt-5.6-sol")
+    parser.add_argument("--scenario-set", choices=tuple(SCENARIO_SETS), default="built-in")
     parser.add_argument(
         "--reasoning-effort",
         choices=("none", "low", "medium", "high", "xhigh", "max"),
@@ -205,11 +248,12 @@ def _parse_args() -> argparse.Namespace:
 def main() -> int:
     """Run the paired audit and return a process exit status."""
     args = _parse_args()
+    selected_scenarios = SCENARIO_SETS[args.scenario_set]
     profiles = (args.baseline_profile, args.variant_profile)
     assets: dict[str, str] = {}
     units: list[CallUnit] = []
     scenario_sources: dict[str, dict[str, Any]] = {}
-    for scenario in SCENARIOS:
+    for scenario in selected_scenarios:
         asset = scenario.asset.read_text(encoding="utf-8")
         suite = load_replay_suite(scenario.suite)
         if suite.freeze is not None:
@@ -262,7 +306,7 @@ def main() -> int:
             )
 
     scenarios: list[dict[str, Any]] = []
-    for scenario in SCENARIOS:
+    for scenario in selected_scenarios:
         calls_by_profile = {
             profile: sorted(
                 (
@@ -309,6 +353,7 @@ def main() -> int:
     report = {
         "schema_version": SCHEMA_VERSION,
         "source_hash_method": "utf8-lf-v1",
+        "scenario_set": args.scenario_set,
         "generated_at_utc": datetime.now(timezone.utc).isoformat().replace("+00:00", "Z"),
         "runtime": {
             "backend_kind": "codex-cli",

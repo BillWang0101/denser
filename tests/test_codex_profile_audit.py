@@ -4,7 +4,8 @@ from __future__ import annotations
 
 from pathlib import Path
 
-from benchmarks.codex_profile_audit import _sha256, _summarize
+from benchmarks.codex_profile_audit import SCENARIO_SETS, _sha256, _summarize
+from denser.replay import load_replay_suite
 
 
 def test_source_hash_is_stable_across_line_endings(tmp_path: Path) -> None:
@@ -14,6 +15,23 @@ def test_source_hash_is_stable_across_line_endings(tmp_path: Path) -> None:
     crlf.write_bytes(b"one\r\ntwo\r\n")
 
     assert _sha256(lf) == _sha256(crlf)
+
+
+def test_uv_public_pilot_has_fourteen_preregistered_cases() -> None:
+    scenarios = SCENARIO_SETS["uv-public-pilot"]
+    assert [scenario.name for scenario in scenarios] == [
+        "uv_issue_triage_snapshot",
+        "uv_workflow_failure_snapshot",
+    ]
+    case_counts = [
+        sum(len(task.cases) for task in load_replay_suite(scenario.suite).tasks)
+        for scenario in scenarios
+    ]
+    assert case_counts == [8, 6]
+    for scenario in scenarios:
+        asset = scenario.asset.read_text(encoding="utf-8")
+        assert "5cc226096ea4424d021be17259bae51d761a827b" in asset
+        assert "decision-only projection" in asset
 
 
 def test_summarize_profile_calls() -> None:
