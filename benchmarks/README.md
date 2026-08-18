@@ -22,6 +22,16 @@ that need no files, commands, network, plugins, apps, skills, or memory. The
 published run and exact interpretation are documented in
 [`docs/CODEX_TEXT_ONLY_CASE_STUDY.md`](../docs/CODEX_TEXT_ONLY_CASE_STUDY.md).
 
+For the preregistered external-project corpus derived from uv's public Codex
+rules, use:
+
+```bash
+python benchmarks/codex_profile_audit.py \
+  --scenario-set uv-public-pilot \
+  --trials 3 --workers 8 --seed 20260818 --respect-system-proxy \
+  --output build/uv-public-pilot.json
+```
+
 ## What it does
 
 1. Iterates over all curated example pairs in `examples/`

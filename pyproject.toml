@@ -4,7 +4,7 @@ build-backend = "hatchling.build"
 
 [project]
 name = "denser"
-version = "0.2.0a1"
+version = "0.2.0a2"
 description = "Behavior-fidelity audits for version-controlled LLM context."
 readme = "README.md"
 license = "Apache-2.0"
