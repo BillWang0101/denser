@@ -20,43 +20,55 @@
 
 ---
 
-## Featured: measurable Codex input reduction for text-only tasks
+## Featured: automatic context pruning in a normal Codex tool workflow
 
-The first result that clears denser's end-to-end bar comes from capability
-selection, not prose compression. For replay tasks that need no files, shell,
-network, plugins, apps, skills, or memory, the Codex CLI adapter can use an
-explicit `text-only` profile and omit those unused capabilities from the model
-input. `standard` remains the default.
+`denser minimize-context` takes a manifest of visible context components,
+tries removing optional components one at a time, and keeps a removal only when
+behavior remains identical and a known-bad control still fails. Errors,
+improvements that change behavior, and insensitive tests all fail closed.
 
-With Codex CLI 0.147.0, `gpt-5.6-sol`, and medium reasoning:
+The first tool-using pilot used Codex CLI 0.147.0, `gpt-5.6-sol`, medium
+reasoning, and the `standard` capability profile. Both tasks had to read a local
+JSON file whose identifier and arbitrary policy code were absent from the
+prompt, so the expected answers could not be recovered from a text-only input.
 
-| Workload | Quality | Full input per call | Reduction |
+| Workload | Complete context | Selected context |
+|---|---:|---:|
+| Local release-record decision | 3/3 | 3/3 |
+| Local CI-record decision | 3/3 | 3/3 |
+
+The selector removed a 17,236-byte archived handbook but rejected attempts to
+remove the release or CI policy because each caused a covered regression. The
+final three-trial audit completed with zero operational errors:
+
+| Measurement | Complete context | Selected context | Reduction |
 |---|---:|---:|---:|
-| Release-operation decisions | 27/27 in each profile | 20,294.11 → 18,154.00 | 10.55% |
-| Automation permission routing | 15/15 in each profile | 20,619.00 → 18,434.00 | 10.60% |
+| Provider-reported full input, 6 calls | 277,871 | 243,210 | **12.47%** |
+| Visible bundle estimate | 4,626 | 303 | 93.45% |
 
-This clears the predeclared rule of at least two real scenarios with at least
-10% provider-reported full-input reduction and no observed quality loss. The
-final run made 84 authenticated calls in seeded randomized order, with three
-trials per case, zero operational errors, and zero transport fallbacks. It is
-not a general coding mode: tasks that need tools must use `standard`.
+Shell access, plugins, and skill search were not disabled. The benchmark's
+standard profile did disable apps, memories, and multi-agent execution for
+reproducibility, identically on both sides; the measured 12.47% delta comes
+from the selected bundle, not from changing that runtime profile. This is one
+synthetic two-task pilot, not proof that every repository can remove 12%.
 
-The first strict run caught one regression: without tools, one case asked for
-more context instead of following its fixed output contract. The `text-only/v1`
-wrapper now states that all required input is already present, and the complete
-84-call audit was rerun rather than patching the single failure. This is the
-kind of false confidence denser is designed to expose.
+See the [component-selection case study](docs/CODEX_CONTEXT_SELECTION_CASE_STUDY.md),
+the [manifest and tool fixtures](examples/context_bundles/tool_workflows/), and
+the [complete final audit](examples/context_bundles/tool_workflows/selection.codex-standard.3x.2026-08-18.json).
 
-The earlier 10.3%-shorter instruction rewrite reduced full Codex input by only
-about 0.25%. That negative result remains important: rewriting a small file is
-not enough when the larger cost is unused runtime context.
+### Earlier result: text-only capability selection
 
-See the [case study and reproduction
-guide](docs/CODEX_TEXT_ONLY_CASE_STUDY.md), plus the complete per-call outputs,
-token counts, source hashes, runtime settings, and limitations in the
+For pre-bundled decisions that need no files or tools, the explicit
+`text-only/v1` profile reduced full input by 10.55% and 10.60% across two
+synthetic workloads, with 42/42 expected decisions per profile. That remains a
+narrow capability-selection result, not the main product claim. A
+10.3%-shorter instruction rewrite had reduced complete Codex input by only
+about 0.25%, which is why denser now targets whole visible context bundles.
+
+See the earlier [text-only case study](docs/CODEX_TEXT_ONLY_CASE_STUDY.md) and
 [`paired three-trial audit`](examples/project_instructions/codex-text-only-profile-audit.paired-3x-final.2026-08-17.json).
 
-### Public-project transfer check: Astral uv
+### Earlier public-project transfer check: Astral uv
 
 The same frozen profile was then tested against decision rules adapted from
 public Astral uv agent prompts at commit
@@ -102,6 +114,11 @@ end-to-end input usage separately from asset-only length.
 ## What denser does
 
 ```bash
+denser minimize-context context-bundle.json --suite replay.json \
+  --backend codex-cli --codex-capability-profile standard \
+  --selection-trials 1 --validation-trials 3 --parallelism 6 \
+  --out selected-context.md --json-out selection-evidence.json
+
 denser audit AGENTS.md AGENTS.variant.md --type claude_md \
   --suite replay.holdout.json \
   --negative-control AGENTS.negative-control.md \
@@ -121,7 +138,15 @@ denser replay --type claude_md AGENTS.md --suite replay.json \
   --backend codex-cli --codex-capability-profile text-only
 ```
 
-`audit` is the primary interface. It runs paired baseline/variant replay,
+`minimize-context` is the automatic selective-loading interface. A versioned
+manifest names the visible context components, marks non-removable components,
+and declares which required component to drop for the known-bad control. The
+selector tests optional components largest first, retains every uncertain or
+behavior-changing component, then repeats a final audit. It operates on
+user-supplied visible text; it does not inspect hidden provider prefixes or
+compact conversation history.
+
+`audit` is the primary lower-level interface. It runs paired baseline/variant replay,
 compares every covered case, checks whether a known-bad negative control causes
 a regression, and reports both asset-only estimates and provider-reported full
 input usage. Equal scores without a detected negative control are

@@ -18,6 +18,7 @@ import logging
 import random
 import re
 from collections.abc import Callable
+from concurrent.futures import Future, ThreadPoolExecutor, as_completed
 from dataclasses import dataclass, field
 from datetime import datetime, timezone
 from enum import Enum
@@ -616,6 +617,13 @@ class _RunUnit:
 
 
 @dataclass(frozen=True)
+class _RunObservation:
+    output: str
+    error_type: str | None
+    metadata: dict[str, object]
+
+
+@dataclass(frozen=True)
 class ReplayProgress:
     """One completed backend call in a replay schedule."""
 
@@ -764,7 +772,12 @@ def _execute_schedule(
     suite_sha256: str,
     suite_metadata: dict[str, object],
     on_progress: Callable[[ReplayProgress], None] | None = None,
+    parallelism: int = 1,
 ) -> dict[str, ReplayReport]:
+    if parallelism < 1:
+        raise ValueError("parallelism must be at least 1")
+    if parallelism > 1 and getattr(backend, "supports_concurrency", False) is not True:
+        raise ValueError("The selected backend does not support concurrent replay calls")
     generated_at_utc = datetime.now(timezone.utc).isoformat().replace("+00:00", "Z")
     runtime_config = _backend_runtime_config(backend)
     accumulators = {
@@ -774,10 +787,9 @@ def _execute_schedule(
         for case_index, _case in enumerate(task.cases)
     }
 
-    for completed_calls, unit in enumerate(schedule, start=1):
+    def run_unit(unit: _RunUnit) -> _RunObservation:
         task = tasks[unit.task_index]
         case = task.cases[unit.case_index]
-        observed = accumulators[(unit.side, unit.task_index, unit.case_index)]
         try:
             output = backend.complete(
                 system=texts[unit.side],
@@ -792,14 +804,12 @@ def _execute_schedule(
                 case.name,
                 error_type,
             )
-            observed.outputs.append("")
-            observed.errors.append(error_type)
-            observed.backend_metadata.append(_backend_metadata(backend))
-        else:
-            observed.outputs.append(output)
-            observed.backend_metadata.append(_backend_metadata(backend))
-            if case.matches(output):
-                observed.n_passed += 1
+            return _RunObservation("", error_type, _backend_metadata(backend))
+        return _RunObservation(output, None, _backend_metadata(backend))
+
+    def progress(completed_calls: int, unit: _RunUnit) -> None:
+        task = tasks[unit.task_index]
+        case = task.cases[unit.case_index]
         if on_progress is not None:
             on_progress(
                 ReplayProgress(
@@ -812,6 +822,34 @@ def _execute_schedule(
                     n_trials=n_trials,
                 )
             )
+
+    indexed_results: dict[int, _RunObservation] = {}
+    if parallelism == 1:
+        for index, unit in enumerate(schedule):
+            indexed_results[index] = run_unit(unit)
+            progress(index + 1, unit)
+    else:
+        with ThreadPoolExecutor(max_workers=parallelism) as executor:
+            futures: dict[Future[_RunObservation], tuple[int, _RunUnit]] = {
+                executor.submit(run_unit, unit): (index, unit)
+                for index, unit in enumerate(schedule)
+            }
+            for completed_calls, future in enumerate(as_completed(futures), start=1):
+                index, unit = futures[future]
+                indexed_results[index] = future.result()
+                progress(completed_calls, unit)
+
+    for index, unit in enumerate(schedule):
+        task = tasks[unit.task_index]
+        case = task.cases[unit.case_index]
+        observed = accumulators[(unit.side, unit.task_index, unit.case_index)]
+        result = indexed_results[index]
+        observed.outputs.append(result.output)
+        observed.backend_metadata.append(result.metadata)
+        if result.error_type is not None:
+            observed.errors.append(result.error_type)
+        elif case.matches(result.output):
+            observed.n_passed += 1
 
     return {
         side: _build_report(
@@ -900,6 +938,7 @@ def _replay_comparison_sides(
     n_trials: int = 1,
     seed: int = 0,
     on_progress: Callable[[ReplayProgress], None] | None = None,
+    parallelism: int = 1,
 ) -> tuple[TaskType, dict[str, ReplayReport]]:
     """Replay comparison sides in one randomized schedule."""
     if not original or not original.strip():
@@ -942,6 +981,7 @@ def _replay_comparison_sides(
         suite_sha256=suite_sha256,
         suite_metadata=suite_metadata,
         on_progress=on_progress,
+        parallelism=parallelism,
     )
     return tt, reports
 

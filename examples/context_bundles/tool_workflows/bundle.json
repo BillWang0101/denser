@@ -1,0 +1,29 @@
+{
+  "schema_version": "denser.context-bundle/v1",
+  "name": "tool-workflow-context",
+  "task_type": "system_prompt",
+  "negative_control_drop": ["execution-contract"],
+  "components": [
+    {
+      "id": "execution-contract",
+      "kind": "system_prompt",
+      "path": "execution-contract.md",
+      "required": true
+    },
+    {
+      "id": "release-policy",
+      "kind": "claude_md",
+      "path": "release-policy.md"
+    },
+    {
+      "id": "ci-policy",
+      "kind": "claude_md",
+      "path": "ci-policy.md"
+    },
+    {
+      "id": "archived-handbook",
+      "kind": "memory_entry",
+      "path": "archived-handbook.md"
+    }
+  ]
+}

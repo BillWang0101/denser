@@ -18,6 +18,16 @@ from denser.audit import (
     audit_context,
 )
 from denser.compress import CompressionResult, compress
+from denser.context_selection import (
+    CONTEXT_BUNDLE_SCHEMA_VERSION,
+    CONTEXT_SELECTION_SCHEMA_VERSION,
+    ComponentAttempt,
+    ContextBundle,
+    ContextComponent,
+    ContextSelectionReport,
+    load_context_bundle,
+    minimize_context,
+)
 from denser.curve import DensityCurve, DensityPoint, curve
 from denser.eval import (
     CaseResult,
@@ -96,9 +106,15 @@ __all__ = [
     "CaseResult",
     "ComparisonReport",
     "CompressionResult",
+    "CONTEXT_BUNDLE_SCHEMA_VERSION",
+    "CONTEXT_SELECTION_SCHEMA_VERSION",
+    "ComponentAttempt",
     "ContractCategory",
     "ContractItem",
     "ContractItemResult",
+    "ContextBundle",
+    "ContextComponent",
+    "ContextSelectionReport",
     "ContextAuditReport",
     "DensityCurve",
     "DensityPoint",
@@ -147,9 +163,11 @@ __all__ = [
     "evaluate",
     "inspect",
     "load_golden_tasks",
+    "load_context_bundle",
     "load_replay_suite",
     "load_replay_tasks",
     "optimize",
+    "minimize_context",
     "replay",
     "verify",
 ]

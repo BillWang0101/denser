@@ -3,6 +3,8 @@
 from __future__ import annotations
 
 import json
+import threading
+import time
 
 from click.testing import CliRunner
 
@@ -162,6 +164,50 @@ def test_improved_covered_behavior_requires_review() -> None:
 
     assert report.decision == AuditDecision.REVIEW
     assert report.variant_improvements == ("release_boundary/production",)
+
+
+def test_parallel_audit_keeps_per_call_metadata_isolated() -> None:
+    class _ConcurrentBackend(Backend):
+        supports_concurrency = True
+
+        def __init__(self) -> None:
+            self._state = threading.local()
+
+        @property
+        def last_call_metadata(self) -> dict[str, object]:
+            metadata = getattr(self._state, "metadata", None)
+            return metadata if isinstance(metadata, dict) else {}
+
+        def complete(self, *, system: str, user: str, max_tokens: int = 4096) -> str:
+            del max_tokens
+            self._state.metadata = {"usage": {"input_tokens": 100 + len(system.split())}}
+            time.sleep(0.01)
+            if "BROKEN" in system:
+                return "ALLOW"
+            return "ASK_APPROVAL" if "production" in user else "ALLOW"
+
+        @property
+        def name(self) -> str:
+            return "concurrent-test"
+
+        @property
+        def supports_caching(self) -> bool:
+            return False
+
+    report = audit_context(
+        baseline="SAFE BASELINE INSTRUCTIONS",
+        variant="SAFE VARIANT",
+        negative_control="BROKEN CONTROL",
+        task_type="claude_md",
+        tasks=[_task()],
+        backend=_ConcurrentBackend(),
+        n_trials=2,
+        parallelism=6,
+    )
+
+    assert report.decision == AuditDecision.PRESERVED
+    assert report.baseline_input_tokens == 412
+    assert report.variant_input_tokens == 408
 
 
 class TestAuditCli:

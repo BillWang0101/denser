@@ -4,6 +4,17 @@ All notable changes to this project are documented here. The format follows [Kee
 
 ## [Unreleased]
 
+### Added
+- Added `denser minimize-context` and a versioned context-bundle manifest. The
+  selector greedily tests optional components, keeps behavior-changing or
+  uncertain components, requires a sensitive negative control, and repeats a
+  final audit against a caller-set full-input reduction target.
+- Added bounded concurrent replay for the Codex CLI backend. Per-call metadata
+  remains thread-isolated and each CLI turn remains ephemeral and read-only.
+- Added a two-task local-file Codex pilot. It removed an unrelated archived
+  handbook, retained the release and CI policies whose removal regressed, kept
+  all final cases at 3/3, and reduced provider-reported full input by 12.47%.
+
 ## [0.2.0-alpha.3] — 2026-08-18
 
 ### Changed
