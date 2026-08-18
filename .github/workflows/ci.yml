@@ -65,6 +65,7 @@ jobs:
         run: |
           python - <<'PY'
           from pathlib import Path
+          from tarfile import open as open_tar
           from zipfile import ZipFile
 
           wheel = next(Path("dist").glob("*.whl"))
@@ -75,6 +76,23 @@ jobs:
           assert any(
               name.endswith(".dist-info/licenses/THIRD_PARTY_NOTICES.md") for name in names
           )
+
+          sdist = next(Path("dist").glob("*.tar.gz"))
+          with open_tar(sdist, "r:gz") as archive:
+              sdist_names = {member.name for member in archive.getmembers()}
+          forbidden = (
+              "/build/",
+              "/.venv/",
+              "/.mypy_cache/",
+              "/.pytest_cache/",
+              "/.ruff_cache/",
+              "/site-packages/",
+              "/Scripts/activate",
+          )
+          leaked = sorted(
+              name for name in sdist_names if any(marker in name for marker in forbidden)
+          )
+          assert not leaked, f"source distribution contains local build files: {leaked[:10]}"
           PY
 
       - name: Install wheel and run offline smoke test

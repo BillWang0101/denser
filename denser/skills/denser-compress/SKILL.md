@@ -2,7 +2,7 @@
 name: denser-compress
 description: |
   Produce a shorter candidate for a skill, system prompt, tool description,
-  memory entry, CLAUDE.md, or one-shot doc using role-aware rewrite guidance
+  memory entry, CLAUDE.md, AGENTS.md, or one-shot doc using role-aware rewrite guidance
   and preservation analysis. Use when the user asks to compress / shorten /
   denser-ify / reduce a prompt-like file or inline text. Do NOT use for
   general text summarization; denser is role-aware and task-typed. Also do
@@ -42,13 +42,13 @@ Does it persist across a session?
     → skill
   Is it prepended to every call in the session?
     → system_prompt
-  Is it a CLAUDE.md (or equivalent project-level file)?
+  Is it a CLAUDE.md, AGENTS.md, or equivalent project-level file?
     → claude_md
 ```
 
 ## Workflow
 
-1. **Read** the input text (use the Read tool if it's a file).
+1. **Read** the input text using the agent's available file-reading tool.
 
 2. **Read `REFERENCE_taxonomy.md`** from this skill's directory (alongside
    this SKILL.md file). It contains the preserve / strip rules and an
@@ -95,7 +95,8 @@ Does it persist across a session?
 7. **Ask**: "Write compressed version to `<path>` (overwriting original)?
    [y/N]". Default is NO. Only write if user says yes.
 
-8. If the user approves, use the Write tool to overwrite the original file.
+8. If the user approves, use the agent's available file-editing mechanism to
+   overwrite the original file.
    If they decline, do nothing further — the compressed text was shown,
    they can copy-paste if they want.
 

@@ -85,7 +85,7 @@ from denser.verification import (
     verify,
 )
 
-__version__ = "0.2.0a1"
+__version__ = "0.2.0a3"
 
 __all__ = [
     "AUDIT_REPORT_SCHEMA_VERSION",
