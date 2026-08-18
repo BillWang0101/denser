@@ -4,6 +4,22 @@ All notable changes to this project are documented here. The format follows [Kee
 
 ## [Unreleased]
 
+## [0.2.0-alpha.3] — 2026-08-18
+
+### Changed
+- Reworked installation around three explicit paths: the agent-independent
+  Python CLI/library, an OpenAI Codex skill, and a Claude Code skill. Codex
+  setup now follows the official npm, ChatGPT sign-in, and skill-location
+  documentation.
+- Generalized the bundled skill instructions and documentation so the same
+  workflow can run in Codex or Claude Code.
+
+### Security
+- Explicitly excluded local build directories, virtual environments, and tool
+  caches from source distributions, and added a package-content regression
+  check. The affected `0.2.0-alpha.2` source archive is withdrawn; no API keys,
+  credentials, or commit email were present in that archive.
+
 ## [0.2.0-alpha.2] — 2026-08-18
 
 ### Added

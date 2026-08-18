@@ -280,7 +280,43 @@ behavior changes reproducible in a way that an opaque runtime event is not.
 
 ## Installation
 
-### Option 1 — As a Claude Code skill (no API key, no Python)
+denser can be used as a regular CLI/library with any agent, or as an interactive
+skill inside Codex or Claude Code.
+
+### Option 1 — CLI and Python library (agent-independent)
+
+```bash
+git clone https://github.com/Evostructs/denser.git
+cd denser
+python -m pip install .
+denser --version
+```
+
+This is the general installation for scripts, CI, benchmarks, and Python use.
+Commands that call a model still need the corresponding provider or authenticated
+CLI; deterministic inspection commands do not.
+
+### Option 2 — OpenAI Codex skill (no separate API key or Python)
+
+If Codex is not installed, the official cross-platform npm option is:
+
+```bash
+npm install -g @openai/codex
+codex
+```
+
+On first launch, choose **Sign in with ChatGPT** or another available sign-in
+method. See the [official Codex CLI installation
+guide](https://learn.chatgpt.com/docs/codex/cli).
+
+Then ask Codex to install denser from this repository:
+
+> `$skill-installer install the denser-compress skill from https://github.com/Evostructs/denser/tree/main/denser/skills/denser-compress`
+
+Invoke it with `$denser-compress`, or describe a matching compression task.
+Codex uses its existing authenticated session; denser needs no separate API key.
+
+### Option 3 — Claude Code skill (no separate API key or Python)
 
 If you use Claude Code, install the `denser-compress` skill:
 
@@ -294,15 +330,9 @@ Restart Claude Code. Then in any session:
 
 > "compress this skill at `~/.claude/skills/my-skill/SKILL.md`"
 
-The skill runs inside Claude Code's authenticated session — no separate API key needed. See [`denser/skills/README.md`](denser/skills/README.md).
-
-### Option 2 — As a Python library from source
-
-```bash
-git clone https://github.com/Evostructs/denser.git
-cd denser
-pip install -e ".[dev]"
-```
+The skill runs inside Claude Code's authenticated session. For manual Codex and
+Claude Code installation, verification, and removal, see
+[`denser/skills/README.md`](denser/skills/README.md).
 
 ---
 
@@ -531,13 +561,12 @@ The hook uses a local estimate, makes no API call, and never blocks a commit on
 length alone. The reference sizes are review prompts, not quality thresholds.
 See [`integrations/README.md`](integrations/README.md).
 
-### Claude Code skill
+### Agent skill
 
-```bash
-bash denser/skills/install.sh
-```
-
-The `denser-compress` skill runs inside Claude Code's authenticated session — no separate API key. See [`denser/skills/README.md`](denser/skills/README.md).
+The portable `denser-compress` skill works in both OpenAI Codex and Claude Code
+without a separate provider API key. See
+[`denser/skills/README.md`](denser/skills/README.md) for tool-specific install
+commands.
 
 ---
 

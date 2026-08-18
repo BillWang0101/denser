@@ -4,7 +4,7 @@ build-backend = "hatchling.build"
 
 [project]
 name = "denser"
-version = "0.2.0a2"
+version = "0.2.0a3"
 description = "Behavior-fidelity audits for version-controlled LLM context."
 readme = "README.md"
 license = "Apache-2.0"
@@ -61,7 +61,17 @@ Documentation = "https://github.com/Evostructs/denser/tree/main/docs"
 packages = ["denser"]
 
 [tool.hatch.build.targets.sdist]
-exclude = ["/handoff*.md"]
+exclude = [
+    "/handoff*.md",
+    "/build",
+    "/build/**",
+    "/.venv",
+    "/.venv/**",
+    "/.mypy_cache",
+    "/.pytest_cache",
+    "/.ruff_cache",
+    "/**/__pycache__",
+]
 
 [tool.ruff]
 line-length = 100
