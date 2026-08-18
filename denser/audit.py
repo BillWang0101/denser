@@ -213,6 +213,7 @@ def audit_context(
     n_trials: int = 1,
     seed: int = 0,
     on_progress: Callable[[ReplayProgress], None] | None = None,
+    parallelism: int = 1,
 ) -> ContextAuditReport:
     """Audit a context variant and require a sensitive suite for a positive verdict.
 
@@ -232,6 +233,7 @@ def audit_context(
         n_trials=n_trials,
         seed=seed,
         on_progress=on_progress,
+        parallelism=parallelism,
     )
     comparison = ReplayComparisonReport(
         task_type=tt,

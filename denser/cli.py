@@ -4,6 +4,7 @@ Entry point registered via pyproject.toml as `denser`.
 
 Commands:
 - `denser audit` — audit behavior parity and replay-suite sensitivity
+- `denser minimize-context` — safely remove unnecessary bundle components
 - `denser inspect` — build an offline preservation contract
 - `denser verify` — verify a candidate against its source contract
 - `denser optimize` — generate and select verified candidates
@@ -39,6 +40,12 @@ from denser.backends import (
     SiliconFlowBackend,
 )
 from denser.compress import compress
+from denser.context_selection import (
+    ContextBundle,
+    ContextSelectionReport,
+    load_context_bundle,
+)
+from denser.context_selection import minimize_context as minimize_context_fn
 from denser.curve import curve as curve_fn
 from denser.eval import ComparisonReport, EvalReport
 from denser.eval import compare as compare_fn
@@ -1196,6 +1203,221 @@ def _print_replay_comparison(
             f"original={original_usage['input_tokens']}/{original_usage['output_tokens']}; "
             f"candidate={candidate_usage['input_tokens']}/{candidate_usage['output_tokens']}"
         )
+
+
+def _validate_context_selection_outputs(
+    bundle: ContextBundle,
+    suite_file: Path,
+    out: Path,
+    json_out: Path,
+) -> None:
+    """Reject output paths that could overwrite an input or existing file."""
+    _validate_new_output_paths(bundle.manifest_path, out, json_out)
+    protected = {suite_file.resolve()}
+    protected.update(component.path.resolve() for component in bundle.components)
+    collision = next(
+        (path for path in (out, json_out) if path.resolve() in protected),
+        None,
+    )
+    if collision is not None:
+        raise click.ClickException(f"Refusing to overwrite a context-selection input: {collision}")
+
+
+def _print_context_selection(report: ContextSelectionReport) -> None:
+    """Print a compact component decision and final evidence summary."""
+    table = Table(title="[bold]context component selection[/bold]")
+    table.add_column("Component")
+    table.add_column("Estimated tokens", justify="right")
+    table.add_column("Decision")
+    for attempt in report.attempts:
+        outcome = "removed" if attempt.removed else f"kept ({attempt.decision.value})"
+        table.add_row(attempt.component_id, str(attempt.component_estimated_tokens), outcome)
+    for component_id in report.required_ids:
+        table.add_row(component_id, "-", "required")
+    console.print(table)
+    observed = report.observed_input_reduction_pct
+    observed_label = "unavailable" if observed is None else f"{observed:.2%}"
+    console.print(
+        Panel.fit(
+            f"Target met: [bold]{str(report.target_met).lower()}[/bold]\n"
+            f"Full-input reduction: {observed_label}\n"
+            f"Final behavior: {report.final_audit.decision.value}\n"
+            f"Reason: {escape(report.outcome_reason)}",
+            title="Final validation",
+        )
+    )
+
+
+@main.command("minimize-context")
+@click.argument("manifest_file", type=click.Path(exists=True, dir_okay=False, path_type=Path))
+@click.option(
+    "--suite",
+    "suite_file",
+    type=click.Path(exists=True, dir_okay=False, path_type=Path),
+    required=True,
+    help="Development replay suite used for automatic component selection.",
+)
+@click.option(
+    "--type",
+    "task_type_override",
+    type=click.Choice([t.value for t in TaskType], case_sensitive=False),
+    default=None,
+    help="Optional check that the manifest has the expected task_type.",
+)
+@click.option(
+    "--backend",
+    type=click.Choice(REPLAY_BACKEND_CHOICES, case_sensitive=False),
+    default="codex-cli",
+    show_default=True,
+)
+@click.option("--base-url", default=None, help="Base URL for openai-compat backend.")
+@click.option("--model", default=None, help="Execution model id; defaults depend on backend.")
+@click.option(
+    "--openai-thinking-mode",
+    type=click.Choice(["provider-default", "enabled", "disabled"]),
+    default="provider-default",
+    show_default=True,
+)
+@click.option(
+    "--codex-cli-path",
+    type=click.Path(exists=True, dir_okay=False, path_type=Path),
+    default=None,
+    envvar="DENSER_CODEX_CLI",
+    help="Independent Codex CLI executable; never use the desktop WindowsApps binary.",
+)
+@click.option(
+    "--codex-timeout",
+    type=click.FloatRange(min=1.0),
+    default=180.0,
+    show_default=True,
+)
+@click.option(
+    "--codex-reasoning-effort",
+    type=click.Choice(["none", "low", "medium", "high", "xhigh", "max"]),
+    default="medium",
+    show_default=True,
+)
+@click.option(
+    "--codex-respect-system-proxy/--no-codex-respect-system-proxy",
+    default=False,
+)
+@click.option(
+    "--codex-capability-profile",
+    type=click.Choice(CODEX_CAPABILITY_PROFILES),
+    default="standard",
+    show_default=True,
+    help="Use standard for file- and tool-using workloads.",
+)
+@click.option(
+    "--selection-trials",
+    type=click.IntRange(min=1),
+    default=1,
+    show_default=True,
+)
+@click.option(
+    "--validation-trials",
+    type=click.IntRange(min=1),
+    default=3,
+    show_default=True,
+)
+@click.option(
+    "--parallelism",
+    type=click.IntRange(min=1, max=16),
+    default=1,
+    show_default=True,
+    help="Concurrent replay calls; supported by codex-cli.",
+)
+@click.option("--seed", type=int, default=0, show_default=True)
+@click.option(
+    "--min-input-reduction",
+    type=click.FloatRange(min=0.0, max=1.0),
+    default=0.10,
+    show_default=True,
+    help="Required provider-reported full-input reduction as a fraction.",
+)
+@click.option("--progress/--no-progress", default=True, show_default=True)
+@click.option(
+    "--out",
+    type=click.Path(dir_okay=False, path_type=Path),
+    required=True,
+    help="Write the selected rendered context to a new file.",
+)
+@click.option(
+    "--json-out",
+    type=click.Path(dir_okay=False, path_type=Path),
+    required=True,
+    help="Write the versioned selection evidence to a new JSON file.",
+)
+def minimize_context_cmd(
+    manifest_file: Path,
+    suite_file: Path,
+    task_type_override: str | None,
+    backend: str,
+    base_url: str | None,
+    model: str | None,
+    openai_thinking_mode: str,
+    codex_cli_path: Path | None,
+    codex_timeout: float,
+    codex_reasoning_effort: str,
+    codex_respect_system_proxy: bool,
+    codex_capability_profile: str,
+    selection_trials: int,
+    validation_trials: int,
+    parallelism: int,
+    seed: int,
+    min_input_reduction: float,
+    progress: bool,
+    out: Path,
+    json_out: Path,
+) -> None:
+    """Select a behavior-preserving subset of MANIFEST_FILE."""
+    try:
+        bundle = load_context_bundle(manifest_file)
+        if (
+            task_type_override is not None
+            and TaskType.parse(task_type_override) != bundle.task_type
+        ):
+            raise ValueError("--type does not match the context bundle manifest task_type")
+        _validate_context_selection_outputs(bundle, suite_file, out, json_out)
+        suite = load_replay_suite(suite_file)
+        backend_obj = _build_backend(
+            backend,
+            model=model,
+            base_url=base_url,
+            openai_thinking_mode=openai_thinking_mode,
+            codex_cli_path=codex_cli_path,
+            codex_timeout=codex_timeout,
+            codex_reasoning_effort=codex_reasoning_effort,
+            codex_respect_system_proxy=codex_respect_system_proxy,
+            codex_capability_profile=codex_capability_profile,
+        )
+        selected_text, report = minimize_context_fn(
+            bundle=bundle,
+            tasks=suite,
+            backend=backend_obj,
+            selection_trials=selection_trials,
+            validation_trials=validation_trials,
+            seed=seed,
+            min_input_reduction=min_input_reduction,
+            on_progress=_print_replay_progress if progress else None,
+            parallelism=parallelism,
+        )
+    except (BackendError, UnicodeError, ValueError) as exc:
+        raise click.ClickException(str(exc)) from exc
+
+    json_out.write_text(
+        json.dumps(report.to_dict(), indent=2, ensure_ascii=False) + "\n",
+        encoding="utf-8",
+    )
+    _print_context_selection(report)
+    if report.final_audit.decision == AuditDecision.PRESERVED:
+        out.write_text(selected_text, encoding="utf-8")
+        console.print(f"Wrote selected context -> {out}")
+    else:
+        console.print("Did not write selected context because final behavior was not preserved.")
+    console.print(f"Wrote selection evidence -> {json_out}")
+    if not report.target_met:
+        raise click.exceptions.Exit(3)
 
 
 @main.command("curve")

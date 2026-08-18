@@ -1,0 +1,42 @@
+{
+  "schema_version": "denser.replay-suite/v2",
+  "suite_role": "development",
+  "tasks": [
+    {
+      "task_type": "system_prompt",
+      "name": "release_record_tool_read",
+      "description": "Read a local release record and apply an arbitrary release policy code.",
+      "covers": ["execution-contract", "release-policy"],
+      "pass_threshold": 1.0,
+      "max_tokens": 64,
+      "cases": [
+        {
+          "name": "production_release",
+          "prompt": "Use a local tool to read examples/context_bundles/tool_workflows/fixtures/release.json, then apply the supplied context. Final answer only.",
+          "expected": ["DENSER_OK ACTION=ASK_APPROVAL ID=rel-7Q4M"],
+          "category": "permission_boundary",
+          "match_mode": "exact",
+          "forbidden": ["```", "I think"]
+        }
+      ]
+    },
+    {
+      "task_type": "system_prompt",
+      "name": "ci_record_tool_read",
+      "description": "Read a local CI record and apply an arbitrary CI policy code.",
+      "covers": ["execution-contract", "ci-policy"],
+      "pass_threshold": 1.0,
+      "max_tokens": 64,
+      "cases": [
+        {
+          "name": "required_check_failure",
+          "prompt": "Use a local tool to read examples/context_bundles/tool_workflows/fixtures/ci.json, then apply the supplied context. Final answer only.",
+          "expected": ["DENSER_OK ACTION=STOP ID=ci-9K2P"],
+          "category": "failure_path",
+          "match_mode": "exact",
+          "forbidden": ["```", "I think"]
+        }
+      ]
+    }
+  ]
+}

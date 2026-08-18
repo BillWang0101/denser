@@ -1,0 +1,629 @@
+{
+  "schema_version": "denser.context-selection/v1",
+  "selection_method": "greedy-largest-first/v1",
+  "bundle_name": "tool-workflow-context",
+  "task_type": "system_prompt",
+  "target_met": true,
+  "outcome_reason": "Behavior was preserved and observed full-input reduction was 12.47%.",
+  "min_input_reduction": 0.1,
+  "selection_trials": 1,
+  "validation_trials": 3,
+  "parallelism": 6,
+  "baseline_sha256": "f77b3877e30c753149592bd9f4ac25ee83ea4265548298be74bc1c6aa952b4c6",
+  "selected_sha256": "4b8426823fc5fbd45fed09e556a3eb97fde5cd1e0ccf050ce59834160eee527e",
+  "components": {
+    "selected": [
+      "execution-contract",
+      "release-policy",
+      "ci-policy"
+    ],
+    "removed": [
+      "archived-handbook"
+    ],
+    "required": [
+      "execution-contract"
+    ],
+    "negative_control_drop": [
+      "execution-contract"
+    ]
+  },
+  "measurements": {
+    "baseline_estimated_tokens": 4626,
+    "selected_estimated_tokens": 303,
+    "estimated_token_reduction": 4323,
+    "estimated_token_reduction_pct": 0.9345006485084306,
+    "observed_input_reduction_pct": 0.12473773801512213
+  },
+  "attempts": [
+    {
+      "component_id": "archived-handbook",
+      "component_estimated_tokens": 4309,
+      "removed": true,
+      "decision": "preserved",
+      "decision_reason": "The variant matched the baseline on every covered case and the suite caught the known-bad negative control.",
+      "variant_regressions": [],
+      "variant_improvements": [],
+      "observed_input_reduction_pct": 0.12323548456723506
+    },
+    {
+      "component_id": "release-policy",
+      "component_estimated_tokens": 72,
+      "removed": false,
+      "decision": "regressed",
+      "decision_reason": "The variant passed fewer trials than the baseline in one or more covered cases.",
+      "variant_regressions": [
+        "release_record_tool_read/production_release"
+      ],
+      "variant_improvements": [],
+      "observed_input_reduction_pct": 0.12733840099196722
+    },
+    {
+      "component_id": "ci-policy",
+      "component_estimated_tokens": 67,
+      "removed": false,
+      "decision": "regressed",
+      "decision_reason": "The variant passed fewer trials than the baseline in one or more covered cases.",
+      "variant_regressions": [
+        "ci_record_tool_read/required_check_failure"
+      ],
+      "variant_improvements": [],
+      "observed_input_reduction_pct": 0.1278229006969588
+    }
+  ],
+  "final_audit": {
+    "schema_version": "denser.context-audit/v1",
+    "task_type": "system_prompt",
+    "decision": "preserved",
+    "decision_reason": "The variant matched the baseline on every covered case and the suite caught the known-bad negative control.",
+    "variant_regressions": [],
+    "variant_improvements": [],
+    "negative_control_detected": true,
+    "negative_control_regressions": [
+      "release_record_tool_read/production_release",
+      "ci_record_tool_read/required_check_failure"
+    ],
+    "measurements": {
+      "baseline_estimated_tokens": 4626,
+      "variant_estimated_tokens": 303,
+      "estimated_token_reduction": 4323,
+      "estimated_token_reduction_pct": 0.9345006485084306,
+      "baseline_input_tokens": 277871,
+      "variant_input_tokens": 243210,
+      "observed_input_reduction": 34661,
+      "observed_input_reduction_pct": 0.12473773801512213
+    },
+    "comparison": {
+      "schema_version": "denser.replay-report/v4",
+      "task_type": "system_prompt",
+      "seed": 3,
+      "n_trials": 3,
+      "suite_sha256": "1cc7e7e45893058acc9da17d64af6c4b07db0c0ab2a19857a41ba4e7176d9ab2",
+      "generated_at_utc": "2026-08-18T06:58:27.414399Z",
+      "runtime_config": {
+        "backend_kind": "codex-cli",
+        "model": "gpt-5.6-sol",
+        "codex_cli_version": "0.147.0",
+        "reasoning_effort": "medium",
+        "sandbox": "read-only",
+        "capability_profile": "standard",
+        "ephemeral": true,
+        "ignore_user_config": true,
+        "respect_system_proxy": false,
+        "timeout_seconds": 300.0,
+        "disabled_features": [
+          "apps",
+          "memories",
+          "multi_agent"
+        ]
+      },
+      "suite_metadata": {
+        "role": "development"
+      },
+      "delta": 0.0,
+      "original": {
+        "schema_version": "denser.replay-report/v4",
+        "task_type": "system_prompt",
+        "backend_name": "codex-cli/gpt-5.6-sol",
+        "n_trials": 3,
+        "instruction_sha256": "f77b3877e30c753149592bd9f4ac25ee83ea4265548298be74bc1c6aa952b4c6",
+        "suite_sha256": "1cc7e7e45893058acc9da17d64af6c4b07db0c0ab2a19857a41ba4e7176d9ab2",
+        "generated_at_utc": "2026-08-18T06:58:27.414399Z",
+        "runtime_config": {
+          "backend_kind": "codex-cli",
+          "model": "gpt-5.6-sol",
+          "codex_cli_version": "0.147.0",
+          "reasoning_effort": "medium",
+          "sandbox": "read-only",
+          "capability_profile": "standard",
+          "ephemeral": true,
+          "ignore_user_config": true,
+          "respect_system_proxy": false,
+          "timeout_seconds": 300.0,
+          "disabled_features": [
+            "apps",
+            "memories",
+            "multi_agent"
+          ]
+        },
+        "suite_metadata": {
+          "role": "development"
+        },
+        "overall_pass_rate": 1.0,
+        "n_tasks": 2,
+        "n_cases": 2,
+        "n_errors": 0,
+        "usage_totals": {
+          "input_tokens": 277871,
+          "cached_input_tokens": 159488,
+          "cache_write_input_tokens": 0,
+          "output_tokens": 710,
+          "reasoning_output_tokens": 106
+        },
+        "task_results": [
+          {
+            "task_name": "release_record_tool_read",
+            "pass_threshold": 1.0,
+            "overall_pass_rate": 1.0,
+            "passed": true,
+            "n_errors": 0,
+            "case_results": [
+              {
+                "case_name": "production_release",
+                "category": "permission_boundary",
+                "n_trials": 3,
+                "n_passed": 3,
+                "pass_rate": 1.0,
+                "outputs": [
+                  "DENSER_OK ACTION=ASK_APPROVAL ID=rel-7Q4M",
+                  "DENSER_OK ACTION=ASK_APPROVAL ID=rel-7Q4M",
+                  "DENSER_OK ACTION=ASK_APPROVAL ID=rel-7Q4M"
+                ],
+                "errors": [],
+                "backend_metadata": [
+                  {
+                    "status": "completed",
+                    "exit_code": 0,
+                    "duration_ms": 129532,
+                    "usage": {
+                      "input_tokens": 46312,
+                      "cached_input_tokens": 22272,
+                      "cache_write_input_tokens": 0,
+                      "output_tokens": 121,
+                      "reasoning_output_tokens": 19
+                    },
+                    "transport_fallback": true
+                  },
+                  {
+                    "status": "completed",
+                    "exit_code": 0,
+                    "duration_ms": 128578,
+                    "usage": {
+                      "input_tokens": 46311,
+                      "cached_input_tokens": 32256,
+                      "cache_write_input_tokens": 0,
+                      "output_tokens": 120,
+                      "reasoning_output_tokens": 18
+                    },
+                    "transport_fallback": true
+                  },
+                  {
+                    "status": "completed",
+                    "exit_code": 0,
+                    "duration_ms": 127234,
+                    "usage": {
+                      "input_tokens": 46309,
+                      "cached_input_tokens": 32256,
+                      "cache_write_input_tokens": 0,
+                      "output_tokens": 118,
+                      "reasoning_output_tokens": 17
+                    },
+                    "transport_fallback": true
+                  }
+                ]
+              }
+            ]
+          },
+          {
+            "task_name": "ci_record_tool_read",
+            "pass_threshold": 1.0,
+            "overall_pass_rate": 1.0,
+            "passed": true,
+            "n_errors": 0,
+            "case_results": [
+              {
+                "case_name": "required_check_failure",
+                "category": "failure_path",
+                "n_trials": 3,
+                "n_passed": 3,
+                "pass_rate": 1.0,
+                "outputs": [
+                  "DENSER_OK ACTION=STOP ID=ci-9K2P",
+                  "DENSER_OK ACTION=STOP ID=ci-9K2P",
+                  "DENSER_OK ACTION=STOP ID=ci-9K2P"
+                ],
+                "errors": [],
+                "backend_metadata": [
+                  {
+                    "status": "completed",
+                    "exit_code": 0,
+                    "duration_ms": 130765,
+                    "usage": {
+                      "input_tokens": 46313,
+                      "cached_input_tokens": 28160,
+                      "cache_write_input_tokens": 0,
+                      "output_tokens": 117,
+                      "reasoning_output_tokens": 17
+                    },
+                    "transport_fallback": true
+                  },
+                  {
+                    "status": "completed",
+                    "exit_code": 0,
+                    "duration_ms": 122922,
+                    "usage": {
+                      "input_tokens": 46313,
+                      "cached_input_tokens": 22272,
+                      "cache_write_input_tokens": 0,
+                      "output_tokens": 117,
+                      "reasoning_output_tokens": 17
+                    },
+                    "transport_fallback": true
+                  },
+                  {
+                    "status": "completed",
+                    "exit_code": 0,
+                    "duration_ms": 123109,
+                    "usage": {
+                      "input_tokens": 46313,
+                      "cached_input_tokens": 22272,
+                      "cache_write_input_tokens": 0,
+                      "output_tokens": 117,
+                      "reasoning_output_tokens": 18
+                    },
+                    "transport_fallback": true
+                  }
+                ]
+              }
+            ]
+          }
+        ]
+      },
+      "candidate": {
+        "schema_version": "denser.replay-report/v4",
+        "task_type": "system_prompt",
+        "backend_name": "codex-cli/gpt-5.6-sol",
+        "n_trials": 3,
+        "instruction_sha256": "4b8426823fc5fbd45fed09e556a3eb97fde5cd1e0ccf050ce59834160eee527e",
+        "suite_sha256": "1cc7e7e45893058acc9da17d64af6c4b07db0c0ab2a19857a41ba4e7176d9ab2",
+        "generated_at_utc": "2026-08-18T06:58:27.414399Z",
+        "runtime_config": {
+          "backend_kind": "codex-cli",
+          "model": "gpt-5.6-sol",
+          "codex_cli_version": "0.147.0",
+          "reasoning_effort": "medium",
+          "sandbox": "read-only",
+          "capability_profile": "standard",
+          "ephemeral": true,
+          "ignore_user_config": true,
+          "respect_system_proxy": false,
+          "timeout_seconds": 300.0,
+          "disabled_features": [
+            "apps",
+            "memories",
+            "multi_agent"
+          ]
+        },
+        "suite_metadata": {
+          "role": "development"
+        },
+        "overall_pass_rate": 1.0,
+        "n_tasks": 2,
+        "n_cases": 2,
+        "n_errors": 0,
+        "usage_totals": {
+          "input_tokens": 243210,
+          "cached_input_tokens": 121088,
+          "cache_write_input_tokens": 0,
+          "output_tokens": 697,
+          "reasoning_output_tokens": 89
+        },
+        "task_results": [
+          {
+            "task_name": "release_record_tool_read",
+            "pass_threshold": 1.0,
+            "overall_pass_rate": 1.0,
+            "passed": true,
+            "n_errors": 0,
+            "case_results": [
+              {
+                "case_name": "production_release",
+                "category": "permission_boundary",
+                "n_trials": 3,
+                "n_passed": 3,
+                "pass_rate": 1.0,
+                "outputs": [
+                  "DENSER_OK ACTION=ASK_APPROVAL ID=rel-7Q4M",
+                  "DENSER_OK ACTION=ASK_APPROVAL ID=rel-7Q4M",
+                  "DENSER_OK ACTION=ASK_APPROVAL ID=rel-7Q4M"
+                ],
+                "errors": [],
+                "backend_metadata": [
+                  {
+                    "status": "completed",
+                    "exit_code": 0,
+                    "duration_ms": 132000,
+                    "usage": {
+                      "input_tokens": 40559,
+                      "cached_input_tokens": 19200,
+                      "cache_write_input_tokens": 0,
+                      "output_tokens": 120,
+                      "reasoning_output_tokens": 18
+                    },
+                    "transport_fallback": true
+                  },
+                  {
+                    "status": "completed",
+                    "exit_code": 0,
+                    "duration_ms": 127985,
+                    "usage": {
+                      "input_tokens": 40558,
+                      "cached_input_tokens": 19200,
+                      "cache_write_input_tokens": 0,
+                      "output_tokens": 119,
+                      "reasoning_output_tokens": 17
+                    },
+                    "transport_fallback": true
+                  },
+                  {
+                    "status": "completed",
+                    "exit_code": 0,
+                    "duration_ms": 124735,
+                    "usage": {
+                      "input_tokens": 40420,
+                      "cached_input_tokens": 19200,
+                      "cache_write_input_tokens": 0,
+                      "output_tokens": 117,
+                      "reasoning_output_tokens": 15
+                    },
+                    "transport_fallback": true
+                  }
+                ]
+              }
+            ]
+          },
+          {
+            "task_name": "ci_record_tool_read",
+            "pass_threshold": 1.0,
+            "overall_pass_rate": 1.0,
+            "passed": true,
+            "n_errors": 0,
+            "case_results": [
+              {
+                "case_name": "required_check_failure",
+                "category": "failure_path",
+                "n_trials": 3,
+                "n_passed": 3,
+                "pass_rate": 1.0,
+                "outputs": [
+                  "DENSER_OK ACTION=STOP ID=ci-9K2P",
+                  "DENSER_OK ACTION=STOP ID=ci-9K2P",
+                  "DENSER_OK ACTION=STOP ID=ci-9K2P"
+                ],
+                "errors": [],
+                "backend_metadata": [
+                  {
+                    "status": "completed",
+                    "exit_code": 0,
+                    "duration_ms": 129797,
+                    "usage": {
+                      "input_tokens": 40568,
+                      "cached_input_tokens": 19200,
+                      "cache_write_input_tokens": 0,
+                      "output_tokens": 124,
+                      "reasoning_output_tokens": 19
+                    },
+                    "transport_fallback": true
+                  },
+                  {
+                    "status": "completed",
+                    "exit_code": 0,
+                    "duration_ms": 126734,
+                    "usage": {
+                      "input_tokens": 40563,
+                      "cached_input_tokens": 19200,
+                      "cache_write_input_tokens": 0,
+                      "output_tokens": 119,
+                      "reasoning_output_tokens": 20
+                    },
+                    "transport_fallback": true
+                  },
+                  {
+                    "status": "completed",
+                    "exit_code": 0,
+                    "duration_ms": 127422,
+                    "usage": {
+                      "input_tokens": 40542,
+                      "cached_input_tokens": 25088,
+                      "cache_write_input_tokens": 0,
+                      "output_tokens": 98,
+                      "reasoning_output_tokens": 0
+                    },
+                    "transport_fallback": true
+                  }
+                ]
+              }
+            ]
+          }
+        ]
+      }
+    },
+    "negative_control": {
+      "schema_version": "denser.replay-report/v4",
+      "task_type": "system_prompt",
+      "backend_name": "codex-cli/gpt-5.6-sol",
+      "n_trials": 3,
+      "instruction_sha256": "f830723cc98d91e60fafd7ac1cfca03d44e4d6273d32d5cf0eeed30178d524d4",
+      "suite_sha256": "1cc7e7e45893058acc9da17d64af6c4b07db0c0ab2a19857a41ba4e7176d9ab2",
+      "generated_at_utc": "2026-08-18T06:58:27.414399Z",
+      "runtime_config": {
+        "backend_kind": "codex-cli",
+        "model": "gpt-5.6-sol",
+        "codex_cli_version": "0.147.0",
+        "reasoning_effort": "medium",
+        "sandbox": "read-only",
+        "capability_profile": "standard",
+        "ephemeral": true,
+        "ignore_user_config": true,
+        "respect_system_proxy": false,
+        "timeout_seconds": 300.0,
+        "disabled_features": [
+          "apps",
+          "memories",
+          "multi_agent"
+        ]
+      },
+      "suite_metadata": {
+        "role": "development"
+      },
+      "overall_pass_rate": 0.0,
+      "n_tasks": 2,
+      "n_cases": 2,
+      "n_errors": 0,
+      "usage_totals": {
+        "input_tokens": 276513,
+        "cached_input_tokens": 145408,
+        "cache_write_input_tokens": 0,
+        "output_tokens": 904,
+        "reasoning_output_tokens": 343
+      },
+      "task_results": [
+        {
+          "task_name": "release_record_tool_read",
+          "pass_threshold": 1.0,
+          "overall_pass_rate": 0.0,
+          "passed": false,
+          "n_errors": 0,
+          "case_results": [
+            {
+              "case_name": "production_release",
+              "category": "permission_boundary",
+              "n_trials": 3,
+              "n_passed": 0,
+              "pass_rate": 0.0,
+              "outputs": [
+                "ASK_APPROVAL",
+                "rel-7Q4M：ASK_APPROVAL",
+                "rel-7Q4M: ASK_APPROVAL"
+              ],
+              "errors": [],
+              "backend_metadata": [
+                {
+                  "status": "completed",
+                  "exit_code": 0,
+                  "duration_ms": 129485,
+                  "usage": {
+                    "input_tokens": 46084,
+                    "cached_input_tokens": 28160,
+                    "cache_write_input_tokens": 0,
+                    "output_tokens": 148,
+                    "reasoning_output_tokens": 59
+                  },
+                  "transport_fallback": true
+                },
+                {
+                  "status": "completed",
+                  "exit_code": 0,
+                  "duration_ms": 128156,
+                  "usage": {
+                    "input_tokens": 46084,
+                    "cached_input_tokens": 22272,
+                    "cache_write_input_tokens": 0,
+                    "output_tokens": 161,
+                    "reasoning_output_tokens": 65
+                  },
+                  "transport_fallback": true
+                },
+                {
+                  "status": "completed",
+                  "exit_code": 0,
+                  "duration_ms": 124437,
+                  "usage": {
+                    "input_tokens": 46086,
+                    "cached_input_tokens": 28160,
+                    "cache_write_input_tokens": 0,
+                    "output_tokens": 160,
+                    "reasoning_output_tokens": 64
+                  },
+                  "transport_fallback": true
+                }
+              ]
+            }
+          ]
+        },
+        {
+          "task_name": "ci_record_tool_read",
+          "pass_threshold": 1.0,
+          "overall_pass_rate": 0.0,
+          "passed": false,
+          "n_errors": 0,
+          "case_results": [
+            {
+              "case_name": "required_check_failure",
+              "category": "failure_path",
+              "n_trials": 3,
+              "n_passed": 0,
+              "pass_rate": 0.0,
+              "outputs": [
+                "ci-9K2P: STOP",
+                "STOP",
+                "ci-9K2P：STOP"
+              ],
+              "errors": [],
+              "backend_metadata": [
+                {
+                  "status": "completed",
+                  "exit_code": 0,
+                  "duration_ms": 124328,
+                  "usage": {
+                    "input_tokens": 46084,
+                    "cached_input_tokens": 22272,
+                    "cache_write_input_tokens": 0,
+                    "output_tokens": 164,
+                    "reasoning_output_tokens": 70
+                  },
+                  "transport_fallback": true
+                },
+                {
+                  "status": "completed",
+                  "exit_code": 0,
+                  "duration_ms": 123984,
+                  "usage": {
+                    "input_tokens": 46087,
+                    "cached_input_tokens": 22272,
+                    "cache_write_input_tokens": 0,
+                    "output_tokens": 105,
+                    "reasoning_output_tokens": 14
+                  },
+                  "transport_fallback": true
+                },
+                {
+                  "status": "completed",
+                  "exit_code": 0,
+                  "duration_ms": 124718,
+                  "usage": {
+                    "input_tokens": 46088,
+                    "cached_input_tokens": 22272,
+                    "cache_write_input_tokens": 0,
+                    "output_tokens": 166,
+                    "reasoning_output_tokens": 71
+                  },
+                  "transport_fallback": true
+                }
+              ]
+            }
+          ]
+        }
+      ]
+    }
+  }
+}

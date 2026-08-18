@@ -59,6 +59,16 @@ estimates, and provider-reported end-to-end input totals. A variant improvement
 is sent to review rather than silently classified as preservation; operational
 errors and undetected controls fail closed as inconclusive.
 
+`denser minimize-context` now implements the first selective-loading path. A
+versioned manifest names visible text components, required components, and a
+known-bad control. Optional components are tested largest first; a removal is
+accepted only after a sensitive behavior audit, and the selected combination
+receives a repeated final audit. The first normal-tool Codex pilot removed an
+irrelevant 17,236-byte archive, retained two workload-critical policies, kept
+both local-file tasks at 3/3, and reduced provider-reported complete input by
+12.47%. This is greedy development-suite selection, not a global minimum or a
+blind holdout result.
+
 The Codex CLI adapter also exposes a narrowly scoped `text-only` capability
 profile. It is for pre-bundled text decisions only and removes unused tool and
 extension context. In a seeded randomized audit with three trials per case,
@@ -215,6 +225,8 @@ Prompt-cache savings and active-context length are reported separately.
 
 ### Phase 4: selective loading and compaction fidelity
 
+- select among caller-supplied visible context components with fail-closed
+  behavior ablation and a repeated final audit (implemented);
 - capture reproducible before/after textual context snapshots from real agent
   runtimes without duplicating their compaction implementation;
 - test permissions, user decisions, unfinished work, and failure recovery after

@@ -1,0 +1,6 @@
+{
+  "record_type": "ci",
+  "run_id": "ci-9K2P",
+  "policy_code": "C4",
+  "required_check": "package-smoke"
+}

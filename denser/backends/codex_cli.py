@@ -13,6 +13,7 @@ import os
 import re
 import shutil
 import subprocess
+import threading
 import time
 from dataclasses import dataclass
 from pathlib import Path
@@ -269,7 +270,7 @@ class CodexCliBackend(Backend):
         self._disabled_features = _DISABLED_FEATURES_BY_PROFILE[capability_profile]
         self._cli_version: str | None = None
         self._cli_version_checked = False
-        self._last_call_metadata: CodexCliCallMetadata | None = None
+        self._call_state = threading.local()
 
     @property
     def name(self) -> str:
@@ -280,6 +281,11 @@ class CodexCliBackend(Backend):
     def supports_caching(self) -> bool:
         """Report that this adapter does not expose explicit prompt caching."""
         return False
+
+    @property
+    def supports_concurrency(self) -> bool:
+        """Report that per-call metadata is isolated for concurrent replays."""
+        return True
 
     @property
     def runtime_config(self) -> dict[str, object]:
@@ -306,9 +312,13 @@ class CodexCliBackend(Backend):
     @property
     def last_call_metadata(self) -> dict[str, object] | None:
         """Return sanitized evidence for the most recent invocation."""
-        if self._last_call_metadata is None:
+        metadata = getattr(self._call_state, "last_call_metadata", None)
+        if not isinstance(metadata, CodexCliCallMetadata):
             return None
-        return self._last_call_metadata.to_dict()
+        return metadata.to_dict()
+
+    def _set_last_call_metadata(self, metadata: CodexCliCallMetadata | None) -> None:
+        self._call_state.last_call_metadata = metadata
 
     def _get_cli_version(self) -> str | None:
         if self._cli_version_checked:
@@ -392,20 +402,24 @@ class CodexCliBackend(Backend):
             )
         except subprocess.TimeoutExpired as exc:
             duration_ms = round((time.monotonic() - started) * 1000)
-            self._last_call_metadata = CodexCliCallMetadata(
-                status="timeout",
-                exit_code=None,
-                duration_ms=duration_ms,
+            self._set_last_call_metadata(
+                CodexCliCallMetadata(
+                    status="timeout",
+                    exit_code=None,
+                    duration_ms=duration_ms,
+                )
             )
             raise BackendError(
                 f"Codex CLI timed out after {self._timeout_seconds:g} seconds"
             ) from exc
         except OSError as exc:
             duration_ms = round((time.monotonic() - started) * 1000)
-            self._last_call_metadata = CodexCliCallMetadata(
-                status="launch_error",
-                exit_code=None,
-                duration_ms=duration_ms,
+            self._set_last_call_metadata(
+                CodexCliCallMetadata(
+                    status="launch_error",
+                    exit_code=None,
+                    duration_ms=duration_ms,
+                )
             )
             raise BackendError(f"Codex CLI could not be launched: {type(exc).__name__}") from exc
 
@@ -430,7 +444,7 @@ class CodexCliBackend(Backend):
 
         command = self._build_command(system)
         started = time.monotonic()
-        self._last_call_metadata = None
+        self._set_last_call_metadata(None)
         completed = self._run(command, user)
         duration_ms = round((time.monotonic() - started) * 1000)
         parsed = _parse_events(completed.stdout, completed.stderr)
@@ -441,12 +455,14 @@ class CodexCliBackend(Backend):
             and parsed.final_message is not None
             else "failed"
         )
-        self._last_call_metadata = CodexCliCallMetadata(
-            status=status,
-            exit_code=completed.returncode,
-            duration_ms=duration_ms,
-            usage=parsed.usage,
-            transport_fallback=parsed.transport_fallback,
+        self._set_last_call_metadata(
+            CodexCliCallMetadata(
+                status=status,
+                exit_code=completed.returncode,
+                duration_ms=duration_ms,
+                usage=parsed.usage,
+                transport_fallback=parsed.transport_fallback,
+            )
         )
         if status != "completed":
             raise BackendError(
