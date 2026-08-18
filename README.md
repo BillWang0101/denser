@@ -56,6 +56,24 @@ guide](docs/CODEX_TEXT_ONLY_CASE_STUDY.md), plus the complete per-call outputs,
 token counts, source hashes, runtime settings, and limitations in the
 [`paired three-trial audit`](examples/project_instructions/codex-text-only-profile-audit.paired-3x-final.2026-08-17.json).
 
+### Public-project transfer check: Astral uv
+
+The same frozen profile was then tested against decision rules adapted from
+public Astral uv agent prompts at commit
+[`5cc226096`](https://github.com/astral-sh/uv/tree/5cc226096ea4424d021be17259bae51d761a827b).
+The 14 cases were committed before execution, then run three times per profile:
+
+| Workload | Quality | Full input per call | Reduction |
+|---|---:|---:|---:|
+| uv issue-triage decisions | 24/24 in each profile | 20,335.25 -> 18,200.75 | 10.50% |
+| uv workflow-failure decisions | 18/18 in each profile | 20,345.83 -> 18,160.83 | 10.74% |
+
+All 84 calls completed with zero operational errors and zero transport
+fallbacks. This is an external-project corpus run by denser's maintainers, not
+an independent reproduction or an endorsement by Astral. See the
+[frozen corpus and boundaries](examples/project_instructions/03_uv_public_pilot/README.md)
+and the [complete per-call report](examples/project_instructions/03_uv_public_pilot/codex-profile-audit.paired-3x.2026-08-18.json).
+
 ---
 
 ## The problem
