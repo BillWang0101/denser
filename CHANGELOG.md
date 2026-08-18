@@ -4,6 +4,15 @@ All notable changes to this project are documented here. The format follows [Kee
 
 ## [Unreleased]
 
+## [0.2.0-alpha.2] — 2026-08-18
+
+### Added
+- Added a preregistered public-project transfer check derived from frozen Astral
+  uv issue-triage and workflow-failure prompts. Across 84 authenticated Codex
+  calls, both profiles produced all expected decisions while `text-only/v1`
+  reduced provider-reported input per call by 10.50% and 10.74%, with no
+  operational errors or transport fallbacks.
+
 ## [0.2.0-alpha.1] — 2026-08-18
 
 ### Added — context behavior audit

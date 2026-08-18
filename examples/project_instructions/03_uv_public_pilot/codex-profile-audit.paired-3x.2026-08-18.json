@@ -1,0 +1,1739 @@
+{
+  "schema_version": "denser.codex-capability-profile-audit/v2",
+  "source_hash_method": "utf8-lf-v1",
+  "scenario_set": "uv-public-pilot",
+  "generated_at_utc": "2026-08-18T01:44:58.569782Z",
+  "runtime": {
+    "backend_kind": "codex-cli",
+    "model": "gpt-5.6-sol",
+    "codex_cli_version": "0.147.0",
+    "reasoning_effort": "medium",
+    "timeout_seconds": 180.0,
+    "ephemeral": true,
+    "sandbox": "read-only",
+    "ignore_user_config": true,
+    "respect_system_proxy": true,
+    "baseline_profile": "standard",
+    "variant_profile": "text-only",
+    "text_only_profile_instruction_version": "text-only/v1"
+  },
+  "schedule": {
+    "seed": 20260818,
+    "trials_per_case": 3,
+    "workers": 8,
+    "randomized_submission_order": true,
+    "total_calls": 84
+  },
+  "success_rule": {
+    "minimum_scenarios": 2,
+    "minimum_input_token_reduction_fraction_per_scenario": 0.1,
+    "quality_must_not_decrease": true,
+    "operational_errors_allowed": 0
+  },
+  "scenarios": [
+    {
+      "name": "uv_issue_triage_snapshot",
+      "asset": {
+        "path": "examples/project_instructions/03_uv_public_pilot/issue-triage-rules.md",
+        "sha256": "ef03e370264ea61b316b6abb5441cd204ccef5f1f3ba7b422f2b71efc9ba1a49"
+      },
+      "suite": {
+        "path": "examples/project_instructions/03_uv_public_pilot/issue-triage.replay.json",
+        "sha256": "759083912c5c1c4189ec5e2c759abbb410e30224621858297138c5bd1f3204cd"
+      },
+      "profiles": {
+        "standard": {
+          "calls": 24,
+          "completed_calls": 24,
+          "passed_calls": 24,
+          "pass_rate": 1.0,
+          "operational_errors": 0,
+          "input_tokens": 488046,
+          "input_tokens_per_call": 20335.25,
+          "cached_input_tokens": 104192,
+          "cache_write_input_tokens": 0,
+          "output_tokens": 171,
+          "reasoning_output_tokens": 0,
+          "transport_fallback_calls": 0
+        },
+        "text-only": {
+          "calls": 24,
+          "completed_calls": 24,
+          "passed_calls": 24,
+          "pass_rate": 1.0,
+          "operational_errors": 0,
+          "input_tokens": 436818,
+          "input_tokens_per_call": 18200.75,
+          "cached_input_tokens": 121600,
+          "cache_write_input_tokens": 0,
+          "output_tokens": 171,
+          "reasoning_output_tokens": 0,
+          "transport_fallback_calls": 0
+        }
+      },
+      "input_tokens_saved_per_call": 2134.5,
+      "input_token_reduction_fraction": 0.10496551554566577,
+      "quality_delta": 0.0,
+      "passed": true,
+      "calls": {
+        "standard": [
+          {
+            "scenario": "uv_issue_triage_snapshot",
+            "profile": "standard",
+            "task": "uv_issue_triage_snapshot",
+            "case": "direct_duplicate_with_narrower_reproduction",
+            "trial": 1,
+            "status": "completed",
+            "passed": true,
+            "output": "TYPE=duplicate",
+            "duration_ms": 11782,
+            "transport_fallback": false,
+            "usage": {
+              "input_tokens": 20386,
+              "cached_input_tokens": 0,
+              "cache_write_input_tokens": 0,
+              "output_tokens": 7,
+              "reasoning_output_tokens": 0
+            }
+          },
+          {
+            "scenario": "uv_issue_triage_snapshot",
+            "profile": "standard",
+            "task": "uv_issue_triage_snapshot",
+            "case": "direct_duplicate_with_narrower_reproduction",
+            "trial": 2,
+            "status": "completed",
+            "passed": true,
+            "output": "TYPE=duplicate",
+            "duration_ms": 11593,
+            "transport_fallback": false,
+            "usage": {
+              "input_tokens": 20386,
+              "cached_input_tokens": 9984,
+              "cache_write_input_tokens": 0,
+              "output_tokens": 7,
+              "reasoning_output_tokens": 0
+            }
+          },
+          {
+            "scenario": "uv_issue_triage_snapshot",
+            "profile": "standard",
+            "task": "uv_issue_triage_snapshot",
+            "case": "direct_duplicate_with_narrower_reproduction",
+            "trial": 3,
+            "status": "completed",
+            "passed": true,
+            "output": "TYPE=duplicate",
+            "duration_ms": 19656,
+            "transport_fallback": false,
+            "usage": {
+              "input_tokens": 20386,
+              "cached_input_tokens": 0,
+              "cache_write_input_tokens": 0,
+              "output_tokens": 7,
+              "reasoning_output_tokens": 0
+            }
+          },
+          {
+            "scenario": "uv_issue_triage_snapshot",
+            "profile": "standard",
+            "task": "uv_issue_triage_snapshot",
+            "case": "incorrect_behavior_phrased_as_question",
+            "trial": 1,
+            "status": "completed",
+            "passed": true,
+            "output": "TYPE=bug",
+            "duration_ms": 19406,
+            "transport_fallback": false,
+            "usage": {
+              "input_tokens": 20394,
+              "cached_input_tokens": 0,
+              "cache_write_input_tokens": 0,
+              "output_tokens": 7,
+              "reasoning_output_tokens": 0
+            }
+          },
+          {
+            "scenario": "uv_issue_triage_snapshot",
+            "profile": "standard",
+            "task": "uv_issue_triage_snapshot",
+            "case": "incorrect_behavior_phrased_as_question",
+            "trial": 2,
+            "status": "completed",
+            "passed": true,
+            "output": "TYPE=bug",
+            "duration_ms": 15094,
+            "transport_fallback": false,
+            "usage": {
+              "input_tokens": 20394,
+              "cached_input_tokens": 5888,
+              "cache_write_input_tokens": 0,
+              "output_tokens": 7,
+              "reasoning_output_tokens": 0
+            }
+          },
+          {
+            "scenario": "uv_issue_triage_snapshot",
+            "profile": "standard",
+            "task": "uv_issue_triage_snapshot",
+            "case": "incorrect_behavior_phrased_as_question",
+            "trial": 3,
+            "status": "completed",
+            "passed": true,
+            "output": "TYPE=bug",
+            "duration_ms": 12829,
+            "transport_fallback": false,
+            "usage": {
+              "input_tokens": 20394,
+              "cached_input_tokens": 0,
+              "cache_write_input_tokens": 0,
+              "output_tokens": 7,
+              "reasoning_output_tokens": 0
+            }
+          },
+          {
+            "scenario": "uv_issue_triage_snapshot",
+            "profile": "standard",
+            "task": "uv_issue_triage_snapshot",
+            "case": "new_capability_request",
+            "trial": 1,
+            "status": "completed",
+            "passed": true,
+            "output": "TYPE=enhancement",
+            "duration_ms": 9078,
+            "transport_fallback": false,
+            "usage": {
+              "input_tokens": 20381,
+              "cached_input_tokens": 5888,
+              "cache_write_input_tokens": 0,
+              "output_tokens": 8,
+              "reasoning_output_tokens": 0
+            }
+          },
+          {
+            "scenario": "uv_issue_triage_snapshot",
+            "profile": "standard",
+            "task": "uv_issue_triage_snapshot",
+            "case": "new_capability_request",
+            "trial": 2,
+            "status": "completed",
+            "passed": true,
+            "output": "TYPE=enhancement",
+            "duration_ms": 10797,
+            "transport_fallback": false,
+            "usage": {
+              "input_tokens": 20381,
+              "cached_input_tokens": 0,
+              "cache_write_input_tokens": 0,
+              "output_tokens": 8,
+              "reasoning_output_tokens": 0
+            }
+          },
+          {
+            "scenario": "uv_issue_triage_snapshot",
+            "profile": "standard",
+            "task": "uv_issue_triage_snapshot",
+            "case": "new_capability_request",
+            "trial": 3,
+            "status": "completed",
+            "passed": true,
+            "output": "TYPE=enhancement",
+            "duration_ms": 13172,
+            "transport_fallback": false,
+            "usage": {
+              "input_tokens": 20381,
+              "cached_input_tokens": 5888,
+              "cache_write_input_tokens": 0,
+              "output_tokens": 8,
+              "reasoning_output_tokens": 0
+            }
+          },
+          {
+            "scenario": "uv_issue_triage_snapshot",
+            "profile": "standard",
+            "task": "uv_issue_triage_snapshot",
+            "case": "regression_already_has_open_tracker",
+            "trial": 1,
+            "status": "completed",
+            "passed": true,
+            "output": "TYPE=duplicate",
+            "duration_ms": 12547,
+            "transport_fallback": false,
+            "usage": {
+              "input_tokens": 20382,
+              "cached_input_tokens": 9984,
+              "cache_write_input_tokens": 0,
+              "output_tokens": 7,
+              "reasoning_output_tokens": 0
+            }
+          },
+          {
+            "scenario": "uv_issue_triage_snapshot",
+            "profile": "standard",
+            "task": "uv_issue_triage_snapshot",
+            "case": "regression_already_has_open_tracker",
+            "trial": 2,
+            "status": "completed",
+            "passed": true,
+            "output": "TYPE=duplicate",
+            "duration_ms": 17984,
+            "transport_fallback": false,
+            "usage": {
+              "input_tokens": 20382,
+              "cached_input_tokens": 0,
+              "cache_write_input_tokens": 0,
+              "output_tokens": 7,
+              "reasoning_output_tokens": 0
+            }
+          },
+          {
+            "scenario": "uv_issue_triage_snapshot",
+            "profile": "standard",
+            "task": "uv_issue_triage_snapshot",
+            "case": "regression_already_has_open_tracker",
+            "trial": 3,
+            "status": "completed",
+            "passed": true,
+            "output": "TYPE=duplicate",
+            "duration_ms": 18875,
+            "transport_fallback": false,
+            "usage": {
+              "input_tokens": 20382,
+              "cached_input_tokens": 0,
+              "cache_write_input_tokens": 0,
+              "output_tokens": 7,
+              "reasoning_output_tokens": 0
+            }
+          },
+          {
+            "scenario": "uv_issue_triage_snapshot",
+            "profile": "standard",
+            "task": "uv_issue_triage_snapshot",
+            "case": "responding_pull_request_is_not_duplicate",
+            "trial": 1,
+            "status": "completed",
+            "passed": true,
+            "output": "TYPE=bug",
+            "duration_ms": 9078,
+            "transport_fallback": false,
+            "usage": {
+              "input_tokens": 20387,
+              "cached_input_tokens": 0,
+              "cache_write_input_tokens": 0,
+              "output_tokens": 7,
+              "reasoning_output_tokens": 0
+            }
+          },
+          {
+            "scenario": "uv_issue_triage_snapshot",
+            "profile": "standard",
+            "task": "uv_issue_triage_snapshot",
+            "case": "responding_pull_request_is_not_duplicate",
+            "trial": 2,
+            "status": "completed",
+            "passed": true,
+            "output": "TYPE=bug",
+            "duration_ms": 10546,
+            "transport_fallback": false,
+            "usage": {
+              "input_tokens": 20387,
+              "cached_input_tokens": 0,
+              "cache_write_input_tokens": 0,
+              "output_tokens": 7,
+              "reasoning_output_tokens": 0
+            }
+          },
+          {
+            "scenario": "uv_issue_triage_snapshot",
+            "profile": "standard",
+            "task": "uv_issue_triage_snapshot",
+            "case": "responding_pull_request_is_not_duplicate",
+            "trial": 3,
+            "status": "completed",
+            "passed": true,
+            "output": "TYPE=bug",
+            "duration_ms": 12453,
+            "transport_fallback": false,
+            "usage": {
+              "input_tokens": 20387,
+              "cached_input_tokens": 20224,
+              "cache_write_input_tokens": 0,
+              "output_tokens": 7,
+              "reasoning_output_tokens": 0
+            }
+          },
+          {
+            "scenario": "uv_issue_triage_snapshot",
+            "profile": "standard",
+            "task": "uv_issue_triage_snapshot",
+            "case": "source_confirmed_bug_without_reproduction",
+            "trial": 1,
+            "status": "completed",
+            "passed": true,
+            "output": "TYPE=bug",
+            "duration_ms": 19062,
+            "transport_fallback": false,
+            "usage": {
+              "input_tokens": 20378,
+              "cached_input_tokens": 0,
+              "cache_write_input_tokens": 0,
+              "output_tokens": 7,
+              "reasoning_output_tokens": 0
+            }
+          },
+          {
+            "scenario": "uv_issue_triage_snapshot",
+            "profile": "standard",
+            "task": "uv_issue_triage_snapshot",
+            "case": "source_confirmed_bug_without_reproduction",
+            "trial": 2,
+            "status": "completed",
+            "passed": true,
+            "output": "TYPE=bug",
+            "duration_ms": 10703,
+            "transport_fallback": false,
+            "usage": {
+              "input_tokens": 20378,
+              "cached_input_tokens": 0,
+              "cache_write_input_tokens": 0,
+              "output_tokens": 7,
+              "reasoning_output_tokens": 0
+            }
+          },
+          {
+            "scenario": "uv_issue_triage_snapshot",
+            "profile": "standard",
+            "task": "uv_issue_triage_snapshot",
+            "case": "source_confirmed_bug_without_reproduction",
+            "trial": 3,
+            "status": "completed",
+            "passed": true,
+            "output": "TYPE=bug",
+            "duration_ms": 13454,
+            "transport_fallback": false,
+            "usage": {
+              "input_tokens": 20378,
+              "cached_input_tokens": 5888,
+              "cache_write_input_tokens": 0,
+              "output_tokens": 7,
+              "reasoning_output_tokens": 0
+            }
+          },
+          {
+            "scenario": "uv_issue_triage_snapshot",
+            "profile": "standard",
+            "task": "uv_issue_triage_snapshot",
+            "case": "support_question_without_incorrect_behavior",
+            "trial": 1,
+            "status": "completed",
+            "passed": true,
+            "output": "TYPE=question",
+            "duration_ms": 12297,
+            "transport_fallback": false,
+            "usage": {
+              "input_tokens": 20382,
+              "cached_input_tokens": 20224,
+              "cache_write_input_tokens": 0,
+              "output_tokens": 7,
+              "reasoning_output_tokens": 0
+            }
+          },
+          {
+            "scenario": "uv_issue_triage_snapshot",
+            "profile": "standard",
+            "task": "uv_issue_triage_snapshot",
+            "case": "support_question_without_incorrect_behavior",
+            "trial": 2,
+            "status": "completed",
+            "passed": true,
+            "output": "TYPE=question",
+            "duration_ms": 13969,
+            "transport_fallback": false,
+            "usage": {
+              "input_tokens": 20382,
+              "cached_input_tokens": 0,
+              "cache_write_input_tokens": 0,
+              "output_tokens": 7,
+              "reasoning_output_tokens": 0
+            }
+          },
+          {
+            "scenario": "uv_issue_triage_snapshot",
+            "profile": "standard",
+            "task": "uv_issue_triage_snapshot",
+            "case": "support_question_without_incorrect_behavior",
+            "trial": 3,
+            "status": "completed",
+            "passed": true,
+            "output": "TYPE=question",
+            "duration_ms": 10172,
+            "transport_fallback": false,
+            "usage": {
+              "input_tokens": 20270,
+              "cached_input_tokens": 0,
+              "cache_write_input_tokens": 0,
+              "output_tokens": 7,
+              "reasoning_output_tokens": 0
+            }
+          },
+          {
+            "scenario": "uv_issue_triage_snapshot",
+            "profile": "standard",
+            "task": "uv_issue_triage_snapshot",
+            "case": "untracked_regression_of_closed_fix",
+            "trial": 1,
+            "status": "completed",
+            "passed": true,
+            "output": "TYPE=bug",
+            "duration_ms": 9203,
+            "transport_fallback": false,
+            "usage": {
+              "input_tokens": 19296,
+              "cached_input_tokens": 0,
+              "cache_write_input_tokens": 0,
+              "output_tokens": 7,
+              "reasoning_output_tokens": 0
+            }
+          },
+          {
+            "scenario": "uv_issue_triage_snapshot",
+            "profile": "standard",
+            "task": "uv_issue_triage_snapshot",
+            "case": "untracked_regression_of_closed_fix",
+            "trial": 2,
+            "status": "completed",
+            "passed": true,
+            "output": "TYPE=bug",
+            "duration_ms": 15406,
+            "transport_fallback": false,
+            "usage": {
+              "input_tokens": 20396,
+              "cached_input_tokens": 0,
+              "cache_write_input_tokens": 0,
+              "output_tokens": 7,
+              "reasoning_output_tokens": 0
+            }
+          },
+          {
+            "scenario": "uv_issue_triage_snapshot",
+            "profile": "standard",
+            "task": "uv_issue_triage_snapshot",
+            "case": "untracked_regression_of_closed_fix",
+            "trial": 3,
+            "status": "completed",
+            "passed": true,
+            "output": "TYPE=bug",
+            "duration_ms": 12344,
+            "transport_fallback": false,
+            "usage": {
+              "input_tokens": 20396,
+              "cached_input_tokens": 20224,
+              "cache_write_input_tokens": 0,
+              "output_tokens": 7,
+              "reasoning_output_tokens": 0
+            }
+          }
+        ],
+        "text-only": [
+          {
+            "scenario": "uv_issue_triage_snapshot",
+            "profile": "text-only",
+            "task": "uv_issue_triage_snapshot",
+            "case": "direct_duplicate_with_narrower_reproduction",
+            "trial": 1,
+            "status": "completed",
+            "passed": true,
+            "output": "TYPE=duplicate",
+            "duration_ms": 11531,
+            "transport_fallback": false,
+            "usage": {
+              "input_tokens": 18201,
+              "cached_input_tokens": 17152,
+              "cache_write_input_tokens": 0,
+              "output_tokens": 7,
+              "reasoning_output_tokens": 0
+            }
+          },
+          {
+            "scenario": "uv_issue_triage_snapshot",
+            "profile": "text-only",
+            "task": "uv_issue_triage_snapshot",
+            "case": "direct_duplicate_with_narrower_reproduction",
+            "trial": 2,
+            "status": "completed",
+            "passed": true,
+            "output": "TYPE=duplicate",
+            "duration_ms": 8719,
+            "transport_fallback": false,
+            "usage": {
+              "input_tokens": 18201,
+              "cached_input_tokens": 0,
+              "cache_write_input_tokens": 0,
+              "output_tokens": 7,
+              "reasoning_output_tokens": 0
+            }
+          },
+          {
+            "scenario": "uv_issue_triage_snapshot",
+            "profile": "text-only",
+            "task": "uv_issue_triage_snapshot",
+            "case": "direct_duplicate_with_narrower_reproduction",
+            "trial": 3,
+            "status": "completed",
+            "passed": true,
+            "output": "TYPE=duplicate",
+            "duration_ms": 15110,
+            "transport_fallback": false,
+            "usage": {
+              "input_tokens": 18201,
+              "cached_input_tokens": 0,
+              "cache_write_input_tokens": 0,
+              "output_tokens": 7,
+              "reasoning_output_tokens": 0
+            }
+          },
+          {
+            "scenario": "uv_issue_triage_snapshot",
+            "profile": "text-only",
+            "task": "uv_issue_triage_snapshot",
+            "case": "incorrect_behavior_phrased_as_question",
+            "trial": 1,
+            "status": "completed",
+            "passed": true,
+            "output": "TYPE=bug",
+            "duration_ms": 8657,
+            "transport_fallback": false,
+            "usage": {
+              "input_tokens": 18209,
+              "cached_input_tokens": 0,
+              "cache_write_input_tokens": 0,
+              "output_tokens": 7,
+              "reasoning_output_tokens": 0
+            }
+          },
+          {
+            "scenario": "uv_issue_triage_snapshot",
+            "profile": "text-only",
+            "task": "uv_issue_triage_snapshot",
+            "case": "incorrect_behavior_phrased_as_question",
+            "trial": 2,
+            "status": "completed",
+            "passed": true,
+            "output": "TYPE=bug",
+            "duration_ms": 7750,
+            "transport_fallback": false,
+            "usage": {
+              "input_tokens": 18209,
+              "cached_input_tokens": 0,
+              "cache_write_input_tokens": 0,
+              "output_tokens": 7,
+              "reasoning_output_tokens": 0
+            }
+          },
+          {
+            "scenario": "uv_issue_triage_snapshot",
+            "profile": "text-only",
+            "task": "uv_issue_triage_snapshot",
+            "case": "incorrect_behavior_phrased_as_question",
+            "trial": 3,
+            "status": "completed",
+            "passed": true,
+            "output": "TYPE=bug",
+            "duration_ms": 13781,
+            "transport_fallback": false,
+            "usage": {
+              "input_tokens": 18209,
+              "cached_input_tokens": 0,
+              "cache_write_input_tokens": 0,
+              "output_tokens": 7,
+              "reasoning_output_tokens": 0
+            }
+          },
+          {
+            "scenario": "uv_issue_triage_snapshot",
+            "profile": "text-only",
+            "task": "uv_issue_triage_snapshot",
+            "case": "new_capability_request",
+            "trial": 1,
+            "status": "completed",
+            "passed": true,
+            "output": "TYPE=enhancement",
+            "duration_ms": 16656,
+            "transport_fallback": false,
+            "usage": {
+              "input_tokens": 18196,
+              "cached_input_tokens": 8960,
+              "cache_write_input_tokens": 0,
+              "output_tokens": 8,
+              "reasoning_output_tokens": 0
+            }
+          },
+          {
+            "scenario": "uv_issue_triage_snapshot",
+            "profile": "text-only",
+            "task": "uv_issue_triage_snapshot",
+            "case": "new_capability_request",
+            "trial": 2,
+            "status": "completed",
+            "passed": true,
+            "output": "TYPE=enhancement",
+            "duration_ms": 9266,
+            "transport_fallback": false,
+            "usage": {
+              "input_tokens": 18196,
+              "cached_input_tokens": 0,
+              "cache_write_input_tokens": 0,
+              "output_tokens": 8,
+              "reasoning_output_tokens": 0
+            }
+          },
+          {
+            "scenario": "uv_issue_triage_snapshot",
+            "profile": "text-only",
+            "task": "uv_issue_triage_snapshot",
+            "case": "new_capability_request",
+            "trial": 3,
+            "status": "completed",
+            "passed": true,
+            "output": "TYPE=enhancement",
+            "duration_ms": 8640,
+            "transport_fallback": false,
+            "usage": {
+              "input_tokens": 18196,
+              "cached_input_tokens": 8960,
+              "cache_write_input_tokens": 0,
+              "output_tokens": 8,
+              "reasoning_output_tokens": 0
+            }
+          },
+          {
+            "scenario": "uv_issue_triage_snapshot",
+            "profile": "text-only",
+            "task": "uv_issue_triage_snapshot",
+            "case": "regression_already_has_open_tracker",
+            "trial": 1,
+            "status": "completed",
+            "passed": true,
+            "output": "TYPE=duplicate",
+            "duration_ms": 9890,
+            "transport_fallback": false,
+            "usage": {
+              "input_tokens": 18197,
+              "cached_input_tokens": 17152,
+              "cache_write_input_tokens": 0,
+              "output_tokens": 7,
+              "reasoning_output_tokens": 0
+            }
+          },
+          {
+            "scenario": "uv_issue_triage_snapshot",
+            "profile": "text-only",
+            "task": "uv_issue_triage_snapshot",
+            "case": "regression_already_has_open_tracker",
+            "trial": 2,
+            "status": "completed",
+            "passed": true,
+            "output": "TYPE=duplicate",
+            "duration_ms": 6985,
+            "transport_fallback": false,
+            "usage": {
+              "input_tokens": 18197,
+              "cached_input_tokens": 0,
+              "cache_write_input_tokens": 0,
+              "output_tokens": 7,
+              "reasoning_output_tokens": 0
+            }
+          },
+          {
+            "scenario": "uv_issue_triage_snapshot",
+            "profile": "text-only",
+            "task": "uv_issue_triage_snapshot",
+            "case": "regression_already_has_open_tracker",
+            "trial": 3,
+            "status": "completed",
+            "passed": true,
+            "output": "TYPE=duplicate",
+            "duration_ms": 9437,
+            "transport_fallback": false,
+            "usage": {
+              "input_tokens": 18197,
+              "cached_input_tokens": 0,
+              "cache_write_input_tokens": 0,
+              "output_tokens": 7,
+              "reasoning_output_tokens": 0
+            }
+          },
+          {
+            "scenario": "uv_issue_triage_snapshot",
+            "profile": "text-only",
+            "task": "uv_issue_triage_snapshot",
+            "case": "responding_pull_request_is_not_duplicate",
+            "trial": 1,
+            "status": "completed",
+            "passed": true,
+            "output": "TYPE=bug",
+            "duration_ms": 10110,
+            "transport_fallback": false,
+            "usage": {
+              "input_tokens": 18202,
+              "cached_input_tokens": 0,
+              "cache_write_input_tokens": 0,
+              "output_tokens": 7,
+              "reasoning_output_tokens": 0
+            }
+          },
+          {
+            "scenario": "uv_issue_triage_snapshot",
+            "profile": "text-only",
+            "task": "uv_issue_triage_snapshot",
+            "case": "responding_pull_request_is_not_duplicate",
+            "trial": 2,
+            "status": "completed",
+            "passed": true,
+            "output": "TYPE=bug",
+            "duration_ms": 9187,
+            "transport_fallback": false,
+            "usage": {
+              "input_tokens": 18202,
+              "cached_input_tokens": 0,
+              "cache_write_input_tokens": 0,
+              "output_tokens": 7,
+              "reasoning_output_tokens": 0
+            }
+          },
+          {
+            "scenario": "uv_issue_triage_snapshot",
+            "profile": "text-only",
+            "task": "uv_issue_triage_snapshot",
+            "case": "responding_pull_request_is_not_duplicate",
+            "trial": 3,
+            "status": "completed",
+            "passed": true,
+            "output": "TYPE=bug",
+            "duration_ms": 8093,
+            "transport_fallback": false,
+            "usage": {
+              "input_tokens": 18202,
+              "cached_input_tokens": 17152,
+              "cache_write_input_tokens": 0,
+              "output_tokens": 7,
+              "reasoning_output_tokens": 0
+            }
+          },
+          {
+            "scenario": "uv_issue_triage_snapshot",
+            "profile": "text-only",
+            "task": "uv_issue_triage_snapshot",
+            "case": "source_confirmed_bug_without_reproduction",
+            "trial": 1,
+            "status": "completed",
+            "passed": true,
+            "output": "TYPE=bug",
+            "duration_ms": 20672,
+            "transport_fallback": false,
+            "usage": {
+              "input_tokens": 18193,
+              "cached_input_tokens": 0,
+              "cache_write_input_tokens": 0,
+              "output_tokens": 7,
+              "reasoning_output_tokens": 0
+            }
+          },
+          {
+            "scenario": "uv_issue_triage_snapshot",
+            "profile": "text-only",
+            "task": "uv_issue_triage_snapshot",
+            "case": "source_confirmed_bug_without_reproduction",
+            "trial": 2,
+            "status": "completed",
+            "passed": true,
+            "output": "TYPE=bug",
+            "duration_ms": 9140,
+            "transport_fallback": false,
+            "usage": {
+              "input_tokens": 18193,
+              "cached_input_tokens": 17152,
+              "cache_write_input_tokens": 0,
+              "output_tokens": 7,
+              "reasoning_output_tokens": 0
+            }
+          },
+          {
+            "scenario": "uv_issue_triage_snapshot",
+            "profile": "text-only",
+            "task": "uv_issue_triage_snapshot",
+            "case": "source_confirmed_bug_without_reproduction",
+            "trial": 3,
+            "status": "completed",
+            "passed": true,
+            "output": "TYPE=bug",
+            "duration_ms": 7891,
+            "transport_fallback": false,
+            "usage": {
+              "input_tokens": 18193,
+              "cached_input_tokens": 0,
+              "cache_write_input_tokens": 0,
+              "output_tokens": 7,
+              "reasoning_output_tokens": 0
+            }
+          },
+          {
+            "scenario": "uv_issue_triage_snapshot",
+            "profile": "text-only",
+            "task": "uv_issue_triage_snapshot",
+            "case": "support_question_without_incorrect_behavior",
+            "trial": 1,
+            "status": "completed",
+            "passed": true,
+            "output": "TYPE=question",
+            "duration_ms": 10750,
+            "transport_fallback": false,
+            "usage": {
+              "input_tokens": 18197,
+              "cached_input_tokens": 0,
+              "cache_write_input_tokens": 0,
+              "output_tokens": 7,
+              "reasoning_output_tokens": 0
+            }
+          },
+          {
+            "scenario": "uv_issue_triage_snapshot",
+            "profile": "text-only",
+            "task": "uv_issue_triage_snapshot",
+            "case": "support_question_without_incorrect_behavior",
+            "trial": 2,
+            "status": "completed",
+            "passed": true,
+            "output": "TYPE=question",
+            "duration_ms": 8797,
+            "transport_fallback": false,
+            "usage": {
+              "input_tokens": 18197,
+              "cached_input_tokens": 8960,
+              "cache_write_input_tokens": 0,
+              "output_tokens": 7,
+              "reasoning_output_tokens": 0
+            }
+          },
+          {
+            "scenario": "uv_issue_triage_snapshot",
+            "profile": "text-only",
+            "task": "uv_issue_triage_snapshot",
+            "case": "support_question_without_incorrect_behavior",
+            "trial": 3,
+            "status": "completed",
+            "passed": true,
+            "output": "TYPE=question",
+            "duration_ms": 15750,
+            "transport_fallback": false,
+            "usage": {
+              "input_tokens": 18197,
+              "cached_input_tokens": 8960,
+              "cache_write_input_tokens": 0,
+              "output_tokens": 7,
+              "reasoning_output_tokens": 0
+            }
+          },
+          {
+            "scenario": "uv_issue_triage_snapshot",
+            "profile": "text-only",
+            "task": "uv_issue_triage_snapshot",
+            "case": "untracked_regression_of_closed_fix",
+            "trial": 1,
+            "status": "completed",
+            "passed": true,
+            "output": "TYPE=bug",
+            "duration_ms": 8297,
+            "transport_fallback": false,
+            "usage": {
+              "input_tokens": 18211,
+              "cached_input_tokens": 17152,
+              "cache_write_input_tokens": 0,
+              "output_tokens": 7,
+              "reasoning_output_tokens": 0
+            }
+          },
+          {
+            "scenario": "uv_issue_triage_snapshot",
+            "profile": "text-only",
+            "task": "uv_issue_triage_snapshot",
+            "case": "untracked_regression_of_closed_fix",
+            "trial": 2,
+            "status": "completed",
+            "passed": true,
+            "output": "TYPE=bug",
+            "duration_ms": 13000,
+            "transport_fallback": false,
+            "usage": {
+              "input_tokens": 18211,
+              "cached_input_tokens": 0,
+              "cache_write_input_tokens": 0,
+              "output_tokens": 7,
+              "reasoning_output_tokens": 0
+            }
+          },
+          {
+            "scenario": "uv_issue_triage_snapshot",
+            "profile": "text-only",
+            "task": "uv_issue_triage_snapshot",
+            "case": "untracked_regression_of_closed_fix",
+            "trial": 3,
+            "status": "completed",
+            "passed": true,
+            "output": "TYPE=bug",
+            "duration_ms": 7125,
+            "transport_fallback": false,
+            "usage": {
+              "input_tokens": 18211,
+              "cached_input_tokens": 0,
+              "cache_write_input_tokens": 0,
+              "output_tokens": 7,
+              "reasoning_output_tokens": 0
+            }
+          }
+        ]
+      }
+    },
+    {
+      "name": "uv_workflow_failure_snapshot",
+      "asset": {
+        "path": "examples/project_instructions/03_uv_public_pilot/workflow-failure-rules.md",
+        "sha256": "9034d3a2220747aca6a5b009ddc14cf7475d794a6cfe879f03ed3ed210a408cd"
+      },
+      "suite": {
+        "path": "examples/project_instructions/03_uv_public_pilot/workflow-failure.replay.json",
+        "sha256": "363ad5811c896b61f493ede4d15d9021338e9b76ce881038420a94e175eab97f"
+      },
+      "profiles": {
+        "standard": {
+          "calls": 18,
+          "completed_calls": 18,
+          "passed_calls": 18,
+          "pass_rate": 1.0,
+          "operational_errors": 0,
+          "input_tokens": 366225,
+          "input_tokens_per_call": 20345.833333333332,
+          "cached_input_tokens": 73984,
+          "cache_write_input_tokens": 0,
+          "output_tokens": 270,
+          "reasoning_output_tokens": 0,
+          "transport_fallback_calls": 0
+        },
+        "text-only": {
+          "calls": 18,
+          "completed_calls": 18,
+          "passed_calls": 18,
+          "pass_rate": 1.0,
+          "operational_errors": 0,
+          "input_tokens": 326895,
+          "input_tokens_per_call": 18160.833333333332,
+          "cached_input_tokens": 44032,
+          "cache_write_input_tokens": 0,
+          "output_tokens": 270,
+          "reasoning_output_tokens": 0,
+          "transport_fallback_calls": 0
+        }
+      },
+      "input_tokens_saved_per_call": 2185.0,
+      "input_token_reduction_fraction": 0.10739299610894942,
+      "quality_delta": 0.0,
+      "passed": true,
+      "calls": {
+        "standard": [
+          {
+            "scenario": "uv_workflow_failure_snapshot",
+            "profile": "standard",
+            "task": "uv_workflow_failure_snapshot",
+            "case": "confirmed_flake_already_tracked",
+            "trial": 1,
+            "status": "completed",
+            "passed": true,
+            "output": "FAILURE_KIND=flaky\nDECISION=duplicate",
+            "duration_ms": 11578,
+            "transport_fallback": false,
+            "usage": {
+              "input_tokens": 20338,
+              "cached_input_tokens": 5888,
+              "cache_write_input_tokens": 0,
+              "output_tokens": 15,
+              "reasoning_output_tokens": 0
+            }
+          },
+          {
+            "scenario": "uv_workflow_failure_snapshot",
+            "profile": "standard",
+            "task": "uv_workflow_failure_snapshot",
+            "case": "confirmed_flake_already_tracked",
+            "trial": 2,
+            "status": "completed",
+            "passed": true,
+            "output": "FAILURE_KIND=flaky\nDECISION=duplicate",
+            "duration_ms": 13594,
+            "transport_fallback": false,
+            "usage": {
+              "input_tokens": 20338,
+              "cached_input_tokens": 0,
+              "cache_write_input_tokens": 0,
+              "output_tokens": 15,
+              "reasoning_output_tokens": 0
+            }
+          },
+          {
+            "scenario": "uv_workflow_failure_snapshot",
+            "profile": "standard",
+            "task": "uv_workflow_failure_snapshot",
+            "case": "confirmed_flake_already_tracked",
+            "trial": 3,
+            "status": "completed",
+            "passed": true,
+            "output": "FAILURE_KIND=flaky\nDECISION=duplicate",
+            "duration_ms": 10765,
+            "transport_fallback": false,
+            "usage": {
+              "input_tokens": 20338,
+              "cached_input_tokens": 0,
+              "cache_write_input_tokens": 0,
+              "output_tokens": 15,
+              "reasoning_output_tokens": 0
+            }
+          },
+          {
+            "scenario": "uv_workflow_failure_snapshot",
+            "profile": "standard",
+            "task": "uv_workflow_failure_snapshot",
+            "case": "confirmed_untracked_test_flake",
+            "trial": 1,
+            "status": "completed",
+            "passed": true,
+            "output": "FAILURE_KIND=flaky\nDECISION=create",
+            "duration_ms": 11781,
+            "transport_fallback": false,
+            "usage": {
+              "input_tokens": 20349,
+              "cached_input_tokens": 0,
+              "cache_write_input_tokens": 0,
+              "output_tokens": 14,
+              "reasoning_output_tokens": 0
+            }
+          },
+          {
+            "scenario": "uv_workflow_failure_snapshot",
+            "profile": "standard",
+            "task": "uv_workflow_failure_snapshot",
+            "case": "confirmed_untracked_test_flake",
+            "trial": 2,
+            "status": "completed",
+            "passed": true,
+            "output": "FAILURE_KIND=flaky\nDECISION=create",
+            "duration_ms": 13157,
+            "transport_fallback": false,
+            "usage": {
+              "input_tokens": 20349,
+              "cached_input_tokens": 0,
+              "cache_write_input_tokens": 0,
+              "output_tokens": 14,
+              "reasoning_output_tokens": 0
+            }
+          },
+          {
+            "scenario": "uv_workflow_failure_snapshot",
+            "profile": "standard",
+            "task": "uv_workflow_failure_snapshot",
+            "case": "confirmed_untracked_test_flake",
+            "trial": 3,
+            "status": "completed",
+            "passed": true,
+            "output": "FAILURE_KIND=flaky\nDECISION=create",
+            "duration_ms": 11813,
+            "transport_fallback": false,
+            "usage": {
+              "input_tokens": 20349,
+              "cached_input_tokens": 0,
+              "cache_write_input_tokens": 0,
+              "output_tokens": 14,
+              "reasoning_output_tokens": 0
+            }
+          },
+          {
+            "scenario": "uv_workflow_failure_snapshot",
+            "profile": "standard",
+            "task": "uv_workflow_failure_snapshot",
+            "case": "expected_failure_caused_by_pull_request",
+            "trial": 1,
+            "status": "completed",
+            "passed": true,
+            "output": "FAILURE_KIND=deterministic\nDECISION=ignore",
+            "duration_ms": 13406,
+            "transport_fallback": false,
+            "usage": {
+              "input_tokens": 20350,
+              "cached_input_tokens": 0,
+              "cache_write_input_tokens": 0,
+              "output_tokens": 16,
+              "reasoning_output_tokens": 0
+            }
+          },
+          {
+            "scenario": "uv_workflow_failure_snapshot",
+            "profile": "standard",
+            "task": "uv_workflow_failure_snapshot",
+            "case": "expected_failure_caused_by_pull_request",
+            "trial": 2,
+            "status": "completed",
+            "passed": true,
+            "output": "FAILURE_KIND=deterministic\nDECISION=ignore",
+            "duration_ms": 14313,
+            "transport_fallback": false,
+            "usage": {
+              "input_tokens": 20350,
+              "cached_input_tokens": 16128,
+              "cache_write_input_tokens": 0,
+              "output_tokens": 16,
+              "reasoning_output_tokens": 0
+            }
+          },
+          {
+            "scenario": "uv_workflow_failure_snapshot",
+            "profile": "standard",
+            "task": "uv_workflow_failure_snapshot",
+            "case": "expected_failure_caused_by_pull_request",
+            "trial": 3,
+            "status": "completed",
+            "passed": true,
+            "output": "FAILURE_KIND=deterministic\nDECISION=ignore",
+            "duration_ms": 10453,
+            "transport_fallback": false,
+            "usage": {
+              "input_tokens": 20350,
+              "cached_input_tokens": 5888,
+              "cache_write_input_tokens": 0,
+              "output_tokens": 16,
+              "reasoning_output_tokens": 0
+            }
+          },
+          {
+            "scenario": "uv_workflow_failure_snapshot",
+            "profile": "standard",
+            "task": "uv_workflow_failure_snapshot",
+            "case": "mixed_transient_and_deterministic_failures",
+            "trial": 1,
+            "status": "completed",
+            "passed": true,
+            "output": "FAILURE_KIND=deterministic\nDECISION=create",
+            "duration_ms": 8969,
+            "transport_fallback": false,
+            "usage": {
+              "input_tokens": 20350,
+              "cached_input_tokens": 9984,
+              "cache_write_input_tokens": 0,
+              "output_tokens": 15,
+              "reasoning_output_tokens": 0
+            }
+          },
+          {
+            "scenario": "uv_workflow_failure_snapshot",
+            "profile": "standard",
+            "task": "uv_workflow_failure_snapshot",
+            "case": "mixed_transient_and_deterministic_failures",
+            "trial": 2,
+            "status": "completed",
+            "passed": true,
+            "output": "FAILURE_KIND=deterministic\nDECISION=create",
+            "duration_ms": 19031,
+            "transport_fallback": false,
+            "usage": {
+              "input_tokens": 20350,
+              "cached_input_tokens": 0,
+              "cache_write_input_tokens": 0,
+              "output_tokens": 15,
+              "reasoning_output_tokens": 0
+            }
+          },
+          {
+            "scenario": "uv_workflow_failure_snapshot",
+            "profile": "standard",
+            "task": "uv_workflow_failure_snapshot",
+            "case": "mixed_transient_and_deterministic_failures",
+            "trial": 3,
+            "status": "completed",
+            "passed": true,
+            "output": "FAILURE_KIND=deterministic\nDECISION=create",
+            "duration_ms": 14422,
+            "transport_fallback": false,
+            "usage": {
+              "input_tokens": 20350,
+              "cached_input_tokens": 9984,
+              "cache_write_input_tokens": 0,
+              "output_tokens": 15,
+              "reasoning_output_tokens": 0
+            }
+          },
+          {
+            "scenario": "uv_workflow_failure_snapshot",
+            "profile": "standard",
+            "task": "uv_workflow_failure_snapshot",
+            "case": "transient_external_outage_without_mitigation",
+            "trial": 1,
+            "status": "completed",
+            "passed": true,
+            "output": "FAILURE_KIND=flaky\nDECISION=ignore",
+            "duration_ms": 11656,
+            "transport_fallback": false,
+            "usage": {
+              "input_tokens": 20345,
+              "cached_input_tokens": 9984,
+              "cache_write_input_tokens": 0,
+              "output_tokens": 15,
+              "reasoning_output_tokens": 0
+            }
+          },
+          {
+            "scenario": "uv_workflow_failure_snapshot",
+            "profile": "standard",
+            "task": "uv_workflow_failure_snapshot",
+            "case": "transient_external_outage_without_mitigation",
+            "trial": 2,
+            "status": "completed",
+            "passed": true,
+            "output": "FAILURE_KIND=flaky\nDECISION=ignore",
+            "duration_ms": 19718,
+            "transport_fallback": false,
+            "usage": {
+              "input_tokens": 20345,
+              "cached_input_tokens": 0,
+              "cache_write_input_tokens": 0,
+              "output_tokens": 15,
+              "reasoning_output_tokens": 0
+            }
+          },
+          {
+            "scenario": "uv_workflow_failure_snapshot",
+            "profile": "standard",
+            "task": "uv_workflow_failure_snapshot",
+            "case": "transient_external_outage_without_mitigation",
+            "trial": 3,
+            "status": "completed",
+            "passed": true,
+            "output": "FAILURE_KIND=flaky\nDECISION=ignore",
+            "duration_ms": 11859,
+            "transport_fallback": false,
+            "usage": {
+              "input_tokens": 20345,
+              "cached_input_tokens": 0,
+              "cache_write_input_tokens": 0,
+              "output_tokens": 15,
+              "reasoning_output_tokens": 0
+            }
+          },
+          {
+            "scenario": "uv_workflow_failure_snapshot",
+            "profile": "standard",
+            "task": "uv_workflow_failure_snapshot",
+            "case": "untracked_default_branch_repository_defect",
+            "trial": 1,
+            "status": "completed",
+            "passed": true,
+            "output": "FAILURE_KIND=deterministic\nDECISION=create",
+            "duration_ms": 11000,
+            "transport_fallback": false,
+            "usage": {
+              "input_tokens": 20343,
+              "cached_input_tokens": 0,
+              "cache_write_input_tokens": 0,
+              "output_tokens": 15,
+              "reasoning_output_tokens": 0
+            }
+          },
+          {
+            "scenario": "uv_workflow_failure_snapshot",
+            "profile": "standard",
+            "task": "uv_workflow_failure_snapshot",
+            "case": "untracked_default_branch_repository_defect",
+            "trial": 2,
+            "status": "completed",
+            "passed": true,
+            "output": "FAILURE_KIND=deterministic\nDECISION=create",
+            "duration_ms": 10954,
+            "transport_fallback": false,
+            "usage": {
+              "input_tokens": 20343,
+              "cached_input_tokens": 0,
+              "cache_write_input_tokens": 0,
+              "output_tokens": 15,
+              "reasoning_output_tokens": 0
+            }
+          },
+          {
+            "scenario": "uv_workflow_failure_snapshot",
+            "profile": "standard",
+            "task": "uv_workflow_failure_snapshot",
+            "case": "untracked_default_branch_repository_defect",
+            "trial": 3,
+            "status": "completed",
+            "passed": true,
+            "output": "FAILURE_KIND=deterministic\nDECISION=create",
+            "duration_ms": 13203,
+            "transport_fallback": false,
+            "usage": {
+              "input_tokens": 20343,
+              "cached_input_tokens": 16128,
+              "cache_write_input_tokens": 0,
+              "output_tokens": 15,
+              "reasoning_output_tokens": 0
+            }
+          }
+        ],
+        "text-only": [
+          {
+            "scenario": "uv_workflow_failure_snapshot",
+            "profile": "text-only",
+            "task": "uv_workflow_failure_snapshot",
+            "case": "confirmed_flake_already_tracked",
+            "trial": 1,
+            "status": "completed",
+            "passed": true,
+            "output": "FAILURE_KIND=flaky\nDECISION=duplicate",
+            "duration_ms": 15984,
+            "transport_fallback": false,
+            "usage": {
+              "input_tokens": 18153,
+              "cached_input_tokens": 0,
+              "cache_write_input_tokens": 0,
+              "output_tokens": 15,
+              "reasoning_output_tokens": 0
+            }
+          },
+          {
+            "scenario": "uv_workflow_failure_snapshot",
+            "profile": "text-only",
+            "task": "uv_workflow_failure_snapshot",
+            "case": "confirmed_flake_already_tracked",
+            "trial": 2,
+            "status": "completed",
+            "passed": true,
+            "output": "FAILURE_KIND=flaky\nDECISION=duplicate",
+            "duration_ms": 9438,
+            "transport_fallback": false,
+            "usage": {
+              "input_tokens": 18153,
+              "cached_input_tokens": 0,
+              "cache_write_input_tokens": 0,
+              "output_tokens": 15,
+              "reasoning_output_tokens": 0
+            }
+          },
+          {
+            "scenario": "uv_workflow_failure_snapshot",
+            "profile": "text-only",
+            "task": "uv_workflow_failure_snapshot",
+            "case": "confirmed_flake_already_tracked",
+            "trial": 3,
+            "status": "completed",
+            "passed": true,
+            "output": "FAILURE_KIND=flaky\nDECISION=duplicate",
+            "duration_ms": 8000,
+            "transport_fallback": false,
+            "usage": {
+              "input_tokens": 18153,
+              "cached_input_tokens": 0,
+              "cache_write_input_tokens": 0,
+              "output_tokens": 15,
+              "reasoning_output_tokens": 0
+            }
+          },
+          {
+            "scenario": "uv_workflow_failure_snapshot",
+            "profile": "text-only",
+            "task": "uv_workflow_failure_snapshot",
+            "case": "confirmed_untracked_test_flake",
+            "trial": 1,
+            "status": "completed",
+            "passed": true,
+            "output": "FAILURE_KIND=flaky\nDECISION=create",
+            "duration_ms": 8172,
+            "transport_fallback": false,
+            "usage": {
+              "input_tokens": 18164,
+              "cached_input_tokens": 0,
+              "cache_write_input_tokens": 0,
+              "output_tokens": 14,
+              "reasoning_output_tokens": 0
+            }
+          },
+          {
+            "scenario": "uv_workflow_failure_snapshot",
+            "profile": "text-only",
+            "task": "uv_workflow_failure_snapshot",
+            "case": "confirmed_untracked_test_flake",
+            "trial": 2,
+            "status": "completed",
+            "passed": true,
+            "output": "FAILURE_KIND=flaky\nDECISION=create",
+            "duration_ms": 9140,
+            "transport_fallback": false,
+            "usage": {
+              "input_tokens": 18164,
+              "cached_input_tokens": 17152,
+              "cache_write_input_tokens": 0,
+              "output_tokens": 14,
+              "reasoning_output_tokens": 0
+            }
+          },
+          {
+            "scenario": "uv_workflow_failure_snapshot",
+            "profile": "text-only",
+            "task": "uv_workflow_failure_snapshot",
+            "case": "confirmed_untracked_test_flake",
+            "trial": 3,
+            "status": "completed",
+            "passed": true,
+            "output": "FAILURE_KIND=flaky\nDECISION=create",
+            "duration_ms": 10500,
+            "transport_fallback": false,
+            "usage": {
+              "input_tokens": 18164,
+              "cached_input_tokens": 8960,
+              "cache_write_input_tokens": 0,
+              "output_tokens": 14,
+              "reasoning_output_tokens": 0
+            }
+          },
+          {
+            "scenario": "uv_workflow_failure_snapshot",
+            "profile": "text-only",
+            "task": "uv_workflow_failure_snapshot",
+            "case": "expected_failure_caused_by_pull_request",
+            "trial": 1,
+            "status": "completed",
+            "passed": true,
+            "output": "FAILURE_KIND=deterministic\nDECISION=ignore",
+            "duration_ms": 7984,
+            "transport_fallback": false,
+            "usage": {
+              "input_tokens": 18165,
+              "cached_input_tokens": 0,
+              "cache_write_input_tokens": 0,
+              "output_tokens": 16,
+              "reasoning_output_tokens": 0
+            }
+          },
+          {
+            "scenario": "uv_workflow_failure_snapshot",
+            "profile": "text-only",
+            "task": "uv_workflow_failure_snapshot",
+            "case": "expected_failure_caused_by_pull_request",
+            "trial": 2,
+            "status": "completed",
+            "passed": true,
+            "output": "FAILURE_KIND=deterministic\nDECISION=ignore",
+            "duration_ms": 9437,
+            "transport_fallback": false,
+            "usage": {
+              "input_tokens": 18165,
+              "cached_input_tokens": 0,
+              "cache_write_input_tokens": 0,
+              "output_tokens": 16,
+              "reasoning_output_tokens": 0
+            }
+          },
+          {
+            "scenario": "uv_workflow_failure_snapshot",
+            "profile": "text-only",
+            "task": "uv_workflow_failure_snapshot",
+            "case": "expected_failure_caused_by_pull_request",
+            "trial": 3,
+            "status": "completed",
+            "passed": true,
+            "output": "FAILURE_KIND=deterministic\nDECISION=ignore",
+            "duration_ms": 8031,
+            "transport_fallback": false,
+            "usage": {
+              "input_tokens": 18165,
+              "cached_input_tokens": 0,
+              "cache_write_input_tokens": 0,
+              "output_tokens": 16,
+              "reasoning_output_tokens": 0
+            }
+          },
+          {
+            "scenario": "uv_workflow_failure_snapshot",
+            "profile": "text-only",
+            "task": "uv_workflow_failure_snapshot",
+            "case": "mixed_transient_and_deterministic_failures",
+            "trial": 1,
+            "status": "completed",
+            "passed": true,
+            "output": "FAILURE_KIND=deterministic\nDECISION=create",
+            "duration_ms": 8063,
+            "transport_fallback": false,
+            "usage": {
+              "input_tokens": 18165,
+              "cached_input_tokens": 0,
+              "cache_write_input_tokens": 0,
+              "output_tokens": 15,
+              "reasoning_output_tokens": 0
+            }
+          },
+          {
+            "scenario": "uv_workflow_failure_snapshot",
+            "profile": "text-only",
+            "task": "uv_workflow_failure_snapshot",
+            "case": "mixed_transient_and_deterministic_failures",
+            "trial": 2,
+            "status": "completed",
+            "passed": true,
+            "output": "FAILURE_KIND=deterministic\nDECISION=create",
+            "duration_ms": 12625,
+            "transport_fallback": false,
+            "usage": {
+              "input_tokens": 18165,
+              "cached_input_tokens": 0,
+              "cache_write_input_tokens": 0,
+              "output_tokens": 15,
+              "reasoning_output_tokens": 0
+            }
+          },
+          {
+            "scenario": "uv_workflow_failure_snapshot",
+            "profile": "text-only",
+            "task": "uv_workflow_failure_snapshot",
+            "case": "mixed_transient_and_deterministic_failures",
+            "trial": 3,
+            "status": "completed",
+            "passed": true,
+            "output": "FAILURE_KIND=deterministic\nDECISION=create",
+            "duration_ms": 7328,
+            "transport_fallback": false,
+            "usage": {
+              "input_tokens": 18165,
+              "cached_input_tokens": 0,
+              "cache_write_input_tokens": 0,
+              "output_tokens": 15,
+              "reasoning_output_tokens": 0
+            }
+          },
+          {
+            "scenario": "uv_workflow_failure_snapshot",
+            "profile": "text-only",
+            "task": "uv_workflow_failure_snapshot",
+            "case": "transient_external_outage_without_mitigation",
+            "trial": 1,
+            "status": "completed",
+            "passed": true,
+            "output": "FAILURE_KIND=flaky\nDECISION=ignore",
+            "duration_ms": 7750,
+            "transport_fallback": false,
+            "usage": {
+              "input_tokens": 18160,
+              "cached_input_tokens": 0,
+              "cache_write_input_tokens": 0,
+              "output_tokens": 15,
+              "reasoning_output_tokens": 0
+            }
+          },
+          {
+            "scenario": "uv_workflow_failure_snapshot",
+            "profile": "text-only",
+            "task": "uv_workflow_failure_snapshot",
+            "case": "transient_external_outage_without_mitigation",
+            "trial": 2,
+            "status": "completed",
+            "passed": true,
+            "output": "FAILURE_KIND=flaky\nDECISION=ignore",
+            "duration_ms": 10329,
+            "transport_fallback": false,
+            "usage": {
+              "input_tokens": 18160,
+              "cached_input_tokens": 8960,
+              "cache_write_input_tokens": 0,
+              "output_tokens": 15,
+              "reasoning_output_tokens": 0
+            }
+          },
+          {
+            "scenario": "uv_workflow_failure_snapshot",
+            "profile": "text-only",
+            "task": "uv_workflow_failure_snapshot",
+            "case": "transient_external_outage_without_mitigation",
+            "trial": 3,
+            "status": "completed",
+            "passed": true,
+            "output": "FAILURE_KIND=flaky\nDECISION=ignore",
+            "duration_ms": 10563,
+            "transport_fallback": false,
+            "usage": {
+              "input_tokens": 18160,
+              "cached_input_tokens": 0,
+              "cache_write_input_tokens": 0,
+              "output_tokens": 15,
+              "reasoning_output_tokens": 0
+            }
+          },
+          {
+            "scenario": "uv_workflow_failure_snapshot",
+            "profile": "text-only",
+            "task": "uv_workflow_failure_snapshot",
+            "case": "untracked_default_branch_repository_defect",
+            "trial": 1,
+            "status": "completed",
+            "passed": true,
+            "output": "FAILURE_KIND=deterministic\nDECISION=create",
+            "duration_ms": 6937,
+            "transport_fallback": false,
+            "usage": {
+              "input_tokens": 18158,
+              "cached_input_tokens": 0,
+              "cache_write_input_tokens": 0,
+              "output_tokens": 15,
+              "reasoning_output_tokens": 0
+            }
+          },
+          {
+            "scenario": "uv_workflow_failure_snapshot",
+            "profile": "text-only",
+            "task": "uv_workflow_failure_snapshot",
+            "case": "untracked_default_branch_repository_defect",
+            "trial": 2,
+            "status": "completed",
+            "passed": true,
+            "output": "FAILURE_KIND=deterministic\nDECISION=create",
+            "duration_ms": 7562,
+            "transport_fallback": false,
+            "usage": {
+              "input_tokens": 18158,
+              "cached_input_tokens": 8960,
+              "cache_write_input_tokens": 0,
+              "output_tokens": 15,
+              "reasoning_output_tokens": 0
+            }
+          },
+          {
+            "scenario": "uv_workflow_failure_snapshot",
+            "profile": "text-only",
+            "task": "uv_workflow_failure_snapshot",
+            "case": "untracked_default_branch_repository_defect",
+            "trial": 3,
+            "status": "completed",
+            "passed": true,
+            "output": "FAILURE_KIND=deterministic\nDECISION=create",
+            "duration_ms": 8297,
+            "transport_fallback": false,
+            "usage": {
+              "input_tokens": 18158,
+              "cached_input_tokens": 0,
+              "cache_write_input_tokens": 0,
+              "output_tokens": 15,
+              "reasoning_output_tokens": 0
+            }
+          }
+        ]
+      }
+    }
+  ],
+  "passed": true,
+  "limitations": [
+    "Results apply only to the exact assets, workloads, model, CLI version, and runtime settings recorded here.",
+    "Concurrent randomized submission balances call order but does not guarantee completion order.",
+    "Text-only removes capabilities required for coding and agentic work; standard remains the default profile."
+  ]
+}

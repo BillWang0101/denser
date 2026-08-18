@@ -34,6 +34,20 @@ python benchmarks/codex_profile_audit.py \
   --output build/uv-public-pilot.json
 ```
 
+## Result
+
+The preregistered run passed on 2026-08-18 with Codex CLI 0.147.0,
+`gpt-5.6-sol`, and medium reasoning:
+
+| Scenario | Standard | Text-only | Reduction | Quality |
+|---|---:|---:|---:|---:|
+| Issue triage | 20,335.25 | 18,200.75 | 10.50% | 24/24 -> 24/24 |
+| Workflow failure | 20,345.83 | 18,160.83 | 10.74% | 18/18 -> 18/18 |
+
+All 84 calls completed with zero operational errors and zero transport
+fallbacks. The complete sanitized report is
+[`codex-profile-audit.paired-3x.2026-08-18.json`](codex-profile-audit.paired-3x.2026-08-18.json).
+
 ## Boundaries
 
 This is an external-project corpus authored and run by denser's maintainers. It
