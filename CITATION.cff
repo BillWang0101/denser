@@ -5,7 +5,7 @@ authors:
     given-names: Bill
     alias: BillWang
 title: "denser: Behavior-Fidelity Audits for Version-Controlled LLM Context"
-version: 0.2.0-alpha.1
+version: 0.2.0-alpha.3
 date-released: 2026-08-18
 url: "https://github.com/Evostructs/denser"
 license: Apache-2.0

@@ -1,7 +1,8 @@
-"""Generate the README hero image — an experimental density-sweep illustration.
+"""Generate denser's reproducible README and social-preview hero image.
 
-This script is reproducible (fixed seeds, deterministic output). It produces
-`docs/assets/hero.png` which README.md references.
+The image uses only measured results from the committed Codex tool-workflow
+pilot. It produces `docs/assets/hero.png`, which README.md references and which
+can also be uploaded as the repository social preview.
 
 Run: `python docs/assets/hero.py`
 Requires: `pip install denser[plot]`
@@ -12,88 +13,188 @@ from __future__ import annotations
 from pathlib import Path
 
 import matplotlib.pyplot as plt
-import numpy as np
+from matplotlib.patches import FancyBboxPatch, Rectangle
 
 OUT_PATH = Path(__file__).parent / "hero.png"
 
 
-def _curve(x: np.ndarray, peak: float, height: float, width: float) -> np.ndarray:
-    """One possible non-universal shape used in the schematic."""
-    return height * np.exp(-((x - peak) ** 2) / (2 * width**2))
+BG = "#07111F"
+SURFACE = "#0D1C2E"
+SURFACE_STRONG = "#10263B"
+GRID = "#16324A"
+TEXT = "#F5F8FC"
+MUTED = "#8FA8C1"
+CYAN = "#28D7C2"
+BLUE = "#73A7FF"
+AMBER = "#F5C76B"
+
+
+def _rounded_box(
+    ax: plt.Axes,
+    x: float,
+    y: float,
+    width: float,
+    height: float,
+    *,
+    facecolor: str,
+    edgecolor: str,
+    linewidth: float = 1.0,
+    radius: float = 0.018,
+) -> None:
+    ax.add_patch(
+        FancyBboxPatch(
+            (x, y),
+            width,
+            height,
+            boxstyle=f"round,pad=0.008,rounding_size={radius}",
+            facecolor=facecolor,
+            edgecolor=edgecolor,
+            linewidth=linewidth,
+        )
+    )
 
 
 def main() -> None:
-    """Render the schematic density-curve hero image."""
-    x = np.linspace(0.05, 1.05, 300)
+    """Render the measured-results hero image."""
+    fig = plt.figure(figsize=(12.8, 6.4), facecolor=BG)
+    ax = fig.add_axes((0, 0, 1, 1))
+    ax.set_xlim(0, 1)
+    ax.set_ylim(0, 1)
+    ax.axis("off")
 
-    # Three possible shapes. Values are schematic and deliberately not tied to
-    # task types or measured results.
-    curves = [
-        {
-            "label": "interior best",
-            "values": _curve(x, 0.48, 0.96, 0.18),
-            "color": "#e04b4b",
-        },
-        {
-            "label": "original best",
-            "values": 0.58 + 0.36 * np.clip(x, 0, 1),
-            "color": "#4b8ae0",
-        },
-        {
-            "label": "flat / noisy",
-            "values": 0.78 + 0.035 * np.sin(25 * x) + 0.02 * x,
-            "color": "#3ba374",
-        },
-    ]
+    # Quiet instrument-panel grid: enough structure to feel technical without
+    # competing with the evidence.
+    for x in [i / 20 for i in range(1, 20)]:
+        ax.plot([x, x], [0, 1], color=GRID, linewidth=0.45, alpha=0.35)
+    for y in [i / 10 for i in range(1, 10)]:
+        ax.plot([0, 1], [y, y], color=GRID, linewidth=0.45, alpha=0.35)
+    ax.add_patch(Rectangle((0, 0), 0.012, 1, facecolor=CYAN, edgecolor="none"))
 
-    # 12.8 x 6.4 inches @ 100 dpi → 1280 x 640 pixels exactly,
-    # which is GitHub's recommended Social preview size (2:1 aspect).
-    fig, ax = plt.subplots(figsize=(12.8, 6.4))
-
-    for c in curves:
-        ax.plot(x, c["values"], linewidth=2.5, label=c["label"], color=c["color"])
-
-    ax.set_xlabel("compression ratio ρ  (compressed tokens / original)", fontsize=11)
-    ax.set_ylabel("observed check score", fontsize=11)
-    ax.set_title(
-        "Experimental Density Sweep — possible shapes, not measured results",
-        fontsize=13,
-        pad=14,
-    )
-    ax.set_xlim(0, 1.08)
-    ax.set_ylim(0, 1.15)
-    ax.invert_xaxis()  # denser → smaller ρ on the right
-    ax.grid(alpha=0.25)
-    ax.legend(title="illustrative shape", loc="upper right", frameon=True)
-
-    # Subtle shading for the "danger zones"
-    ax.axvspan(0.0, 0.15, color="red", alpha=0.06, zorder=-1)
-    ax.axvspan(0.9, 1.08, color="orange", alpha=0.06, zorder=-1)
     ax.text(
-        0.075,
-        0.08,
-        "higher information-loss risk",
+        0.065,
+        0.875,
+        "OPEN-SOURCE RESEARCH TOOL  /  ALPHA",
+        color=CYAN,
+        fontsize=12,
+        fontweight="bold",
+        family="DejaVu Sans",
+        va="center",
+    )
+    ax.text(
+        0.06,
+        0.705,
+        "DENSER",
+        color=TEXT,
+        fontsize=60,
+        fontweight="bold",
+        family="DejaVu Sans",
+        va="center",
+    )
+    ax.text(
+        0.064,
+        0.585,
+        "Behavior-validated context reduction",
+        color=BLUE,
+        fontsize=21,
+        fontweight="bold",
+        family="DejaVu Sans",
+        va="center",
+    )
+    ax.text(
+        0.064,
+        0.515,
+        "Remove unnecessary context. Preserve required behavior.",
+        color=MUTED,
+        fontsize=14,
+        family="DejaVu Sans",
+        va="center",
+    )
+
+    # Measured end-to-end flow from the committed six-call Codex pilot.
+    _rounded_box(
+        ax,
+        0.585,
+        0.625,
+        0.16,
+        0.16,
+        facecolor=SURFACE,
+        edgecolor=GRID,
+        linewidth=1.3,
+    )
+    ax.text(0.665, 0.735, "COMPLETE", color=MUTED, fontsize=10, fontweight="bold", ha="center")
+    ax.text(0.665, 0.675, "277,871", color=TEXT, fontsize=22, fontweight="bold", ha="center")
+    ax.text(0.665, 0.64, "full input tokens", color=MUTED, fontsize=9, ha="center")
+
+    ax.annotate(
+        "",
+        xy=(0.805, 0.705),
+        xytext=(0.755, 0.705),
+        arrowprops={"arrowstyle": "-|>", "color": CYAN, "lw": 2.2},
+    )
+    ax.text(0.78, 0.745, "SELECT", color=CYAN, fontsize=8, fontweight="bold", ha="center")
+
+    _rounded_box(
+        ax,
+        0.815,
+        0.625,
+        0.14,
+        0.16,
+        facecolor=SURFACE_STRONG,
+        edgecolor=CYAN,
+        linewidth=1.6,
+    )
+    ax.text(0.885, 0.735, "SELECTED", color=CYAN, fontsize=10, fontweight="bold", ha="center")
+    ax.text(0.885, 0.675, "243,210", color=TEXT, fontsize=22, fontweight="bold", ha="center")
+    ax.text(0.885, 0.64, "full input tokens", color=MUTED, fontsize=9, ha="center")
+
+    ax.text(
+        0.77,
+        0.55,
+        "Required policies kept  /  archived handbook removed",
+        color=MUTED,
+        fontsize=9.5,
+        family="DejaVu Sans",
         ha="center",
-        va="center",
-        fontsize=8.5,
-        color="#c23030",
-        alpha=0.8,
-    )
-    ax.text(
-        0.99,
-        0.08,
-        "original candidate",
-        ha="right",
-        va="center",
-        fontsize=8.5,
-        color="#c2800b",
-        alpha=0.8,
     )
 
-    fig.tight_layout()
-    # Exactly 100 dpi + 12.8×6.4 figsize → 1280×640 pixels, GitHub social preview spec.
-    # Do NOT use bbox_inches="tight" here; that would crop and change dimensions.
-    fig.savefig(OUT_PATH, dpi=100)
+    stats = [
+        ("12.47%", "LESS FULL INPUT", CYAN),
+        ("6 / 6", "SELECTED RUNS PASSED", BLUE),
+        ("6 / 6", "REGRESSIONS DETECTED", AMBER),
+    ]
+    start_x = 0.06
+    width = 0.28
+    gap = 0.025
+    for index, (value, label, accent) in enumerate(stats):
+        x = start_x + index * (width + gap)
+        _rounded_box(
+            ax,
+            x,
+            0.16,
+            width,
+            0.19,
+            facecolor=SURFACE,
+            edgecolor=GRID,
+            linewidth=1.1,
+        )
+        ax.add_patch(
+            Rectangle((x + 0.018, 0.181), 0.006, 0.145, facecolor=accent, edgecolor="none")
+        )
+        ax.text(x + 0.045, 0.275, value, color=TEXT, fontsize=24, fontweight="bold", va="center")
+        ax.text(x + 0.045, 0.215, label, color=accent, fontsize=9.5, fontweight="bold", va="center")
+
+    ax.text(
+        0.94,
+        0.07,
+        "Measured on the committed Codex tool-workflow pilot",
+        color=MUTED,
+        fontsize=8.5,
+        ha="right",
+    )
+
+    # Exactly 1280 x 640 pixels. Do not crop: GitHub expects a 2:1 preview.
+    fig.savefig(OUT_PATH, dpi=100, facecolor=BG)
+    plt.close(fig)
     print(f"Wrote {OUT_PATH}")
 
 
