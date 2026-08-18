@@ -1,60 +1,90 @@
-# denser
+<h1 align="center">denser</h1>
 
-> Prove which LLM context can be removed or rewritten without changing required behavior.
+<p align="center"><strong>Behavior-validated context reduction for LLM agents</strong></p>
+<p align="center">Remove unnecessary visible context. Preserve required behavior. Measure actual full-input savings.</p>
 
-[![License: Apache 2.0](https://img.shields.io/badge/License-Apache%202.0-blue.svg)](LICENSE)
-[![Python 3.10+](https://img.shields.io/badge/python-3.10+-blue.svg)](https://www.python.org/downloads/)
-[![CI](https://github.com/Evostructs/denser/actions/workflows/ci.yml/badge.svg)](https://github.com/Evostructs/denser/actions/workflows/ci.yml)
-![Status: alpha](https://img.shields.io/badge/status-alpha-orange.svg)
+<p align="center">
+  <a href="https://github.com/Evostructs/denser/actions/workflows/ci.yml"><img alt="CI" src="https://github.com/Evostructs/denser/actions/workflows/ci.yml/badge.svg"></a>
+  <a href="https://github.com/Evostructs/denser/releases/tag/v0.2.0-alpha.3"><img alt="Release v0.2.0-alpha.3" src="https://img.shields.io/badge/release-v0.2.0--alpha.3-28d7c2"></a>
+  <a href="https://www.python.org/downloads/"><img alt="Python 3.10+" src="https://img.shields.io/badge/python-3.10%2B-73a7ff"></a>
+  <a href="LICENSE"><img alt="Apache 2.0 license" src="https://img.shields.io/badge/license-Apache%202.0-f5c76b"></a>
+</p>
 
-![Experimental density sweep across instruction roles](docs/assets/hero.png)
+<p align="center">
+  <a href="#install-in-60-seconds">Install</a> ·
+  <a href="#evidence-at-a-glance">Evidence</a> ·
+  <a href="docs/CODEX_CONTEXT_SELECTION_CASE_STUDY.md">Reproduce</a> ·
+  <a href="docs/DESIGN.md">Evidence standard</a>
+</p>
+
+![denser — behavior-validated context reduction](docs/assets/hero.png)
+
+## Evidence at a glance
+
+In the first committed tool-using pilot, denser automatically removed an
+irrelevant 17,236-byte handbook while retaining the release and CI policies
+required by local-file tasks.
+
+| Check | Complete context | Selected context | Observed result |
+|---|---:|---:|---:|
+| Required behavior | 6/6 | 6/6 | preserved on covered cases |
+| Provider-reported full input | 277,871 | 243,210 | **12.47% fewer tokens** |
+| Operational errors | 0 | 0 | none |
+| Known-bad control | — | 0/6 | all regressions detected |
+
+This establishes behavior preservation only for the committed workload and
+settings. It does not claim that every repository can remove 12% of its input.
+The [case study](docs/CODEX_CONTEXT_SELECTION_CASE_STUDY.md),
+[fixtures](examples/context_bundles/tool_workflows/), and
+[complete audit](examples/context_bundles/tool_workflows/selection.codex-standard.3x.2026-08-18.json)
+are all reviewable in this repository.
+
+## Install in 60 seconds
+
+```bash
+git clone https://github.com/Evostructs/denser.git
+cd denser
+python -m pip install .
+denser --version
+```
+
+Use denser as a regular CLI/library with any agent, or install the bundled skill
+for [OpenAI Codex](#option-2--openai-codex-skill-no-separate-api-key-or-python)
+or [Claude Code](#option-3--claude-code-skill-no-separate-api-key-or-python).
 
 > [!IMPORTANT]
 > denser is an alpha research prototype. It does not replace a model provider's
-> runtime compaction. It audits a baseline and a proposed context variant against
-> asset-specific behavior cases, and requires a known-bad negative control before
-> reporting observed preservation. Evidence applies only to the exact workload,
-> execution model, and runtime configuration used.
-> See [`docs/DESIGN.md`](docs/DESIGN.md) for the evidence standard and the active
-> implementation plan.
+> runtime compaction. It tests reviewable context variants against explicit
+> behavior cases and requires a known-bad negative control before reporting
+> observed preservation. Evidence applies only to the exact workload, execution
+> model, and runtime configuration used.
 
 ---
 
-## Featured: automatic context pruning in a normal Codex tool workflow
+## How the featured pilot works
 
 `denser minimize-context` takes a manifest of visible context components,
 tries removing optional components one at a time, and keeps a removal only when
-behavior remains identical and a known-bad control still fails. Errors,
-improvements that change behavior, and insensitive tests all fail closed.
+covered behavior remains identical and a known-bad control still fails. Errors,
+behavior changes, and insensitive tests all fail closed.
 
-The first tool-using pilot used Codex CLI 0.147.0, `gpt-5.6-sol`, medium
-reasoning, and the `standard` capability profile. Both tasks had to read a local
-JSON file whose identifier and arbitrary policy code were absent from the
-prompt, so the expected answers could not be recovered from a text-only input.
+| Context component | Decision | Evidence |
+|---|---|---|
+| Archived handbook | Removed | both covered tasks preserved |
+| Release policy | Kept | release task regressed without it |
+| CI policy | Kept | CI task regressed without it |
+| Execution contract | Required | used to construct the sensitivity control |
 
-| Workload | Complete context | Selected context |
-|---|---:|---:|
-| Local release-record decision | 3/3 | 3/3 |
-| Local CI-record decision | 3/3 | 3/3 |
+The pilot used Codex CLI 0.147.0, `gpt-5.6-sol`, medium reasoning, three trials
+per task and side, and zero operational errors. Both tasks had to read local
+JSON records containing identifiers absent from the prompt. Shell access,
+plugins, and skill search remained available on both sides. Apps, memories, and
+multi-agent execution were disabled identically for reproducibility, so the
+measured 12.47% difference came from context selection rather than a capability
+change.
 
-The selector removed a 17,236-byte archived handbook but rejected attempts to
-remove the release or CI policy because each caused a covered regression. The
-final three-trial audit completed with zero operational errors:
-
-| Measurement | Complete context | Selected context | Reduction |
-|---|---:|---:|---:|
-| Provider-reported full input, 6 calls | 277,871 | 243,210 | **12.47%** |
-| Visible bundle estimate | 4,626 | 303 | 93.45% |
-
-Shell access, plugins, and skill search were not disabled. The benchmark's
-standard profile did disable apps, memories, and multi-agent execution for
-reproducibility, identically on both sides; the measured 12.47% delta comes
-from the selected bundle, not from changing that runtime profile. This is one
-synthetic two-task pilot, not proof that every repository can remove 12%.
-
-See the [component-selection case study](docs/CODEX_CONTEXT_SELECTION_CASE_STUDY.md),
-the [manifest and tool fixtures](examples/context_bundles/tool_workflows/), and
-the [complete final audit](examples/context_bundles/tool_workflows/selection.codex-standard.3x.2026-08-18.json).
+See the [component-selection case study](docs/CODEX_CONTEXT_SELECTION_CASE_STUDY.md)
+for the reproduction command, exact boundaries, and full evidence chain.
 
 ### Earlier result: text-only capability selection
 
